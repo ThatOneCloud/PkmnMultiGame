@@ -50,4 +50,13 @@ public class World {
 		return players.get(channel);
 	}
 
+	/**
+	 * Place a Player into the World. (So they are in the global list of players)
+	 * @param channel The Channel linking the player and server
+	 * @param player The new Player that just connected
+	 */
+	public void placePlayer(Channel channel, Player player) {
+		players.put(channel, player);
+	}
+
 }

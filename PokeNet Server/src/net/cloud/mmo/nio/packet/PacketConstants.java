@@ -6,14 +6,13 @@ package net.cloud.mmo.nio.packet;
 public class PacketConstants {
 	
 	/** The number of packets (Ie the limit on the op code) */
-	public static final int NUM_PACKETS = 1;
+	public static final int NUM_PACKETS = 3;
 	
 	// Begin Packet Opcodes //
 	public static final int TEST_PACKET = 0;
+	public static final int LOGIN_PACKET = 1;
+	public static final int LOGIN_RESPONSE_PACKET = 2;
 	// End Packet Opcodes //
-	
-	/** The port the server will communicate on */
-	public static final int PORT = 43594;
 	
 	/** Max bytes that can be in a single packet */
 	public static final int MAX_PACKET_LENGTH = 4096;

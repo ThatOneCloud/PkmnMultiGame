@@ -16,8 +16,7 @@ public class World {
 	
 	private World()
 	{
-		// Initialize the player object - starts off pretty blank
-		player = new Player();
+		
 	}
 	
 	/**
@@ -41,6 +40,17 @@ public class World {
 	public Player getPlayer()
 	{
 		return player;
+	}
+	
+	/**
+	 * Set a player as the user of this client. Until this is done, Player
+	 * will be null. Typically a player is assigned right before trying to 
+	 * login to the server.
+	 * @param player The Player object that will represent the player using the client
+	 */
+	public void setPlayer(Player player)
+	{
+		this.player = player;
 	}
 
 }

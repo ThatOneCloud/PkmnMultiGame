@@ -1,6 +1,5 @@
 package net.cloud.mmo.nio;
 
-import net.cloud.mmo.nio.packet.PacketConstants;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
@@ -14,6 +13,9 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
  * ready to accept and deal with client connections. 
  */
 public class NettyServer {
+	
+	/** The port the server will become bound to */
+	public static final int PORT = 43594;
 
 	/**
 	 * Start the Netty server.  This is the part of the server that accepts and handles 
@@ -41,9 +43,9 @@ public class NettyServer {
 			bootStrap.childOption(ChannelOption.SO_KEEPALIVE, true);
 
 			// This allows for incoming connections, waits until binding is done
-			ChannelFuture future = bootStrap.bind(PacketConstants.PORT).sync();
+			ChannelFuture future = bootStrap.bind(PORT).sync();
 
-			System.out.println("PokeNet Server is now running on port " + PacketConstants.PORT);
+			System.out.println("PokeNet Server is now running on port " + PORT);
 
 			// Only returns when the server socket is closed, allowing the finally clause to gracefully shutdown the server
 			future.channel().closeFuture().sync();

@@ -17,6 +17,7 @@ public interface Packet {
 	/**
 	 * Packs the information contained in the Packet into a ByteBuf. 
 	 * The Packet at this point should already be initialized. 
+	 * @param buffer The ByteBuf that data will be placed into, from the current position
 	 * @return A ByteBuf containing this Packet's serialized information
 	 */
 	public void encode(ByteBuf buffer);

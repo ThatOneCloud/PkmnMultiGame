@@ -1,9 +1,12 @@
 package net.cloud.mmo.nio;
 
+import net.cloud.mmo.entity.player.Player;
+import net.cloud.mmo.game.World;
 import net.cloud.mmo.nio.packet.PacketConstants;
 import net.cloud.mmo.nio.packet.PacketDecoder;
 import net.cloud.mmo.nio.packet.PacketEncoder;
 import net.cloud.mmo.nio.packet.PacketHandler;
+import net.cloud.mmo.nio.packet.PacketSender;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
@@ -18,7 +21,10 @@ public class NettyServerChannelInitializer extends ChannelInitializer<SocketChan
 
 	@Override
 	protected void initChannel(SocketChannel ch) throws Exception {
-		// TODO: Begin login process (place player in world)
+		// Place a Player in the world for this new connection
+		PacketSender packetSender = new PacketSender(ch);
+		Player newPlayer = new Player(packetSender);
+		World.getInstance().placePlayer(ch, newPlayer);
 		
 		// Inbound handlers
 		ch.pipeline().addLast(new LengthFieldBasedFrameDecoder(

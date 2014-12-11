@@ -1,5 +1,7 @@
 package net.cloud.mmo.nio;
 
+import net.cloud.mmo.entity.player.Player;
+import net.cloud.mmo.game.World;
 import net.cloud.mmo.nio.packet.PacketSender;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
@@ -9,6 +11,10 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
 public class NettyClient {
+	
+	public static final String ADDRESS = "localhost";
+	
+	public static final int PORT = 43594;
 
 	/**
 	 * Startup procedure for the client's network communication.
@@ -30,14 +36,22 @@ public class NettyClient {
 			b.handler(new NettyClientChannelInitializer());
 
 			// Immediately tries to connect to the server
-			ChannelFuture f = b.connect("localhost", 43594).sync();
+			ChannelFuture f = b.connect(ADDRESS, PORT).sync();
 			System.out.println("Connected to server.");
 
-			// Create a PacketSender
-			// TODO: Move so that the Player has their own
-			PacketSender sender = new PacketSender(f.channel());
-			sender.sendTestPacket(54);
-			System.out.println("Sent test packet.");
+//			// Create a PacketSender
+//			PacketSender sender = new PacketSender(f.channel());
+//			sender.sendTestPacket(54);
+//			System.out.println("Sent test packet.");
+			
+			// A PacketSender is made based on the channel that was returned
+			PacketSender packetSender = new PacketSender(f.channel());
+			
+			// A new Player object is created and given the PacketSender
+			World.getInstance().setPlayer(new Player(packetSender));
+			
+			// That player is now going to try to login
+			World.getInstance().getPlayer().getPacketSender().sendLogin();
 
 			// Blocks until the connection to the server is closed
 			f.channel().closeFuture().sync();

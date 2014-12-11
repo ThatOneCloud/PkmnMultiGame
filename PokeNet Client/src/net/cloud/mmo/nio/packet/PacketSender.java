@@ -1,6 +1,8 @@
 package net.cloud.mmo.nio.packet;
 
 import io.netty.channel.Channel;
+import net.cloud.mmo.entity.player.Player;
+import net.cloud.mmo.game.World;
 import net.cloud.mmo.nio.packet.packets.*;
 
 /**
@@ -26,6 +28,20 @@ public class PacketSender {
 	 */
 	public PacketSender sendTestPacket(int value) {
 		channel.writeAndFlush(new TestPacket(value));
+		
+		return this;
+	}
+	
+	/**
+	 * Send a LoginPacket, requesting the server validate our login information. 
+	 * Uses the credentials from the World Player. 
+	 */
+	public PacketSender sendLogin()
+	{
+		Player p = World.getInstance().getPlayer();
+		LoginPacket loginPacket = new LoginPacket(p.getUsername(), p.getPassword());
+		
+		channel.writeAndFlush(loginPacket);
 		
 		return this;
 	}

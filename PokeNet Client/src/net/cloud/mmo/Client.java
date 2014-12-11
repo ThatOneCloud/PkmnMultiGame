@@ -1,13 +1,15 @@
 package net.cloud.mmo;
 
+import net.cloud.mmo.game.World;
 import net.cloud.mmo.nio.NettyClient;
 
 public class Client {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		System.out.println("Changed on laptop");
+		// Get the World initialized (rather than lazy initialization)
+		World.getInstance();
 		
+		// Start the NettyClient - which will try to connect to the server
 		try {
 			new NettyClient().startup();
 		} catch (InterruptedException e) {

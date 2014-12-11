@@ -2,6 +2,8 @@ package net.cloud.mmo.nio.packet;
 
 import io.netty.channel.Channel;
 import net.cloud.mmo.nio.packet.packets.*;
+import net.cloud.mmo.nio.packet.packets.LoginPacket.LoginResponse;
+import net.cloud.mmo.nio.packet.packets.LoginPacket.LoginResponsePacket;
 
 /**
  * Each Player will have their own PacketSender.  It holds a reference to the connection 
@@ -26,6 +28,17 @@ public class PacketSender {
 	 */
 	public PacketSender sendTestPacket(int value) {
 		channel.writeAndFlush(new TestPacket(value));
+		
+		return this;
+	}
+	
+	/**
+	 * Send a response to a client which requested to login.
+	 * @param response The response (to the credentials they sent)
+	 */
+	public PacketSender sendLoginReponse(LoginResponse response)
+	{
+		channel.writeAndFlush(new LoginResponsePacket(response));
 		
 		return this;
 	}
