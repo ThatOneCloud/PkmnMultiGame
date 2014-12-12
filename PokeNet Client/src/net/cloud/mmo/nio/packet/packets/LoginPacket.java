@@ -17,7 +17,7 @@ import net.cloud.mmo.util.StringUtil;
 public class LoginPacket extends SendOnlyPacket {
 	
 	/** Possible values a response to a login request may have */
-	private enum LoginResponse {VALID, INVALID_USERNAME, INVALID_PASSWORD};
+	public enum LoginResponse {VALID, INVALID_USERNAME, INVALID_PASSWORD};
 	
 	/** Username of the player trying to login */
 	private String username;

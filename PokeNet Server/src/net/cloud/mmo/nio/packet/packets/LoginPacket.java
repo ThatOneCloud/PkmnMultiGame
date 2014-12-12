@@ -63,9 +63,8 @@ public class LoginPacket extends ReceiveOnlyPacket {
 		if(player.getPassword().equals(password))
 		{
 			// The password matched! Tell them they're good to go
-			// TODO: Send the packet (composite with other needed packets in order)
 			player.setLoginState(LoginState.VERIFIED);
-			player.getPacketSender().sendLoginReponse(LoginResponse.VALID);
+			player.getPacketSender().sendCompositePacket(player.getPacketSender().createLoginReponse(LoginResponse.VALID));
 		} else {
 			// Uh-oh, wrong password. Send back a packet letting them know
 			player.getPacketSender().sendLoginReponse(LoginResponse.INVALID_PASSWORD);

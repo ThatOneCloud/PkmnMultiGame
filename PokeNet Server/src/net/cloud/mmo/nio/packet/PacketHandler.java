@@ -29,7 +29,7 @@ public class PacketHandler extends ChannelInboundHandlerAdapter {
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
 		// Exception occurred, close the connection
-		System.err.println(cause.getMessage() + "\n   Closing connection.");
+		System.err.println(cause.getClass().getName() + " :\n   " + cause.getMessage() + "\n   Closing connection.");
 		ctx.close();
 	}
 

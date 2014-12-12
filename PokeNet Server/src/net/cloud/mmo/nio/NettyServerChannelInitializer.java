@@ -37,7 +37,7 @@ public class NettyServerChannelInitializer extends ChannelInitializer<SocketChan
 				new PacketHandler());
 
 		// Outbound handlers
-		ch.pipeline().addLast(new LengthFieldPrepender(2),
+		ch.pipeline().addLast(new LengthFieldPrepender(PacketConstants.LENGTH_FIELD_LENGTH),
 				new PacketEncoder());
 		
 	}

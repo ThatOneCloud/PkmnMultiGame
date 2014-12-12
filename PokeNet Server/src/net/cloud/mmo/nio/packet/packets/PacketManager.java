@@ -20,6 +20,7 @@ public class PacketManager {
 	// Static initializer block, to instantiate each default packet
 	static {
 		packets[PacketConstants.TEST_PACKET] = new TestPacket();
+		packets[PacketConstants.COMPOSITE_PACKET] = new CompositePacket();
 		packets[PacketConstants.LOGIN_PACKET] = new LoginPacket();
 		packets[PacketConstants.LOGIN_RESPONSE_PACKET] = new LoginPacket.LoginResponsePacket();
 	}
