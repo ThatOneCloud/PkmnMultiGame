@@ -30,7 +30,7 @@ public class PacketManager {
 	 * Returns a new Packet, which aligns with the given opcode.  The Packet 
 	 * uses the data provided to reconstruct itself.
 	 * @param opcode The 2 byte opcode of the packet
-	 * @param data The rest of the data (excluding length & opcode header)
+	 * @param data The rest of the data (excluding length and opcode header)
 	 * @return A Packet of the right class, deserialized from the data
 	 */
 	public static Packet decodeCopy(short opcode, ByteBuf data) {

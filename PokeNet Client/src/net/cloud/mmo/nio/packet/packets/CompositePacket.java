@@ -61,7 +61,7 @@ public class CompositePacket implements Packet {
 
 	@Override
 	public Packet decode(ByteBuf data) {
-		// Sorta different - create a blank Packet & initialize its list
+		// Sorta different - create a blank Packet and initialize its list
 		CompositePacket newPacket = new CompositePacket();
 		newPacket.packets = new LinkedList<Packet>();
 		

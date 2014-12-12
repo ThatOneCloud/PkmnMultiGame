@@ -11,7 +11,7 @@ import net.cloud.mmo.util.StringUtil;
 
 /**
  * Deals with the login process. 
- * Receives username & password from the client. 
+ * Receives username and password from the client. 
  * Then validates the login information, before responding back to the client.
  */
 public class LoginPacket extends ReceiveOnlyPacket {
