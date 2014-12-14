@@ -21,9 +21,6 @@ public class PacketSender {
 	/** The PacketFactory being used to create Packet objects */
 	private PacketFactory packetFactory;
 	
-	// TODO: Add VoidPromise to writes. Consider chaining writes, flush at end. (Should preserve order - eliminating need for
-	//       the compositepacket) Reflect composite packet & packetsender changes to client
-	
 	/**
 	 * Creates a PacketSender, where the connection is given by the Channel
 	 * @param channel The Channel for the connection between client and server

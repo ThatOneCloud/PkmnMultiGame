@@ -1,6 +1,5 @@
 package net.cloud.mmo;
 
-import net.cloud.mmo.event.shutdown.ShutdownException;
 import net.cloud.mmo.event.shutdown.ShutdownHandler;
 import net.cloud.mmo.event.task.TaskEngine;
 import net.cloud.mmo.nio.NettyServer;
@@ -33,22 +32,17 @@ public class Server {
 		// Initialize the shutdown handler
 		shutdownHandler = new ShutdownHandler();
 		
-		// Start the Netty server
-		NettyServer nettyServer = null;
+		// Start up the various sub-systems and services in the server
+		startServices();
+		
+		// Sit back, wait for someone to tell us it's shutdown time
 		try {
-			nettyServer = new NettyServer();
-			nettyServer.start();
-			
-			// Add the hook from the Netty server
-			shutdownHandler.addHook(nettyServer.getShutdownHook());
-		} catch (InterruptedException e) {
-			System.err.println("Could not start server. Shutting down.");
+			shutdownHandler.waitForShutdown();
+		} catch (Exception e) {
+			// Something went wrong with the shutdown process.. not much we can do.
+			// Just won't be a graceful shutdown.
 			e.printStackTrace();
-			System.exit(1);
 		}
-		
-		// The last thing the main thread will become responsible for is console commands
-		
 	}
 	
 	public static Server getInstance()
@@ -57,15 +51,35 @@ public class Server {
 		return instance;
 	}
 	
+	private void startServices()
+	{
+		// Start the Netty server
+		NettyServer nettyServer = null;
+		try {
+			nettyServer = new NettyServer();
+			nettyServer.start();
+
+			// Add the hook from the Netty server
+			shutdownHandler.addHook(nettyServer.getShutdownHook());
+		} catch (InterruptedException e) {
+			System.err.println("Could not start server. Shutting down.");
+			e.printStackTrace();
+			System.exit(1);
+		}
+
+		// TODO: Command sub-system
+	}
+	
 	/**
 	 * Shut down the entire Server. (Hopefully gracefully...)
+	 * The Server (main thread) will be waiting for some other thread to call this.
 	 */
 	public void shutdown()
 	{
 		// But hey, that's what a ShutdownHandler is for, right?
 		try {
 			shutdownHandler.shutdownAll();
-		} catch (ShutdownException e) {
+		} catch (Exception e) {
 			// Hey look. The end of an exception chain
 			e.printStackTrace();
 		}

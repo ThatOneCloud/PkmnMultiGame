@@ -40,6 +40,8 @@ public class NettyShutdownHook implements ShutdownHook {
 			// Re-throw
 			throw new ShutdownException("Failed to gracefully shutdown EventLoopGroups.", e);
 		}
+		
+		System.out.println("Netty Server shut down.");
 	}
 
 }
