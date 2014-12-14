@@ -1,4 +1,4 @@
-package net.cloud.mmo.event.task;
+package net.cloud.mmo.util.function;
 
 public interface TriFunction<T, U, V, R> {
 	

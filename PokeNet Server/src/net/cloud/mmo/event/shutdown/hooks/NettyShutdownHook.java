@@ -1,5 +1,7 @@
-package net.cloud.mmo.event.shutdown;
+package net.cloud.mmo.event.shutdown.hooks;
 
+import net.cloud.mmo.event.shutdown.ShutdownException;
+import net.cloud.mmo.event.shutdown.ShutdownHook;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.EventLoopGroup;
 

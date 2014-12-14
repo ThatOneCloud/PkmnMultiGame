@@ -2,9 +2,9 @@ package net.cloud.mmo.nio;
 
 import java.util.Optional;
 
-import net.cloud.mmo.event.shutdown.NettyShutdownHook;
 import net.cloud.mmo.event.shutdown.ShutdownHook;
 import net.cloud.mmo.event.shutdown.ShutdownService;
+import net.cloud.mmo.event.shutdown.hooks.NettyShutdownHook;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;

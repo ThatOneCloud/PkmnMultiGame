@@ -4,6 +4,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import net.cloud.mmo.util.function.TriFunction;
+
 public interface VoidTask /*extends Task<Object>*/ {
 	
 	public void execute();
