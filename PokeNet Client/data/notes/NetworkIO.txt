@@ -1,0 +1,23 @@
+PokeNet Network IO notes
+
+NettyServer / NettyClient are responsible for starting up the 
+communication channels. From there, each Player has a PacketSender 
+which can be used to send a packet.
+
+Walkthrough sending a Packet:
+	1. Request made to PacketSender (to send a packet)
+	2. Packet is created by PacketFactory
+	3. Packet is written to the channel
+		3.1. Packet is encoded through PacketEncoder
+		3.2. Packet passes through LengthPrepender
+	4. Packet is received
+	5. Packet is put through channel pipeline
+		5.1. Packet is divided by LengthFieldDecoder
+		5.2. PacketDecoder will have a new Packet object made
+		5.3. PacketHandler will have the Packet object handled
+
+Be aware of:
+	-PacketConstants and PacketManager must be updated when a Packet is added
+	-Writes happen in order, same for receiving. Handling is not guaranteed.
+	-CompositePacket can be used to assure handling order
+	

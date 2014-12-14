@@ -1,5 +1,6 @@
 package net.cloud.mmo;
 
+import net.cloud.mmo.event.shutdown.ShutdownHandler;
 import net.cloud.mmo.event.task.TaskEngine;
 import net.cloud.mmo.nio.NettyServer;
 
@@ -8,22 +9,40 @@ import net.cloud.mmo.nio.NettyServer;
  * Will start the Netty Server and start other necessary initialization tasks.
  */
 public class Server {
+	
+	/** ShutdownHandler for all the services the main thread starts up */
+	private ShutdownHandler shutdownHandler;
 
 	public static void main(String[] args) {
-		// TODO: Start these things on a thread of their own so they don't block
-		// Start the network server
-//		try {
-//			new NettyServer().start();
-//		} catch (InterruptedException e) {
-//			System.err.println("Could not start server. Shutting down.");
-//			e.printStackTrace();
-//			System.exit(1);
-//		}
+		new Server();
+		
 		
 		
 		
 		// TODO: remove
 		TaskEngine.getInstance().submitImmediate(() -> System.out.println("A task!"));
+	}
+	
+	public Server()
+	{
+		// Initialize the shutdown handler
+		shutdownHandler = new ShutdownHandler();
+		
+		// Start the Netty server
+		NettyServer nettyServer = null;
+		try {
+			nettyServer = new NettyServer();
+			nettyServer.start();
+			
+			// Add the hook from the Netty server
+			shutdownHandler.addHook(nettyServer.getShutdownHook());
+		} catch (InterruptedException e) {
+			System.err.println("Could not start server. Shutting down.");
+			e.printStackTrace();
+			System.exit(1);
+		}
+		
+		
 	}
 
 }
