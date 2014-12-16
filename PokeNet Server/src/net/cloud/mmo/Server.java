@@ -1,5 +1,6 @@
 package net.cloud.mmo;
 
+import net.cloud.mmo.event.command.CommandService;
 import net.cloud.mmo.event.shutdown.ShutdownHandler;
 import net.cloud.mmo.event.task.TaskEngine;
 import net.cloud.mmo.nio.NettyServer;
@@ -17,6 +18,11 @@ public class Server {
 	private ShutdownHandler shutdownHandler;
 
 	public static void main(String[] args) {
+		
+		CommandService.test("idk");
+		
+		
+		
 		// Kick-off the server on the main thread
 		new Server();
 		
