@@ -1,5 +1,6 @@
 package net.cloud.mmo.event.command.parameter;
 
+import net.cloud.mmo.event.command.CommandException;
 import net.cloud.mmo.event.command.argument.CommandArgument;
 
 public abstract class CommandParameter<V> {
@@ -11,7 +12,7 @@ public abstract class CommandParameter<V> {
 		this.argument = argument;
 	}
 	
-	public abstract CommandParameter<V> newParsedInstance(String valueString);
+	public abstract CommandParameter<V> newParsedInstance(String valueString) throws CommandException;
 
 	public CommandArgument<V> getArgument() {
 		return argument;

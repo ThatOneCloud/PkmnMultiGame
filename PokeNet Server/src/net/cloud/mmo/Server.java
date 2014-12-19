@@ -24,7 +24,7 @@ public class Server {
 	public static void main(String[] args) {
 		
 		try {
-			System.out.println(CommandHandler.getInstance().handleCommand("::Test one two three").get());
+			System.out.println(CommandHandler.getInstance().handleCommand("::Test -p \" three four\"").get());
 		} catch (InterruptedException | ExecutionException | CommandException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

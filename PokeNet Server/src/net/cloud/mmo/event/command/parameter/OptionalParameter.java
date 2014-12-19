@@ -1,5 +1,6 @@
 package net.cloud.mmo.event.command.parameter;
 
+import net.cloud.mmo.event.command.CommandException;
 import net.cloud.mmo.event.command.argument.CommandArgument;
 
 public class OptionalParameter<V> extends CommandParameter<V> {
@@ -15,7 +16,7 @@ public class OptionalParameter<V> extends CommandParameter<V> {
 	}
 	
 	@Override
-	public OptionalParameter<V> newParsedInstance(String valueString)
+	public OptionalParameter<V> newParsedInstance(String valueString) throws CommandException
 	{
 		// New Argument to use in the new Parameter
 		CommandArgument<V> newArg = super.getArgument().newParsedInstance(valueString);

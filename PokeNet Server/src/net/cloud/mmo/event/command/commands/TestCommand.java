@@ -2,11 +2,13 @@ package net.cloud.mmo.event.command.commands;
 
 import net.cloud.mmo.event.command.argument.ArgumentPrototypes;
 import net.cloud.mmo.event.command.parameter.OptionalParameter;
+import net.cloud.mmo.event.command.parameter.RequiredParameter;
 
 public class TestCommand extends AbstractCommand {
 	
 	// TODO: Static lists of all arguments for parsing usage
 	private static OptionalParameter<?>[] allOptParams = {new OptionalParameter<String>("p", "parameter", ArgumentPrototypes.STRING)};
+	private static RequiredParameter<?>[] allReqParams = null;
 	
 	public TestCommand()
 	{
@@ -32,9 +34,8 @@ public class TestCommand extends AbstractCommand {
 	}
 
 	@Override
-	protected void getAllRequiredParameters() {
-		// TODO Auto-generated method stub
-		
+	protected RequiredParameter<?>[] getAllRequiredParameters() {
+		return allReqParams;
 	}
 
 }

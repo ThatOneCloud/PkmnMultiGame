@@ -1,7 +1,5 @@
 package net.cloud.mmo.event.command;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.Future;
 
 import net.cloud.mmo.event.task.TaskEngine;
@@ -15,11 +13,8 @@ public class CommandHandler {
 	
 	private static CommandHandler instance;
 	
-	private Map<String, Command> prototypeCommands;
-	
 	private CommandHandler()
 	{
-		prototypeCommands = new HashMap<>();
 	}
 	
 	public static CommandHandler getInstance()
@@ -124,28 +119,15 @@ public class CommandHandler {
 	
 	private Command getPrototypeCommand(String commandName) throws CommandException
 	{
-		// Check if the prototype is already in the map
-		if(!prototypeCommands.containsKey(commandName))
+		// Check if a prototype has been declared
+		if(!CommandPrototypes.exists(commandName.toLowerCase()))
 		{
-			// Nope, put an entry in
-			try {
-				// Use Reflection to create an instance
-				Command prototype = (Command) Class.forName("net.cloud.mmo.event.command.commands." + commandName + "Command")
-						.getConstructor().newInstance();
-			
-				// Yay, no exceptions. Put the new instance in the map
-				prototypeCommands.put(commandName, prototype);
-			} catch (ClassNotFoundException e) {
-				// Couldn't find a Command class named after the command
-				throw new CommandException("No such command: " + commandName);
-			} catch (Exception e) {
-				// Something else went wrong - catch all less descriptive message
-				throw new CommandException("Could not handle command.");
-			}
+			// Nope, so an exception stating such is issued
+			throw new CommandException("No such command: " + commandName);
 		}
 		
 		// At this point, an entry is in the map or an exception has been thrown
-		return prototypeCommands.get(commandName);
+		return CommandPrototypes.get(commandName.toLowerCase());
 	}
 
 }
