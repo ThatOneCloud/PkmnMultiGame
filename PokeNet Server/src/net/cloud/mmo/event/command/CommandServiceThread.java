@@ -39,7 +39,7 @@ public class CommandServiceThread implements Runnable {
 				commandLine = in.readLine();
 			} catch (IOException e) {
 				// Couldn't read for some reason - Kick out a message
-				messageOut("CommandServiceThread could not read command from input.");
+				messageOut("Could not read command from input.");
 				
 				// Continue, keep trying. Note: This may just keep going haphazardly
 				continue;
@@ -68,7 +68,8 @@ public class CommandServiceThread implements Runnable {
 	{
 		try {
 			// Write the message to whatever output we were provided
-			out.write(message);
+			out.write(message + System.lineSeparator());
+			out.flush();
 		} catch (IOException e) {
 			// Output didn't work. Exception gets shown in standard err, then.
 			e.printStackTrace();

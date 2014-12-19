@@ -2,7 +2,6 @@ package net.cloud.mmo.event.command;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
 
 import net.cloud.mmo.event.shutdown.ShutdownHook;

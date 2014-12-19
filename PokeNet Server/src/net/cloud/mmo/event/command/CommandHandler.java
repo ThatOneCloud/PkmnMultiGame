@@ -38,14 +38,6 @@ public class CommandHandler {
 		// Pull out the rest of the line, which will be the parameters
 		String commandParams = parseParameters(commandBuilder, commandName);
 		
-		
-		
-		System.out.println("Command name: " + commandName);
-		System.out.println("Command params: " + commandParams);
-		
-		
-		
-		
 		// Obtain a prototype instance, which we then...
 		Command prototype = getPrototypeCommand(commandName);
 		

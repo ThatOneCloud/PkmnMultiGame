@@ -152,10 +152,7 @@ public class StringUtil {
 		}
 		
 		// Trim spaces from beginning
-		while(sb.length() > 0 && sb.charAt(0) == ' ')
-		{
-			sb.deleteCharAt(0);
-		}
+		trimLeadingSpaces(sb);
 		
 		// Make sure there are still some characters to work on
 		if(sb.length() == 0)
@@ -204,8 +201,30 @@ public class StringUtil {
 		// We'll trim off what we're returning right here - since we know the index
 		sb.delete(0, endIndex+1);
 		
+		// And trim off any leading spaces that have been introduced
+		trimLeadingSpaces(sb);
+		
 		// And return the token that we found
 		return token;
+	}
+	
+	/**
+	 * Remove spaces from the beginning of the StringBuilder
+	 * @param sb The StringBuilder to trim
+	 */
+	public static void trimLeadingSpaces(StringBuilder sb)
+	{
+		// A null object would be bad.
+		if(sb == null)
+		{
+			return;
+		}
+
+		// Trim spaces from beginning
+		while(sb.length() > 0 && sb.charAt(0) == ' ')
+		{
+			sb.deleteCharAt(0);
+		}
 	}
 
 }

@@ -1,12 +1,7 @@
 package net.cloud.mmo;
 
-import java.util.concurrent.ExecutionException;
-
-import net.cloud.mmo.event.command.CommandException;
-import net.cloud.mmo.event.command.CommandHandler;
 import net.cloud.mmo.event.command.CommandService;
 import net.cloud.mmo.event.shutdown.ShutdownHandler;
-import net.cloud.mmo.event.task.TaskEngine;
 import net.cloud.mmo.nio.NettyServer;
 
 /**
@@ -22,24 +17,8 @@ public class Server {
 	private ShutdownHandler shutdownHandler;
 
 	public static void main(String[] args) {
-		
-		try {
-			System.out.println(CommandHandler.getInstance().handleCommand("::Test -p \" three four\"").get());
-		} catch (InterruptedException | ExecutionException | CommandException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		System.exit(0);
-		
-		
 		// Kick-off the server on the main thread
 		new Server();
-		
-		
-		
-		
-		// TODO: remove
-		TaskEngine.getInstance().submitImmediate(() -> System.out.println("A task!"));
 	}
 	
 	private Server()
@@ -82,7 +61,9 @@ public class Server {
 			System.exit(1);
 		}
 
-		// TODO: Command sub-system
+		// Start a CommandService on the standard in and out
+		CommandService consoleCommandService = new CommandService(System.in, System.out);
+		shutdownHandler.addHook(consoleCommandService.getShutdownHook());
 	}
 	
 	/**
