@@ -1,6 +1,5 @@
 package net.cloud.mmo.event.command;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -8,6 +7,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 public class CommandServiceThread implements Runnable {
 	
@@ -18,7 +20,6 @@ public class CommandServiceThread implements Runnable {
 	private boolean running;
 
 	public CommandServiceThread(InputStream in, OutputStream out) {
-		// TODO Auto-generated constructor stub
 		this.in = new BufferedReader(new InputStreamReader(in));
 		this.out = new BufferedWriter(new OutputStreamWriter(out));
 		this.running = false;
@@ -26,8 +27,6 @@ public class CommandServiceThread implements Runnable {
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
-		
 		this.running = true;
 		
 		// Continue to loop as long as this thread is running
@@ -47,7 +46,20 @@ public class CommandServiceThread implements Runnable {
 			}
 			
 			// CommandHandler takes over, to deal with.. well.. handling.
-			CommandHandler.getInstance().handleCommand(commandLine);
+			try {
+				// A Future is returned. It's value is a result message from the command once executed
+				Future<String> commandFuture = CommandHandler.getInstance().handleCommand(commandLine);
+				
+				// Wait until the future has a result - then show it
+				messageOut(commandFuture.get());
+			} catch (CommandException e) {
+				// Oops, something came up while handling the command.
+				// Message in the exception is meant for display
+				messageOut(e.getMessage());
+			} catch (InterruptedException | ExecutionException | CancellationException e) {
+				// The future's result couldn't be retrieved
+				messageOut("Results of command not available.");
+			}
 		}
 
 	}

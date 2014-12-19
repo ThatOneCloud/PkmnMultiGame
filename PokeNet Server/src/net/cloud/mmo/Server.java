@@ -1,5 +1,9 @@
 package net.cloud.mmo;
 
+import java.util.concurrent.ExecutionException;
+
+import net.cloud.mmo.event.command.CommandException;
+import net.cloud.mmo.event.command.CommandHandler;
 import net.cloud.mmo.event.command.CommandService;
 import net.cloud.mmo.event.shutdown.ShutdownHandler;
 import net.cloud.mmo.event.task.TaskEngine;
@@ -19,8 +23,13 @@ public class Server {
 
 	public static void main(String[] args) {
 		
-		CommandService.test("idk");
-		
+		try {
+			System.out.println(CommandHandler.getInstance().handleCommand("::Test one two three").get());
+		} catch (InterruptedException | ExecutionException | CommandException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.exit(0);
 		
 		
 		// Kick-off the server on the main thread

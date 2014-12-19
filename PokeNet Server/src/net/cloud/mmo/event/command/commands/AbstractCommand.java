@@ -18,8 +18,6 @@ public abstract class AbstractCommand implements Command {
 		providedOptionalParameters = new ArrayList<>();
 	}
 	
-	public abstract AbstractCommand newPrototypedInstance();
-	
 	protected abstract OptionalParameter<?>[] getAllOptionalParameters();
 	
 	protected abstract void getAllRequiredParameters();

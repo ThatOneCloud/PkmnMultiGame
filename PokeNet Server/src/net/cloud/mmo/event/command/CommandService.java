@@ -18,35 +18,6 @@ public class CommandService implements ShutdownService {
 	// As to how shutting it down will work.. have to think about that.
 	
 	
-	public static void test(String t)
-	{
-		try {
-			Class.forName("net.cloud.mmo.event.command.TestCommand").getConstructor(String.class).newInstance(new Object[] {"An argument"});
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NoSuchMethodException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	
 	
 	private Thread serviceThread;
 	
