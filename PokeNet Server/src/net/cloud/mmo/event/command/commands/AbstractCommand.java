@@ -11,11 +11,19 @@ import net.cloud.mmo.event.command.parameter.OptionalParameter;
 import net.cloud.mmo.event.command.parameter.RequiredParameter;
 import net.cloud.mmo.util.StringUtil;
 
+/**
+ * An AbstractCommand implements the Command interface,  and imposes some new methods.
+ * Most importantly, an AbstractCommand has code to handle parsing the parameters.
+ */
 public abstract class AbstractCommand implements Command {
 	
+	// Lists for the parameters that are *actually* given to the command
 	private List<OptionalParameter<?>> providedOptionalParameters;
 	private List<RequiredParameter<?>> providedRequiredParameters;
 	
+	/**
+	 * Initializes the parameter lists
+	 */
 	public AbstractCommand()
 	{
 		// Initialize lists - subclasses should call super() constructor
@@ -23,10 +31,22 @@ public abstract class AbstractCommand implements Command {
 		providedRequiredParameters = new ArrayList<>();
 	}
 	
+	/**
+	 * @return An array with all of the optional parameters the command can possibly accept
+	 */
 	protected abstract OptionalParameter<?>[] getAllOptionalParameters();
 	
+	/**
+	 * @return An array with all of the parameters the command must have
+	 */
 	protected abstract RequiredParameter<?>[] getAllRequiredParameters();
 	
+	/**
+	 * Takes a string containing the arguments provided to the command, 
+	 * and parses it into individual parameters - where are added to the lists.
+	 * @param argumentLine The parameters passed to the command
+	 * @throws CommandException If for some reason parsing is unsuccessful - it will have a useful message
+	 */
 	@Override
 	public void parseArguments(String argumentLine) throws CommandException
 	{
@@ -61,6 +81,11 @@ public abstract class AbstractCommand implements Command {
 		}
 	}
 	
+	/**
+	 * Take care of parsing an optional parameter. When done, it is added to the list.
+	 * @param argBuilder The StringBuilder with the remaining parameter line
+	 * @throws CommandException If the parameter could not be parsed
+	 */
 	private void parseOptParam(StringBuilder argBuilder) throws CommandException
 	{
 		// Optional parameters have a short and long name, - and -- respectively
@@ -88,6 +113,14 @@ public abstract class AbstractCommand implements Command {
 		findAndAddOptParam(longForm, paramName, paramValue);
 	}
 
+	/**
+	 * Determine which of the optional parameters - if any - match the one provided. 
+	 * When done, the parameter is added to the list
+	 * @param longForm True if the name is the long name
+	 * @param paramName The name of the optional parameter
+	 * @param paramValue The value to be given to the parameter
+	 * @throws CommandException If the parameter could not be added
+	 */
 	private void findAndAddOptParam(boolean longForm, String paramName, String paramValue) throws CommandException {
 		// Some variables we'll need now
 		OptionalParameter<?> newParam = null;
@@ -126,6 +159,12 @@ public abstract class AbstractCommand implements Command {
 		this.provideOptionalParameter(newParam);
 	}
 	
+	/**
+	 * Take care of parsing a required parameter. When done, it is added to the list.
+	 * @param argBuilder The StringBuilder with the remaining parameter line
+	 * @param reqParamIdx The index of the RequiredParameter we're currently looking at
+	 * @throws CommandException If the parameter could not be parsed
+	 */
 	private void parseReqParam(StringBuilder argBuilder, int reqParamIdx) throws CommandException
 	{
 		// The value is the only thing
@@ -153,21 +192,35 @@ public abstract class AbstractCommand implements Command {
 		this.provideRequiredParameter(newParam);
 	}
 	
+	/**
+	 * @return The optional parameters *actually* given to the command after parsing
+	 */
 	public Iterator<OptionalParameter<?>> getProvidedOptionalParameters()
 	{
 		return providedOptionalParameters.iterator();
 	}
 	
+	/**
+	 * Tell this command that the optional parameter is being passed to it
+	 * @param parameter The parameter to provide to the command
+	 */
 	public void provideOptionalParameter(OptionalParameter<?> parameter)
 	{
 		providedOptionalParameters.add(parameter);
 	}
 	
+	/**
+	 * @param The required parameters *actually* given to the command after parsing 
+	 */
 	public Iterator<RequiredParameter<?>> getProvidedRequiredParameters()
 	{
 		return providedRequiredParameters.iterator();
 	}
 	
+	/**
+	 * Tell this command that the required parameter is being passed to it
+	 * @param parameter The parameter to provide to the command
+	 */
 	public void provideRequiredParameter(RequiredParameter<?> parameter)
 	{
 		providedRequiredParameters.add(parameter);

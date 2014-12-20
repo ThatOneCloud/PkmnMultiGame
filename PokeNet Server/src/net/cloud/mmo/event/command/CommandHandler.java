@@ -5,18 +5,22 @@ import java.util.concurrent.Future;
 import net.cloud.mmo.event.task.TaskEngine;
 
 /**
- * 
- * @author Blake
- *
+ * An entrance point to the command subsystem. 
+ * Commands can be submitted to the CommandHandler, where they are then 
+ * constructed and passed on for execution.
  */
 public class CommandHandler {
 	
+	/** Singleton instance */
 	private static CommandHandler instance;
 	
 	private CommandHandler()
 	{
 	}
 	
+	/**
+	 * @return A reference to the singleton instance
+	 */
 	public static CommandHandler getInstance()
 	{
 		if(instance == null)
@@ -27,6 +31,14 @@ public class CommandHandler {
 		return instance;
 	}
 	
+	/**
+	 * Execute a command. Takes in the entire line for the command, including the :: indicating 
+	 * a command.  A Future is returned, which will only have a value once the command has finished 
+	 * executing.  The value in the Future is a result message from the command.
+	 * @param commandLine The string calling the command, in entirety
+	 * @return A Future bearing the pending results of the command's execution
+	 * @throws CommandException If the command could not be executed. The message is user-friendly and meaningful
+	 */
 	public Future<String> handleCommand(String commandLine) throws CommandException
 	{
 		// Use a StringBuilder to manipulate the command line as we go
@@ -54,6 +66,12 @@ public class CommandHandler {
 		return result;
 	}
 	
+	/**
+	 * Determine the name of a command, from the entire command line
+	 * @param commandLine The command line in entirety
+	 * @return The name of the command being called
+	 * @throws CommandException If the name could not be determined
+	 */
 	private String parseCommandName(StringBuilder commandLine) throws CommandException
 	{
 		// A command needs to be at least three characters long
@@ -87,6 +105,13 @@ public class CommandHandler {
 		return name;
 	}
 	
+	/**
+	 * Simply determine the string that describes the parameters being passed to the command
+	 * @param commandLine The text that is calling the command
+	 * @param commandName The name of the command being called
+	 * @return The text string representing the parameters being passed to the command
+	 * @throws CommandException If the parameter string could not be pulled out
+	 */
 	private String parseParameters(StringBuilder commandLine, String commandName) throws CommandException
 	{
 		// Start index is after the name
@@ -109,6 +134,13 @@ public class CommandHandler {
 		return commandLine.substring(startIndex + 1);
 	}
 	
+	/**
+	 * Obtain a reference to the prototype command, from its name. 
+	 * Then it can be used to create a new instance of right command type
+	 * @param commandName The name of the command being created
+	 * @return A reference to the command's prototype object
+	 * @throws CommandException If there is no matching command
+	 */
 	private Command getPrototypeCommand(String commandName) throws CommandException
 	{
 		// Check if a prototype has been declared

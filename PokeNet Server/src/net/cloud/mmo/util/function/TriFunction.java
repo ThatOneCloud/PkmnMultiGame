@@ -8,6 +8,7 @@ package net.cloud.mmo.util.function;
  * @param <V> Type of the third argument
  * @param <R> Type of the return value
  */
+@FunctionalInterface
 public interface TriFunction<T, U, V, R> {
 	
 	/**

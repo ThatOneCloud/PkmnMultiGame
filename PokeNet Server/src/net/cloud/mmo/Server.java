@@ -45,6 +45,11 @@ public class Server {
 		return instance;
 	}
 	
+	/**
+	 * Start the sub-services the main thread is responsible for. 
+	 * These include the Netty Server, a CommandService listening on the console, 
+	 * and the TaskEngine.
+	 */
 	private void startServices()
 	{
 		// Start the Netty server
@@ -64,6 +69,8 @@ public class Server {
 		// Start a CommandService on the standard in and out
 		CommandService consoleCommandService = new CommandService(System.in, System.out);
 		shutdownHandler.addHook(consoleCommandService.getShutdownHook());
+		
+		// TODO: Grab the TaskEngine, put its shutdown hook in here
 	}
 	
 	/**
