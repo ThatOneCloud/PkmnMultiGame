@@ -24,6 +24,8 @@ public class NettyShutdownHook implements ShutdownHook {
 
 	@Override
 	public void shutdown() throws ShutdownException {
+		System.out.println("Shutting down Netty Server");
+		
 		// First we need to close the channel
 		try {
 			channelFuture.channel().close().sync();

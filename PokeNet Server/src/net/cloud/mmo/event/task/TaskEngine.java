@@ -6,17 +6,26 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-public class TaskEngine {
+import net.cloud.mmo.event.shutdown.ShutdownHook;
+import net.cloud.mmo.event.shutdown.ShutdownService;
+import net.cloud.mmo.event.shutdown.hooks.TaskEngineShutdownHook;
+
+public class TaskEngine implements ShutdownService {
 	
 	public static final int THREAD_POOL_SIZE = 4;
 	
 	private static TaskEngine instance;
 	
-	private ScheduledExecutorService taskExecutor = Executors.newScheduledThreadPool(THREAD_POOL_SIZE);
+	private ScheduledExecutorService taskExecutor;
+	
+	private ShutdownHook shutdownHook;
 	
 	private TaskEngine()
 	{
+		taskExecutor = Executors.newScheduledThreadPool(THREAD_POOL_SIZE);
 		
+		// Create the hook now - the pool starts when this instance is created
+		shutdownHook = new TaskEngineShutdownHook(taskExecutor);
 	}
 	
 	public static TaskEngine getInstance()
@@ -80,6 +89,11 @@ public class TaskEngine {
 			}
 		};
 		submitImmediate(avt);
+	}
+
+	@Override
+	public ShutdownHook getShutdownHook() throws NullPointerException {
+		return shutdownHook;
 	}
 
 }

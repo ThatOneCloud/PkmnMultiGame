@@ -8,28 +8,40 @@ import net.cloud.mmo.event.shutdown.ShutdownHook;
 import net.cloud.mmo.event.shutdown.ShutdownService;
 import net.cloud.mmo.event.shutdown.hooks.CommandServiceShutdownHook;
 
-public class CommandService implements ShutdownService {	
+public class CommandService implements ShutdownService {
 	
-	/**
-	 * The thread the service will be running on
-	 */
+	/** Reasonable default for polling time on the input */
+	private static final int DEFAULT_POLL_DELAY = 200;
+	
+	/** The thread the service will be running on */
 	private Thread serviceThread;
 	
-	/**
-	 * A ShutdownHook that can be used to stop the command service
-	 */
+	/** A ShutdownHook that can be used to stop the command service */
 	private ShutdownHook shutdownHook;
 	
 	/**
 	 * Create a new ComamndService. It will run on the provided streams. 
-	 * The service will start immediately after creation - no start method needs to be called
+	 * The service will start immediately after creation - no start method needs to be called. 
+	 * The delay between checks for readable data will be set to a reasonable default.
 	 * @param in A stream from which commands will be read from
 	 * @param out A stream to which responses will be written
 	 */
 	public CommandService(InputStream in, OutputStream out)
 	{
+		this(DEFAULT_POLL_DELAY, in, out);
+	}
+	
+	/**
+	 * Create a new ComamndService. It will run on the provided streams. 
+	 * The service will start immediately after creation - no start method needs to be called
+	 * @param pollDelay The amount of time between checks for readable data on <code>in</code>
+	 * @param in A stream from which commands will be read from
+	 * @param out A stream to which responses will be written
+	 */
+	public CommandService(int pollDelay, InputStream in, OutputStream out)
+	{
 		// Create and start thread to deal with io and kicking off commands
-		CommandServiceThread cmdSvcThread = new CommandServiceThread(in, out);
+		CommandServiceThread cmdSvcThread = new CommandServiceThread(pollDelay, in, out);
 		serviceThread = new Thread(cmdSvcThread);
 		serviceThread.start();
 		

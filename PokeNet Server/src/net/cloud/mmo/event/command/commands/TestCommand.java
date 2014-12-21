@@ -1,5 +1,6 @@
 package net.cloud.mmo.event.command.commands;
 
+import net.cloud.mmo.event.command.Command;
 import net.cloud.mmo.event.command.argument.ArgumentPrototypes;
 import net.cloud.mmo.event.command.parameter.OptionalParameter;
 import net.cloud.mmo.event.command.parameter.RequiredParameter;
@@ -49,7 +50,7 @@ public class TestCommand extends AbstractCommand {
 	 * @return A TestCommand instance to build up
 	 */
 	@Override
-	public AbstractCommand newPrototypedInstance()
+	public Command newPrototypedInstance()
 	{
 		return new TestCommand();
 	}

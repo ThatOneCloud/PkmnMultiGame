@@ -17,22 +17,28 @@ import java.util.concurrent.Future;
  */
 public class CommandServiceThread implements Runnable {
 	
+	/** The amount of time between checks for readable data */
+	private final int POLL_DELAY;
+	
 	/** The object used to read in commands */
-	private BufferedReader in;
+	private final BufferedReader in;
 	
 	/** The object used to write messages back to the user */
-	private BufferedWriter out;
+	private final BufferedWriter out;
 	
 	/** Flag - if the service is running or not */
-	private boolean running;
+	private volatile boolean running;
 
 	/**
 	 * Create a new object, the provided streams will be used for reading in the commands 
 	 * and writing out result messages.
+	 * @param pollDelay The amount of time between checks for readable data
 	 * @param in An InputStream commands can be read from
 	 * @param out An OutputStream results can be written to
 	 */
-	public CommandServiceThread(InputStream in, OutputStream out) {
+	public CommandServiceThread(int pollDelay, InputStream in, OutputStream out) {
+		this.POLL_DELAY = pollDelay;
+		
 		// Wrap the input streams, buffered is good (and has line operations)
 		this.in = new BufferedReader(new InputStreamReader(in));
 		this.out = new BufferedWriter(new OutputStreamWriter(out));
@@ -41,43 +47,87 @@ public class CommandServiceThread implements Runnable {
 		this.running = false;
 	}
 
+	/**
+	 * The logic loop. Will read all available commands from the input, 
+	 * handle them, show their results, and then wait for the delay period 
+	 * before checking for more input.<br>
+	 * Stops if the thread is interrupted for the running flag is set to false.
+	 */
 	@Override
 	public void run() {
 		this.running = true;
 		
 		// Continue to loop as long as this thread is running
-		while(running)
+		while(running && !Thread.currentThread().isInterrupted())
 		{
-			String commandLine = null;
-			
-			// Read a line from the input stream
 			try {
-				commandLine = in.readLine();
+				// See if there are any lines to read and handle them
+				readLines();
 			} catch (IOException e) {
 				// Couldn't read for some reason - Kick out a message
 				messageOut("Could not read command from input.");
 				
 				// Continue, keep trying. Note: This may just keep going haphazardly
 				continue;
-			}
-			
-			// CommandHandler takes over, to deal with.. well.. handling.
-			try {
-				// A Future is returned. It's value is a result message from the command once executed
-				Future<String> commandFuture = CommandHandler.getInstance().handleCommand(commandLine);
+			} catch (InterruptedException e) {
+				// Sleep was interrupted - if we're interrupted we'll stop
+				messageOut("Command service interrupted");
 				
-				// Wait until the future has a result - then show it
-				messageOut(commandFuture.get());
-			} catch (CommandException e) {
-				// Oops, something came up while handling the command.
-				// Message in the exception is meant for display
-				messageOut(e.getMessage());
-			} catch (InterruptedException | ExecutionException | CancellationException e) {
-				// The future's result couldn't be retrieved
-				messageOut("Results of command not available.");
+				break;
 			}
 		}
 
+	}
+
+	/**
+	 * Check to see if there are any lines to read from the input, and if so, 
+	 * read them and make an attempt to have each handled. 
+	 * After this, the thread will sleep for the delay before returning
+	 * @throws IOException If the input could not be read from
+	 * @throws InterruptedException If the thread was interrupted whilst sleeping
+	 */
+	private void readLines() throws IOException, InterruptedException {
+		// Check if there is a line to read (Documentation says read() but it's readLine() this tests)
+		if(in.ready())
+		{
+			// There's at least one line ready to read. Consume until there is no more
+			while(in.ready())
+			{
+				String commandLine = null;
+				
+				// Read a line from the input stream
+				commandLine = in.readLine();
+				
+				// Have the command move on for handling
+				handleCommand(commandLine);
+			}
+		} else {
+			// There was nothing to read. Wait a bit before polling again
+			Thread.sleep(POLL_DELAY);
+		}
+	}
+
+	/**
+	 * Handle the command passed in. The result of the command 
+	 * is displayed to the output specified during construction of this object
+	 * @param commandLine The entirety of the text for the command
+	 */
+	private void handleCommand(String commandLine) {
+		// CommandHandler takes over, to deal with.. well.. handling.
+		try {
+			// A Future is returned. It's value is a result message from the command once executed
+			Future<String> commandFuture = CommandHandler.getInstance().handleCommand(commandLine);
+			
+			// Wait until the future has a result - then show it
+			messageOut(commandFuture.get());
+		} catch (CommandException e) {
+			// Oops, something came up while handling the command.
+			// Message in the exception is meant for display
+			messageOut(e.getMessage());
+		} catch (InterruptedException | ExecutionException | CancellationException e) {
+			// The future's result couldn't be retrieved
+			messageOut("Results of command not available.");
+		}
 	}
 	
 	/**

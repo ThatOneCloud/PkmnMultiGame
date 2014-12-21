@@ -56,10 +56,15 @@ public abstract class AbstractCommand implements Command {
 		// Give ourselves a StringBuilder to work with - so we can move through it easier
 		StringBuilder argBuilder = new StringBuilder(argumentLine.trim());
 		
+//		// Before we even start, if there are no arguments don't bother going ahead
+//		if(noParamCheck(argBuilder))
+//		{
+//			return;
+//		}
+		
 		// Step through each parameter in the argumentLine
 		while(argBuilder.length() > 0)
 		{
-		
 			// Decide if it's an optional or required parameter
 			if(argBuilder.charAt(0) == '-')
 			{
@@ -73,13 +78,35 @@ public abstract class AbstractCommand implements Command {
 				reqParamIdx++;
 			}
 		}
-		
-		// Before we're done, have to check that every required parameter was provided
-		if(reqParamIdx != getAllRequiredParameters().length)
+
+		// No parameters, but none provided. So that's okay
+		if(getAllRequiredParameters() == null && reqParamIdx == 0)
+		{
+			// Erm, No-op. This condition is here more for clarity...
+		}
+		// No parameters... somehow one was provided?
+		else if(getAllRequiredParameters() == null && reqParamIdx != 0)
+		{
+			throw new CommandException("This command does not require parameters");
+		}
+		// Not every required parameter was provided
+		else if(reqParamIdx != getAllRequiredParameters().length)
 		{
 			throw new CommandException("Invalid number of required parameters");
 		}
 	}
+	
+//	/**
+//	 * See if the command doesn't require any parameters
+//	 * @param argBuilder The parameters provided to the command
+//	 * @return True if there are no parameters
+//	 * @throws CommandException If there are no parameters but something has been provided
+//	 */
+//	private boolean noParamCheck(StringBuilder argBuilder) throws CommandException
+//	{
+//		// Check if there are no parameters (null or empty list)
+//		if(getAllOptionalParameters() == )
+//	}
 	
 	/**
 	 * Take care of parsing an optional parameter. When done, it is added to the list.
@@ -88,6 +115,12 @@ public abstract class AbstractCommand implements Command {
 	 */
 	private void parseOptParam(StringBuilder argBuilder) throws CommandException
 	{
+		// Check if there are no optional parameters - we've been provided one, so fail before even looking
+		if(getAllOptionalParameters() == null)
+		{
+			throw new CommandException("This command does not accept any optional parameters");
+		}
+		
 		// Optional parameters have a short and long name, - and -- respectively
 		boolean longForm = argBuilder.length() >= 2 && argBuilder.charAt(1) == '-';
 		
@@ -167,6 +200,12 @@ public abstract class AbstractCommand implements Command {
 	 */
 	private void parseReqParam(StringBuilder argBuilder, int reqParamIdx) throws CommandException
 	{
+		// Check if no required parameters. We've been provided one, so fail before even proceeding
+		if(getAllRequiredParameters() == null)
+		{
+			throw new CommandException("This command does not require any parameters");
+		}
+		
 		// The value is the only thing
 		String paramValue;
 		try {

@@ -34,6 +34,8 @@ public class CommandServiceShutdownHook implements ShutdownHook {
 	 */
 	@Override
 	public void shutdown() throws ShutdownException {
+		System.out.println("Shutting down command service");
+		
 		// Try to interrupt the thread
 		try {
 			cmdSvcThread.setRunning(false);
@@ -42,6 +44,8 @@ public class CommandServiceShutdownHook implements ShutdownHook {
 			// Chain exceptions
 			throw new ShutdownException("Could not interrupt command service thread", e);
 		}
+		
+		System.out.println("Command service shut down");
 	}
 
 }
