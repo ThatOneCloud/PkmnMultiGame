@@ -1,5 +1,7 @@
 package net.cloud.mmo.event.shutdown.hooks;
 
+import java.io.PrintWriter;
+
 import net.cloud.mmo.event.command.CommandServiceThread;
 import net.cloud.mmo.event.shutdown.ShutdownException;
 import net.cloud.mmo.event.shutdown.ShutdownHook;
@@ -30,11 +32,13 @@ public class CommandServiceShutdownHook implements ShutdownHook {
 	/**
 	 * Shut down the associated CommandService. Tells the loop to stop running 
 	 * and interrupts the thread it is running on.
+	 * @param out A PrintWriter to which status information will be output
 	 * @throws ShutdownException If the service could not be stopped
 	 */
 	@Override
-	public void shutdown() throws ShutdownException {
-		System.out.println("Shutting down command service");
+	public void shutdown(PrintWriter out) throws ShutdownException {
+		out.println("Shutting down command service");
+		out.flush();
 		
 		// Try to interrupt the thread
 		try {
@@ -45,7 +49,8 @@ public class CommandServiceShutdownHook implements ShutdownHook {
 			throw new ShutdownException("Could not interrupt command service thread", e);
 		}
 		
-		System.out.println("Command service shut down");
+		out.println("Command service shut down");
+		out.flush();
 	}
 
 }

@@ -1,5 +1,6 @@
 package net.cloud.mmo.event.shutdown.hooks;
 
+import java.io.PrintWriter;
 import java.util.concurrent.ScheduledExecutorService;
 
 import net.cloud.mmo.event.shutdown.ShutdownException;
@@ -28,15 +29,18 @@ public class TaskEngineShutdownHook implements ShutdownHook {
 	 * Stop the task service. It will not accept new tasks, but
 	 * currently running tasks will make an attempt to complete. 
 	 * Returns immediately, rather than waiting for the tasks to complete.
+	 * @param out A PrintWriter to which status information will be output
 	 */
 	@Override
-	public void shutdown() throws ShutdownException {
-		System.out.println("Shutting down Task Engine");
+	public void shutdown(PrintWriter out) throws ShutdownException {
+		out.println("Shutting down Task Engine");
+		out.flush();
 		
 		// Tell the ExecutorService to stop
 		taskExecutor.shutdown();
 		
-		System.out.println("Task Engine shut down");
+		out.println("Task Engine shut down");
+		out.flush();
 	}
 
 }

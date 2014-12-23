@@ -1,5 +1,7 @@
 package net.cloud.mmo.event.shutdown.hooks;
 
+import java.io.PrintWriter;
+
 import net.cloud.mmo.event.shutdown.ShutdownException;
 import net.cloud.mmo.event.shutdown.ShutdownHook;
 import io.netty.channel.ChannelFuture;
@@ -22,9 +24,15 @@ public class NettyShutdownHook implements ShutdownHook {
 		this.workerGroup = workerGroup;
 	}
 
+	/**
+	 * Attempt to stop the Netty Server. 
+	 * Blocks until the attempt is finished. The attempt will enforce a quiet period 
+	 * where I/O must be silent for some time in order to assure a graceful shutdown.
+	 */
 	@Override
-	public void shutdown() throws ShutdownException {
-		System.out.println("Shutting down Netty Server");
+	public void shutdown(PrintWriter out) throws ShutdownException {
+		out.println("Shutting down Netty Server");
+		out.flush();
 		
 		// First we need to close the channel
 		try {
@@ -43,7 +51,8 @@ public class NettyShutdownHook implements ShutdownHook {
 			throw new ShutdownException("Failed to gracefully shutdown EventLoopGroups.", e);
 		}
 		
-		System.out.println("Netty Server shut down.");
+		out.println("Netty Server shut down.");
+		out.flush();
 	}
 
 }

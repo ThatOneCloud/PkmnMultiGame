@@ -1,12 +1,8 @@
 package net.cloud.mmo.event.command;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -24,7 +20,7 @@ public class CommandServiceThread implements Runnable {
 	private final BufferedReader in;
 	
 	/** The object used to write messages back to the user */
-	private final BufferedWriter out;
+	private final PrintWriter out;
 	
 	/** Flag - if the service is running or not */
 	private volatile boolean running;
@@ -36,12 +32,12 @@ public class CommandServiceThread implements Runnable {
 	 * @param in An InputStream commands can be read from
 	 * @param out An OutputStream results can be written to
 	 */
-	public CommandServiceThread(int pollDelay, InputStream in, OutputStream out) {
+	public CommandServiceThread(int pollDelay, BufferedReader in, PrintWriter out) {
 		this.POLL_DELAY = pollDelay;
 		
 		// Wrap the input streams, buffered is good (and has line operations)
-		this.in = new BufferedReader(new InputStreamReader(in));
-		this.out = new BufferedWriter(new OutputStreamWriter(out));
+		this.in = in;
+		this.out = out;
 		
 		// By default, we aren't running
 		this.running = false;
@@ -131,20 +127,14 @@ public class CommandServiceThread implements Runnable {
 	}
 	
 	/**
-	 * Try to write a message to out. If it can't be written to the output, 
-	 * the exception will be caught and printed to standard error
+	 * Try to write a message to out. If it cannot be written, fails silently
 	 * @param message A message to send back to the user, creator, or whatever
 	 */
 	private void messageOut(String message)
 	{
-		try {
-			// Write the message to whatever output we were provided
-			out.write(message + System.lineSeparator());
-			out.flush();
-		} catch (IOException e) {
-			// Output didn't work. Exception gets shown in standard err, then.
-			e.printStackTrace();
-		}
+		// Write the message out
+		out.println(message);
+		out.flush();
 	}
 
 	/**

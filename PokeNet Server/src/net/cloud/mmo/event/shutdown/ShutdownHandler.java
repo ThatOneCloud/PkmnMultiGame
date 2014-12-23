@@ -1,5 +1,6 @@
 package net.cloud.mmo.event.shutdown;
 
+import java.io.PrintWriter;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -56,10 +57,11 @@ public class ShutdownHandler {
 	 * will be responsible for executing hooks.  Otherwise, the calling thread will execute the hooks.<br>
 	 * If a problem is encountered, the method will not continue. The service that 
 	 * failed to shutdown will still be in the handler - along with all services not yet handled.
+	 * @param out A PrintWriter to which status information will be output
 	 * @throws ShutdownException If the process could not complete
 	 * @throws Exception If the handler is already done executing hooks
 	 */
-	public void shutdownAll() throws ShutdownException, Exception
+	public void shutdownAll(PrintWriter out) throws ShutdownException, Exception
 	{
 		// Doesn't make much sense to start shutting down if it's already happening or happened
 		if(getState() == State.IN_PROGRESS || getState() == State.DONE)
@@ -81,7 +83,7 @@ public class ShutdownHandler {
 		// Amounts to checking if we're in INIT or NOTIFIED state
 		else {
 			// Regardless of whether we're at INIT or NOTIFIED, we'll actually start executing hooks now
-			executeHooks();
+			executeHooks(out);
 		}
 	}
 
@@ -89,10 +91,11 @@ public class ShutdownHandler {
 	 * Useful for making sure the thread that created the handler is the one that executes 
 	 * the hooks within it.  Blocks until some other thread calls <code>shutdownAll()</code> 
 	 * at which point the blocked thread will execute the hooks.
+	 * @param out A PrintWriter to which status information will be output
 	 * @throws ShutdownException If there was a problem executing the hooks
 	 * @throws Exception If the handler is already doing something else (not just initialized)
 	 */
-	public void waitForShutdown() throws ShutdownException, Exception
+	public void waitForShutdown(PrintWriter out) throws ShutdownException, Exception
 	{
 		// We can only really start waiting if we haven't done anything else yet
 		if(getState() != State.INIT)
@@ -113,17 +116,18 @@ public class ShutdownHandler {
 		}
 		
 		// Done waiting - blocked thread has been notified to actually try shutting down
-		shutdownAll();
+		shutdownAll(out);
 	}
 	
 	/**
 	 * Actually goes through and executes each ShutdownHook. The state will change to IN_PROGRESS 
 	 * and later to DONE. If the process cannot complete, it will roll back to INIT and the failed 
 	 * hooks will still be in the handler. An attempt is made to shutdown each hook, though. 
+	 * @param out A PrintWriter to which status information will be output
 	 * @throws ShutdownException If one or more ShutdownHooks encounter a problem. Message is combined 
 	 * from each hook's exception - so printStackTrace may not prove useful. The message should be, however.
 	 */
-	private void executeHooks() throws ShutdownException {
+	private void executeHooks(PrintWriter out) throws ShutdownException {
 		// Starting the process, so we're in progress
 		setState(State.IN_PROGRESS);
 
@@ -138,7 +142,7 @@ public class ShutdownHandler {
 			
 			// Let the hook try to shutdown
 			try {
-				hook.shutdown();
+				hook.shutdown(out);
 
 				// Nothing went wrong. Remove it from the list (thanks to list iterator)
 				hookIterator.remove();

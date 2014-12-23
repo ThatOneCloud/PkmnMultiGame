@@ -1,7 +1,7 @@
 package net.cloud.mmo.event.command;
 
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.BufferedReader;
+import java.io.PrintWriter;
 import java.util.Optional;
 
 import net.cloud.mmo.event.shutdown.ShutdownHook;
@@ -26,7 +26,7 @@ public class CommandService implements ShutdownService {
 	 * @param in A stream from which commands will be read from
 	 * @param out A stream to which responses will be written
 	 */
-	public CommandService(InputStream in, OutputStream out)
+	public CommandService(BufferedReader in, PrintWriter out)
 	{
 		this(DEFAULT_POLL_DELAY, in, out);
 	}
@@ -38,7 +38,7 @@ public class CommandService implements ShutdownService {
 	 * @param in A stream from which commands will be read from
 	 * @param out A stream to which responses will be written
 	 */
-	public CommandService(int pollDelay, InputStream in, OutputStream out)
+	public CommandService(int pollDelay, BufferedReader in, PrintWriter out)
 	{
 		// Create and start thread to deal with io and kicking off commands
 		CommandServiceThread cmdSvcThread = new CommandServiceThread(pollDelay, in, out);

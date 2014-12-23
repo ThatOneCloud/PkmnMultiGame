@@ -4,6 +4,7 @@ import net.cloud.mmo.event.command.CommandService;
 import net.cloud.mmo.event.shutdown.ShutdownHandler;
 import net.cloud.mmo.event.task.TaskEngine;
 import net.cloud.mmo.nio.NettyServer;
+import net.cloud.mmo.util.IOUtil;
 
 /**
  * The entry point for the PokeNet server.
@@ -16,7 +17,7 @@ public class Server {
 	
 	/** ShutdownHandler for all the services the main thread starts up */
 	private ShutdownHandler shutdownHandler;
-
+	
 	public static void main(String[] args) {
 		// Kick-off the server on the main thread
 		Server.getInstance().init();
@@ -51,7 +52,9 @@ public class Server {
 
 		// Sit back, wait for someone to tell us it's shutdown time
 		try {
-			shutdownHandler.waitForShutdown();
+			shutdownHandler.waitForShutdown(IOUtil.SYS_OUT);
+			
+			System.out.println("Shutdown complete");
 		} catch (Exception e) {
 			// Something went wrong with the shutdown process.. not much we can do.
 			// Just won't be a graceful shutdown.
@@ -81,7 +84,7 @@ public class Server {
 		}
 
 		// Start a CommandService on the standard in and out
-		CommandService consoleCommandService = new CommandService(System.in, System.out);
+		CommandService consoleCommandService = new CommandService(IOUtil.SYS_IN, IOUtil.SYS_OUT);
 		shutdownHandler.addHook(consoleCommandService.getShutdownHook());
 		
 		// Grab the TaskEngine, put its shutdown hook in here
@@ -98,9 +101,7 @@ public class Server {
 		try {
 			System.out.println("Starting shutdown");
 			
-			shutdownHandler.shutdownAll();
-			
-			System.out.println("Done shutting down");
+			shutdownHandler.shutdownAll(IOUtil.SYS_OUT);
 		} catch (Exception e) {
 			// Hey look. The end of an exception chain
 			e.printStackTrace();

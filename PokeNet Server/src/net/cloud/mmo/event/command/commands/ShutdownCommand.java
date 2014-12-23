@@ -32,7 +32,7 @@ public class ShutdownCommand extends NoParameterCommand {
 		// Tell the server it's time to shutdown
 		Server.getInstance().shutdown();
 		
-		return "Beginning shutdown";
+		return "Shutdown command called";
 	}
 
 }
