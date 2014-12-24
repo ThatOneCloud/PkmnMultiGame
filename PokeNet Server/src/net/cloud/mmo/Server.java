@@ -18,15 +18,24 @@ public class Server {
 	/** ShutdownHandler for all the services the main thread starts up */
 	private ShutdownHandler shutdownHandler;
 	
+	/**
+	 * Entry point! Start the server and all of its sub-services
+	 */
 	public static void main(String[] args) {
 		// Kick-off the server on the main thread
 		Server.getInstance().init();
 	}
 	
+	/** Private default constructor for singleton pattern - does nothing */
 	private Server()
 	{
 	}
 	
+	/**
+	 * Obtain a reference to the Server object. This object acts as a linkage to 
+	 * components of the server. Responsible for starting and stopping many services. 
+	 * @return The singleton Server instance
+	 */
 	public static Server getInstance()
 	{
 		if(instance == null)
