@@ -137,8 +137,8 @@ public class StringUtil {
 	 * The token is defined to be either the block of characters between the beginning 
 	 * of the string and the next space, or the block of characters between a set of 
 	 * quotation marks.<br>
-	 * Ex: <code>' word' => 'word'</code>, and 
-	 * <code> '"multiple words here"'  => 'multiple words here'
+	 * Ex: <code>' word' returns 'word'</code>, and 
+	 * <code> '"multiple words here"' returns 'multiple words here'</code>
 	 * @param sb The StringBuilder containing the string to parse
 	 * @return The next token in the string, as defined.
 	 * @throws ParseException If the StringBuilder contained no token, or quotations were mismatched

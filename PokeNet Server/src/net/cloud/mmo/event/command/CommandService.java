@@ -54,7 +54,7 @@ public class CommandService implements ShutdownService {
 	 * no more commands will be accepted. The hook is created during construction, 
 	 * so a NPE should not be a concern. Still, it's a possibility.
 	 * @return The ShutdownHook capable of stopping this CommandService
-	 * @throw NullPointerException If the hook has not yet been created
+	 * @throws NullPointerException If the hook has not yet been created
 	 */
 	@Override
 	public ShutdownHook getShutdownHook() throws NullPointerException {

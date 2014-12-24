@@ -249,7 +249,7 @@ public abstract class AbstractCommand implements Command {
 	}
 	
 	/**
-	 * @param The required parameters *actually* given to the command after parsing 
+	 * @return The required parameters *actually* given to the command after parsing 
 	 */
 	public Iterator<RequiredParameter<?>> getProvidedRequiredParameters()
 	{

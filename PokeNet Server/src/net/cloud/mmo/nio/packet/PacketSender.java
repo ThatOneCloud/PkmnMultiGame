@@ -70,21 +70,21 @@ public class PacketSender {
 	
 	/**
 	 * Only creates and returns a Packet. For a description of the packet, see<br>
-	 * {@link PacketFactory#createLoginReponse(LoginResponse)}
+	 * {@link PacketFactory#createLoginResponse(LoginResponse)}
 	 * @param response The response (to the credentials the client sent)
 	 */
 	public Packet createLoginReponse(LoginResponse response)
 	{
-		return packetFactory.createLoginReponse(response);
+		return packetFactory.createLoginResponse(response);
 	}
-	/** Writes, but does not send a packet. <br>See {@link PacketFactory#createLoginReponse(LoginResponse)} */
+	/** Writes, but does not send a packet. <br>See {@link PacketFactory#createLoginResponse(LoginResponse)} */
 	public PacketSender writeLoginReponse(LoginResponse response)
 	{
 		write(createLoginReponse(response));
 		
 		return this;
 	}
-	/** Writes and sends a packet.  <br>See {@link PacketFactory#createLoginReponse(LoginResponse)} */
+	/** Writes and sends a packet.  <br>See {@link PacketFactory#createLoginResponse(LoginResponse)} */
 	public void sendLoginReponse(LoginResponse response)
 	{
 		this.writeLoginReponse(response).send();

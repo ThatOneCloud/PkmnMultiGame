@@ -36,6 +36,7 @@ public interface Task<V> {
 	/**
 	 * Called when this Task is to be submitted after some delay
 	 * @param func Function to schedule the task. 
+	 * @param delay The amount of time to wait before executing the task
 	 * @return A Future resulting from the scheduling of the task
 	 */
 	public default Future<V> submitDelayed(TriFunction<Callable<V>, Long, TimeUnit, Future<V>> func, long delay)
@@ -46,6 +47,7 @@ public interface Task<V> {
 	/**
 	 * Called when this Task is to be submitted immediately and run periodically
 	 * @param func Function to schedule the task. 
+	 * @param period The amount of time between each execution
 	 * @return A Future resulting from the scheduling of the task
 	 */
 	public default Future<V> scheduleImmediate(QuadFunction<Runnable, Long, Long, TimeUnit, Future<V>> func, long period)
@@ -56,6 +58,8 @@ public interface Task<V> {
 	/**
 	 * Called when this Task is to be submitted after some delay and run periodically
 	 * @param func Function to schedule the task. 
+	 * @param delay The amount of time to wait before executing the task
+	 * @param period The amount of time between each execution
 	 * @return A Future resulting from the scheduling of the task
 	 */
 	public default Future<V> scheduleDelayed(QuadFunction<Runnable, Long, Long, TimeUnit, Future<V>> func, long delay, long period)

@@ -38,7 +38,7 @@ public class PacketFactory {
 	 * Create a response to a client which requested to login.
 	 * @param response The response (to the credentials they sent)
 	 */
-	public Packet createLoginReponse(LoginResponse response)
+	public Packet createLoginResponse(LoginResponse response)
 	{
 		return new LoginResponsePacket(response);
 	}
