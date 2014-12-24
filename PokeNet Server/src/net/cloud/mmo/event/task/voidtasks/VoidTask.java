@@ -28,7 +28,7 @@ public interface VoidTask {
 	 */
 	public default Future<?> submitImmediate(TriFunction<Runnable, Long, TimeUnit, Future<?>> func)
 	{
-		return func.apply(this::execute, 0L, TimeUnit.MILLISECONDS);
+		return applyTri(func, this::execute, 0L);
 	}
 	
 	/**
@@ -39,7 +39,21 @@ public interface VoidTask {
 	 */
 	public default Future<?> submitDelayed(TriFunction<Runnable, Long, TimeUnit, Future<?>> func, long delay)
 	{
-		return func.apply(this::execute, delay, TimeUnit.MILLISECONDS);
+		return applyTri(func, this::execute, delay);
+	}
+	
+	/**
+	 * Apply the TriFunction given in the submit methods.
+	 * @param func The function which will be applied
+	 * @param executeMethod The method to call to execute the task
+	 * @param delay The amount of time between submit the task and running it the first time
+	 * @return A Future resulting from the scheduling of the task
+	 */
+	public default Future<?> applyTri(
+			TriFunction<Runnable, Long, TimeUnit, Future<?>> func,
+			Runnable executeMethod,
+			long delay) {
+		return func.apply(executeMethod, delay, TimeUnit.MILLISECONDS);
 	}
 	
 	/**
@@ -63,6 +77,23 @@ public interface VoidTask {
 	public default Future<?> scheduleDelayed(QuadFunction<Runnable, Long, Long, TimeUnit, Future<?>> func, long delay, long period)
 	{
 		return func.apply(this::execute, delay, period, TimeUnit.MILLISECONDS);
+	}
+	
+	/**
+	 * Apply the QuadFunction given in the submit methods.
+	 * @param func Function to schedule the task. 
+	 * @param executeMethod The method to call to execute the task
+	 * @param delay The amount of time between submit the task and running it the first time
+	 * @param period The amount of time between executions of this task
+	 * @return A Future resulting from the scheduling of the task
+	 */
+	public default Future<?> applyQuad(
+			QuadFunction<Runnable, Long, Long, TimeUnit, Future<?>> func,
+			Runnable executeMethod,
+			long delay,
+			long period)
+	{
+		return func.apply(executeMethod, delay, period, TimeUnit.MILLISECONDS);
 	}
 	
 }

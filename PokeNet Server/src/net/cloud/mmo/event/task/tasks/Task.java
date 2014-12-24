@@ -21,7 +21,7 @@ public interface Task<V> {
 	 * Execute whatever code is necessary to complete the job
 	 * @return The result of the execution
 	 */
-	public V execute();
+	public V execute() throws RuntimeException;
 	
 	/**
 	 * Called when this Task is to be submitted immediately
@@ -30,7 +30,7 @@ public interface Task<V> {
 	 */
 	public default Future<V> submitImmediate(TriFunction<Callable<V>, Long, TimeUnit, Future<V>> func)
 	{
-		return func.apply(this::execute, 0L, TimeUnit.MILLISECONDS);
+		return applyTri(func, this::execute, 0L);
 	}
 	
 	/**
@@ -41,7 +41,21 @@ public interface Task<V> {
 	 */
 	public default Future<V> submitDelayed(TriFunction<Callable<V>, Long, TimeUnit, Future<V>> func, long delay)
 	{
-		return func.apply(this::execute, delay, TimeUnit.MILLISECONDS);
+		return applyTri(func, this::execute, delay);
+	}
+	
+	/**
+	 * Apply the TriFunction given in the submit methods.
+	 * @param func The function which will be applied
+	 * @param executeMethod The method to call to execute the task
+	 * @param delay The amount of time between submit the task and running it the first time
+	 * @return A Future resulting from the scheduling of the task
+	 */
+	public default Future<V> applyTri(
+			TriFunction<Callable<V>, Long, TimeUnit, Future<V>> func,
+			Callable<V> executeMethod,
+			long delay) {
+		return func.apply(executeMethod, delay, TimeUnit.MILLISECONDS);
 	}
 	
 	/**
@@ -52,7 +66,7 @@ public interface Task<V> {
 	 */
 	public default Future<V> scheduleImmediate(QuadFunction<Runnable, Long, Long, TimeUnit, Future<V>> func, long period)
 	{
-		return func.apply(this::execute, 0L, period, TimeUnit.MILLISECONDS);
+		return applyQuad(func, this::execute, 0L, period);
 	}
 	
 	/**
@@ -64,7 +78,24 @@ public interface Task<V> {
 	 */
 	public default Future<V> scheduleDelayed(QuadFunction<Runnable, Long, Long, TimeUnit, Future<V>> func, long delay, long period)
 	{
-		return func.apply(this::execute, delay, period, TimeUnit.MILLISECONDS);
+		return applyQuad(func, this::execute, delay, period);
+	}
+	
+	/**
+	 * Apply the QuadFunction given in the submit methods.
+	 * @param func Function to schedule the task. 
+	 * @param executeMethod The method to call to execute the task
+	 * @param delay The amount of time between submit the task and running it the first time
+	 * @param period The amount of time between executions of this task
+	 * @return A Future resulting from the scheduling of the task
+	 */
+	public default Future<V> applyQuad(
+			QuadFunction<Runnable, Long, Long, TimeUnit, Future<V>> func,
+			Runnable executeMethod,
+			long delay,
+			long period)
+	{
+		return func.apply(executeMethod, delay, period, TimeUnit.MILLISECONDS);
 	}
 
 }

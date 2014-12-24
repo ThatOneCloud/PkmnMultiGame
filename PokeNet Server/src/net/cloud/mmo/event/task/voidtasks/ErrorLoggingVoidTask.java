@@ -3,42 +3,37 @@ package net.cloud.mmo.event.task.voidtasks;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import net.cloud.mmo.event.task.TaskException;
 import net.cloud.mmo.util.function.QuadFunction;
 import net.cloud.mmo.util.function.TriFunction;
 
 /**
- * A Task which will only execute a certain number of times (at least once). <br>
- * This task is a wrapper around a CancellableVoidTask. 
- * To create and use it, first create a CancellableVoidTask and then create a CountedVoidTask 
- * around it. Then submit the CountedVoidTask to the TaskEngine.
+ * A Task which will catch any errors from its execution and log them. This is useful 
+ * since the TaskEngine will not otherwise simply report errors. They can be obtained 
+ * by checking the Future returned from scheduling. When checking is not an option or 
+ * not desirable, this class will instead leave some trace of the error.<br>
+ * This task is a wrapper around a VoidTask. 
+ * To create and use it, first create a VoidTask and then create an ErrorLoggingVoidTask 
+ * around it. Then submit the ErrorLoggingVoidTask to the TaskEngine.
  */
-public class CountedVoidTask implements VoidTask {
-	
-	/** The [constant] number of times the task will execute */
-	private final int EXECUTION_LIMIT;
-	
-	/** Count of how many times this task has executed, so far */
-	private int executionCount;
+public class ErrorLoggingVoidTask implements VoidTask {
 	
 	/** The task we're decorating */
-	private CancellableVoidTask task;
+	private VoidTask task;
 	
 	/**
-	 * Create a new CountedVoidTask by wrapping around an existing task. 
-	 * This task will only execute a given number of times before stopping itself.
-	 * @param task The CancellableVoidTask to decorate with counting behavior
-	 * @param executionCount The number of times this task will execute (it will execute at least once)
+	 * Create a new ErrorLoggingVoidTask by wrapping around an existing task. 
+	 * This task will catch any errors from the task's execution and log them
+	 * @param task The VoidTask to decorate with logging behavior
 	 */
-	public CountedVoidTask(CancellableVoidTask task, int executionCount)
+	public ErrorLoggingVoidTask(VoidTask task)
 	{
-		this.EXECUTION_LIMIT = executionCount;
-		this.executionCount = 0;
 		this.task = task;
 	}
 	
 	/**
 	 * Called when this Task is to be submitted immediately.
-	 * Delegates to the wrapped task. See the corresponding method in {@link CancellableVoidTask}
+	 * Delegates to the wrapped task. See the corresponding method in {@link VoidTask}
 	 * @param func Function to schedule the task. 
 	 * @return A Future resulting from the scheduling of the task
 	 */
@@ -50,7 +45,7 @@ public class CountedVoidTask implements VoidTask {
 	
 	/**
 	 * Called when this Task is to be submitted after some delay.
-	 * Delegates to the wrapped task. See the corresponding method in {@link CancellableVoidTask}
+	 * Delegates to the wrapped task. See the corresponding method in {@link VoidTask}
 	 * @param func Function to schedule the task. 
 	 * @param delay The amount of time between submit the task and running it the first time
 	 * @return A Future resulting from the scheduling of the task
@@ -63,7 +58,7 @@ public class CountedVoidTask implements VoidTask {
 	
 	/**
 	 * Called when this Task is to be submitted immediately and run periodically. 
-	 * Delegates to the wrapped task. See the corresponding method in {@link CancellableVoidTask}
+	 * Delegates to the wrapped task. See the corresponding method in {@link VoidTask}
 	 * @param func Function to schedule the task. 
 	 * @param period The amount of time between executions of this task 
 	 * @return A Future resulting from the scheduling of the task
@@ -76,7 +71,7 @@ public class CountedVoidTask implements VoidTask {
 	
 	/**
 	 * Called when this Task is to be submitted after some delay and run periodically. 
-	 * Delegates to the wrapped task. See the corresponding method in {@link CancellableVoidTask}
+	 * Delegates to the wrapped task. See the corresponding method in {@link VoidTask}
 	 * @param func Function to schedule the task. 
 	 * @param delay The amount of time between submit the task and running it the first time
 	 * @param period The amount of time between executions of this task 
@@ -89,24 +84,34 @@ public class CountedVoidTask implements VoidTask {
 	}
 	
 	/**
-	 * Executes the task. This method is final, and takes care of canceling the 
-	 * task after a certain number of executions. The execution is delegated to the 
-	 * wrapped task.
+	 * The execution is delegated to the wrapped task.
+	 * If the underlying task's execution causes any kind of error, 
+	 * this will log the issue and re-throw the cause.
 	 */
 	@Override
 	public final void execute()
 	{
-		// Delegate to the wrapped task
-		task.execute();
+		// TODO: Ship errors off to some logging facility
 		
-		// Increment the count (starting from 0)
-		executionCount++;
-		
-		// See if we've run the designated number of times
-		if(executionCount >= EXECUTION_LIMIT)
-		{
-			// and if so, stop executing (via the wrapped cancellable task)
-			task.cancel();
+		// Delegate to the underlying task
+		try {
+			
+			task.execute();
+			
+		// Catch issues in this order - report them slightly differently
+		// Re-throw so the worker thread can deal with it appropriately as well
+		} catch(TaskException taskExc) {
+			taskExc.printStackTrace();
+			throw taskExc;
+		} catch(RuntimeException runExc) {
+			runExc.printStackTrace();
+			throw runExc;
+		} catch(Exception exc) {
+			exc.printStackTrace();
+			throw exc;
+		} catch(Throwable t) {
+			t.printStackTrace();
+			throw t;
 		}
 	}
 

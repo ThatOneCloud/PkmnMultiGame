@@ -1,8 +1,10 @@
 package net.cloud.mmo.event.task;
 
+import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadFactory;
 
 import net.cloud.mmo.event.shutdown.ShutdownHook;
 import net.cloud.mmo.event.shutdown.ShutdownService;
@@ -35,7 +37,30 @@ public class TaskEngine implements ShutdownService {
 	/** Private constructor. Creates the executor and hook */
 	private TaskEngine()
 	{
-		taskExecutor = Executors.newScheduledThreadPool(THREAD_POOL_SIZE);
+		
+		ThreadFactory f = new ThreadFactory()
+		{
+
+			@Override
+			public Thread newThread(Runnable r) {
+				Thread t = new Thread(r);
+				t.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
+
+					@Override
+					public void uncaughtException(Thread t, Throwable e) {
+						// TODO Auto-generated method stub
+						System.err.println("uncaught exception" + e);
+					}
+					
+				});
+				return t;
+			}
+			
+		};
+		
+		
+		
+		taskExecutor = Executors.newScheduledThreadPool(THREAD_POOL_SIZE, f);
 		
 		// Create the hook now - the pool starts when this instance is created
 		shutdownHook = new TaskEngineShutdownHook(taskExecutor);

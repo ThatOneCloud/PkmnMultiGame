@@ -26,20 +26,37 @@ public abstract class CancellableVoidTask implements VoidTask {
 	@Override
 	public Future<?> submitImmediate(TriFunction<Runnable, Long, TimeUnit, Future<?>> func)
 	{
-		ourFuture = func.apply(this::execute, 0L, TimeUnit.MILLISECONDS);
-		return ourFuture;
+		return applyTri(func, this::execute, 0L);
 	}
 	
 	/**
 	 * Called when this Task is to be submitted after some delay. Keeps a reference to the Future 
 	 * resulting from scheduling the task - so that the task may cancel itself.
 	 * @param func Function to schedule the task. 
+	 * @param delay The amount of time between submit the task and running it the first time
 	 * @return A Future resulting from the scheduling of the task
 	 */
 	@Override
 	public Future<?> submitDelayed(TriFunction<Runnable, Long, TimeUnit, Future<?>> func, long delay)
 	{
-		ourFuture = func.apply(this::execute, delay, TimeUnit.MILLISECONDS);
+		return applyTri(func, this::execute, delay);
+	}
+	
+	/**
+	 * Apply the TriFunction given in the submit methods.  This carries out the side-effects 
+	 * particular to the CancellableTask
+	 * @param func The function which will be applied
+	 * @param executeMethod The method to call to execute the task
+	 * @param delay The amount of time between submit the task and running it the first time
+	 * @return A Future resulting from the scheduling of the task
+	 */
+	@Override
+	public Future<?> applyTri(
+			TriFunction<Runnable, Long, TimeUnit, Future<?>> func,
+			Runnable executeMethod,
+			long delay)
+	{
+		ourFuture = func.apply(executeMethod, delay, TimeUnit.MILLISECONDS);
 		return ourFuture;
 	}
 	
@@ -47,25 +64,46 @@ public abstract class CancellableVoidTask implements VoidTask {
 	 * Called when this Task is to be submitted immediately and run periodically. Keeps a reference to the Future 
 	 * resulting from scheduling the task - so that the task may cancel itself.
 	 * @param func Function to schedule the task. 
+	 * @param period The amount of time between executions of this task
 	 * @return A Future resulting from the scheduling of the task
 	 */
 	@Override
 	public Future<?> scheduleImmediate(QuadFunction<Runnable, Long, Long, TimeUnit, Future<?>> func, long period)
 	{
-		ourFuture = func.apply(this::execute, 0L, period, TimeUnit.MILLISECONDS);
-		return ourFuture;
+		return applyQuad(func, this::execute, 0L, period);
 	}
 	
 	/**
 	 * Called when this Task is to be submitted after some delay and run periodically. Keeps a reference to the Future 
 	 * resulting from scheduling the task - so that the task may cancel itself.
 	 * @param func Function to schedule the task. 
+	 * @param delay The amount of time between submit the task and running it the first time
+	 * @param period The amount of time between executions of this task
 	 * @return A Future resulting from the scheduling of the task
 	 */
 	@Override
 	public Future<?> scheduleDelayed(QuadFunction<Runnable, Long, Long, TimeUnit, Future<?>> func, long delay, long period)
 	{
-		ourFuture = func.apply(this::execute, delay, period, TimeUnit.MILLISECONDS);
+		return applyQuad(func, this::execute, delay, period);
+	}
+	
+	/**
+	 * Apply the QuadFunction given in the submit methods.  This carries out the side-effects 
+	 * particular to the CancellableTask
+	 * @param func Function to schedule the task. 
+	 * @param executeMethod The method to call to execute the task
+	 * @param delay The amount of time between submit the task and running it the first time
+	 * @param period The amount of time between executions of this task
+	 * @return A Future resulting from the scheduling of the task
+	 */
+	@Override
+	public Future<?> applyQuad(
+			QuadFunction<Runnable, Long, Long, TimeUnit, Future<?>> func,
+			Runnable executeMethod,
+			long delay,
+			long period)
+	{
+		ourFuture = func.apply(executeMethod, delay, period, TimeUnit.MILLISECONDS);
 		return ourFuture;
 	}
 	
