@@ -19,6 +19,7 @@ public class CommandPrototypes {
 	static
 	{
 		prototypes.put("test", new TestCommand());
+		prototypes.put("echo", new EchoCommand());
 		prototypes.put("shutdown", new ShutdownCommand());
 	}
 	

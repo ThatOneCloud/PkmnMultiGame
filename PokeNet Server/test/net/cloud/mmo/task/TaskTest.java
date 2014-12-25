@@ -2,29 +2,16 @@ package net.cloud.mmo.task;
 
 import java.util.concurrent.ExecutionException;
 
-import net.cloud.mmo.event.shutdown.ShutdownException;
-import net.cloud.mmo.event.shutdown.ShutdownHook;
 import net.cloud.mmo.event.task.TaskEngine;
 import net.cloud.mmo.event.task.tasks.Task;
 import net.cloud.mmo.event.task.voidtasks.VoidTask;
-import net.cloud.mmo.util.IOUtil;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 /** Test plain tasks. Both Task and VoidTask */
 public class TaskTest {
-	
-	private static ShutdownHook taskEngineHook;
-	
-	@BeforeClass
-	public static void startTaskEngine()
-	{
-		taskEngineHook = TaskEngine.getInstance().getShutdownHook();
-	}
 	
 	@Test
 	public void testSuccessfulExecution()
@@ -104,16 +91,6 @@ public class TaskTest {
 		} catch (InterruptedException | ExecutionException e) {
 			// Goody - it got thrown and caught
 			assertTrue(true);
-		}
-	}
-	
-	@AfterClass
-	public static void stopTaskEngine()
-	{
-		try {
-			taskEngineHook.shutdown(IOUtil.SYS_OUT);
-		} catch (ShutdownException e) {
-			e.printStackTrace();
 		}
 	}
 
