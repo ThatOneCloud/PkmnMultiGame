@@ -1,0 +1,32 @@
+PokeNet Command System notes
+
+As of this writing - the largest subsystem.
+Execution of user commands, and commands in general. 
+Idea is that a command is executed and a result is returned, 
+through a robust system that offloads the job to different modules. 
+A key philosophy is that commands should be easy to add. 
+A command only needs to specify its parameters, rather than parse 
+them itself each time. 
+
+General Structure diagram:
+
+|-----------------| 1   |-----------------| 2   |------------|
+| CommandService  |---->| CommandHandler  |---->| TaskEngine |
+|     Module      |<----|     Module      |<----|            |
+|-----------------|  4  |-----------------|  3  |------------|
+
+1. Command line is passed to CommandHandler
+2. Command is created, handed to TaskEngine for execution
+3. Result is returned in a Future
+4. Future is returned
+
+Commands have Parameters, which in turn store Arguments.
+A command states which parameters it expects. During parsing, 
+the AbstractCommand pieces this together so that concrete command 
+classes only need state their parameters - which they will then receive
+parsed and constructed. 
+
+There's quite a bit to the Command/Parameter/Argument structure, 
+in short it's largely the Prototype Design Pattern. There are 
+prototypes for each type of each, which then get called to create 
+the right concrete subclass to actually use for the command.

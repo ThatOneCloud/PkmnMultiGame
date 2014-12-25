@@ -1,0 +1,8 @@
+PokeNet Shutdown Hook API notes
+
+Simply put - a way to get services to shut down cleanly. 
+Idea is that whatever starts the service becomes responsible for stopping it.
+This can then be done in a hierarchical manner if need be, so that's cool. 
+Java in-built shutdown hooks work a bit different - each on a different thread.
+This instead is all on one thread. An attempt is made to stop each hook.
+Erm, read the javadocs I guess. I'm getting redundant

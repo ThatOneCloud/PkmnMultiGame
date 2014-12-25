@@ -1,0 +1,30 @@
+PokeNet Task Engine notes
+
+TaskEngine takes care of running whatever need be on the server. 
+It's a way to offload work from other services to keep them 
+running without waiting, and should also come in handy to to mitigate
+some synchronization issues. 
+
+There are two kinds of tasks, with parallel hierarchies:
+Task and VoidTask
+One has a return type, the other returns void. This is so the lambdas 
+and other methods don't need to explicitly say "return null" - 
+which got annoying very quickly.
+Subclasses do exist and are fine - subclass to create concrete 
+specialized tasks.
+
+When submitting a task, it takes an odd sort of path.
+1. Submit a task via TaskEngine
+2. Task is passed ExecutorService's method
+3. Task applies (calls) ExecutorService's method
+	(via interface - it doesn't know it's on an ExecutorService. Neat.)
+4. Future is returned from Task
+5. Future is returned from TaskEngine
+
+Noteworthy:
+Submitted tasks will not directly throw an exception. There are two options:
+  -Future.get() will throw an ExecutionException whose cause is the exception 
+   the task threw
+  -Wrap the task in an ErrorLoggingTask, which will be verbose about the issue
+   and re-throw it (Future.get() will show the exception as well)
+A Task that throws an exception will not continue to run.
