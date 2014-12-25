@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 import net.cloud.mmo.event.command.Command;
 import net.cloud.mmo.event.command.CommandException;
@@ -17,9 +18,11 @@ import net.cloud.mmo.util.StringUtil;
  */
 public abstract class AbstractCommand implements Command {
 	
-	// Lists for the parameters that are *actually* given to the command
-	private List<OptionalParameter<?>> providedOptionalParameters;
-	private List<RequiredParameter<?>> providedRequiredParameters;
+	/** List of optional parameters that were actually given to this command */
+	protected List<OptionalParameter<?>> providedOptionalParameters;
+	
+	/** List of required parameters that were actually given to this command */
+	protected List<RequiredParameter<?>> providedRequiredParameters;
 	
 	/**
 	 * Initializes the parameter lists
@@ -56,12 +59,6 @@ public abstract class AbstractCommand implements Command {
 		// Give ourselves a StringBuilder to work with - so we can move through it easier
 		StringBuilder argBuilder = new StringBuilder(argumentLine.trim());
 		
-//		// Before we even start, if there are no arguments don't bother going ahead
-//		if(noParamCheck(argBuilder))
-//		{
-//			return;
-//		}
-		
 		// Step through each parameter in the argumentLine
 		while(argBuilder.length() > 0)
 		{
@@ -95,18 +92,6 @@ public abstract class AbstractCommand implements Command {
 			throw new CommandException("Invalid number of required parameters");
 		}
 	}
-	
-//	/**
-//	 * See if the command doesn't require any parameters
-//	 * @param argBuilder The parameters provided to the command
-//	 * @return True if there are no parameters
-//	 * @throws CommandException If there are no parameters but something has been provided
-//	 */
-//	private boolean noParamCheck(StringBuilder argBuilder) throws CommandException
-//	{
-//		// Check if there are no parameters (null or empty list)
-//		if(getAllOptionalParameters() == )
-//	}
 	
 	/**
 	 * Take care of parsing an optional parameter. When done, it is added to the list.
@@ -240,6 +225,38 @@ public abstract class AbstractCommand implements Command {
 	}
 	
 	/**
+	 * Obtain an OptionalParameter by name. If the parameter has been provided, 
+	 * the returned Optional will contain the parameter.  If it has not been, the 
+	 * returned Optional will be empty.  It can be checked for the presence of a value, 
+	 * to safely decide on an action. Optional-ception!<br>
+	 * Usage note: Prefer storing the optional. Each call of this method will search 
+	 * again and create a new Optional.
+	 * @param name The name of the parameter. Short or long form. Case sensitive.
+	 * @param <T> The type of the value within the parameter
+	 * @return An Optional wrapping the parameter if present, or an empty optional if not.
+	 */
+	@SuppressWarnings("unchecked")
+	public <T> Optional<OptionalParameter<T>> getOptParam(String name)
+	{
+		Iterator<OptionalParameter<?>> optParamIt = getProvidedOptionalParameters();
+		
+		// Look for a provided optional parameter matching either name
+		while(optParamIt.hasNext())
+		{
+			OptionalParameter<?> optParam = optParamIt.next();
+			
+			if(optParam.getShortName().equals(name) || optParam.getLongName().equals(name))
+			{
+				// Found one. Wrap in an Optional and return (Optional-ception!)
+				return Optional.of((OptionalParameter<T>) optParam);
+			}
+		}
+		
+		// No match. Which is fine, its existence is optional. However, there will be no value.
+		return Optional.empty();
+	}
+	
+	/**
 	 * Tell this command that the optional parameter is being passed to it
 	 * @param parameter The parameter to provide to the command
 	 */
@@ -257,6 +274,21 @@ public abstract class AbstractCommand implements Command {
 	}
 	
 	/**
+	 * Short convenience method to get a required parameter. 
+	 * The returned value is cast to an inferred type. This must be the correct type, 
+	 * and it is the responsibility of the caller to ensure this.
+	 * @param index Index of the parameter. Store in declared order.
+	 * @param <T> The type of the value within the parameter
+	 * @return The RequiredParameter at the given index
+	 * @throws IndexOutOfBoundsException If the index is out of bounds
+	 */
+	@SuppressWarnings("unchecked")
+	public <T> RequiredParameter<T> getReqParam(int index) throws IndexOutOfBoundsException
+	{
+		return (RequiredParameter<T>) providedRequiredParameters.get(index);
+	}
+	
+	/**
 	 * Tell this command that the required parameter is being passed to it
 	 * @param parameter The parameter to provide to the command
 	 */
@@ -264,5 +296,5 @@ public abstract class AbstractCommand implements Command {
 	{
 		providedRequiredParameters.add(parameter);
 	}
-
+	
 }

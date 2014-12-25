@@ -44,4 +44,12 @@ public abstract class CommandParameter<V> {
 		return argument;
 	}
 	
+	/**
+	 * A convenience method to <code>getArgument().getValue()</code>
+	 * @return The value held by the argument
+	 */
+	public V getArgValue() {
+		return argument.getArgValue();
+	}
+	
 }

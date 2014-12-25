@@ -1,6 +1,6 @@
 package net.cloud.mmo.event.command.commands;
 
-import java.util.Iterator;
+import java.util.Optional;
 
 import net.cloud.mmo.event.command.Command;
 import net.cloud.mmo.event.command.argument.ArgumentPrototypes;
@@ -40,13 +40,13 @@ public class EchoCommand extends AbstractCommand {
 	@Override
 	public String doCommand() {
 		// Start with the required parameter
-		String echo = (String) getProvidedRequiredParameters().next().getArgument().getArgValue();
-		
-		// Concatenate any optional parameters
-		Iterator<OptionalParameter<?>> optParamIt = getProvidedOptionalParameters();
-		while(optParamIt.hasNext())
+		String echo = super.<String>getReqParam(0).getArgValue();
+
+		// Concatenate if there's an optional parameter
+		Optional<OptionalParameter<String>> concatParam = super.getOptParam("concat");
+		if(concatParam.isPresent())
 		{
-			echo += (String) optParamIt.next().getArgument().getArgValue();
+			echo += concatParam.get().getArgValue();
 		}
 		
 		return echo;
