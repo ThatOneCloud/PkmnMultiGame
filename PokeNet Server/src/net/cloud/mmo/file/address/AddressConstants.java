@@ -12,7 +12,7 @@ public class AddressConstants {
 	public static final String SPACE_COMMAND_SCRIPTS = "./data/scripts/commands/";
 	
 	
-	/** text file extension */
+	/** Text file extension */
 	public static final String EXT_TEXT = "txt";
 
 }

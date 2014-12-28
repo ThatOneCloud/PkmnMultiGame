@@ -3,8 +3,9 @@ package net.cloud.mmo.file.request;
 import java.util.Optional;
 
 import net.cloud.mmo.file.FileRequestException;
-import net.cloud.mmo.file.RequestHandler;
 import net.cloud.mmo.file.address.FileAddress;
+import net.cloud.mmo.file.request.handler.RequestHandler;
+import net.cloud.mmo.file.request.listener.FileRequestListener;
 
 /**
  * Base class for all file request.  Deals with the shared behavior 
@@ -30,6 +31,9 @@ public abstract class FileRequest<T> {
 	/** The listener (if any) attached to this request */
 	private FileRequestListener<T> listener;
 	
+	/** If an exception happened during handling the request, this is it */
+	private FileRequestException handleException;
+	
 	/**
 	 * Create a new request which is not ready but will request the file 
 	 * at the given location.
@@ -52,35 +56,77 @@ public abstract class FileRequest<T> {
 	/**
 	 * Wait until the request has been served and is ready to be acted on. 
 	 * That is, whatever underlying objects that may exist are initialized 
-	 * and can be utilized.
-	 * @throws FileRequestException If the wait was interrupted
+	 * and can be utilized.<br>
+	 * If an exception is thrown, it is not safe to access the file descriptor. No promise 
+	 * is made as to whether it will be valid or not, even if the wait was just interrupted.
+	 * @throws FileRequestException If the wait was interrupted, or the request could not be handled
 	 */
 	public void waitForRequest() throws FileRequestException
 	{
 		// Typical wait loop
-		if(!readyFlag || fileDescriptor == null)
+		if((!readyFlag || fileDescriptor == null) && (handleException == null))
 		{
-			while(!readyFlag || fileDescriptor == null)
+			synchronized(this)
 			{
-				try {
-					this.wait();
-				} catch (InterruptedException e) {
-					// The waiting thread was interrupted. Who knows what it'll do next.
-					// Notify it that the request may not be ready, anyways
-					throw new FileRequestException("Wait was interrupted. File may not be ready.");
+				while((!readyFlag || fileDescriptor == null) && (handleException == null))
+				{
+					try {
+						this.wait();
+					} catch (InterruptedException e) {
+						// The waiting thread was interrupted. Who knows what it'll do next.
+						// Notify it that the request may not be ready, anyways
+						throw new FileRequestException("Wait was interrupted. File may not be ready.");
+					}
 				}
 			}
 		}
+		
+		// Being here means this request is ready or an exception happened during handling
+		if(handleException != null)
+		{
+			// Unfortunately handling the request resulted in an exception. Re-throw it.
+			throw handleException;
+		}
+		
+		// Getting here implies all is good. The wait is over!
 	}
 	
 	/**
 	 * Notify all threads waiting on this request to complete that it 
-	 * is ready and can be acted on.
+	 * is ready and can be acted on. <br>
+	 * If there is a listener attached to this request, it will also be called.
 	 */
 	public void notifyReady()
 	{
-		// Notify anything waiting on this request that it's ready
-		this.notifyAll();
+		synchronized(this)
+		{
+			// Notify anything waiting on this request that it's ready
+			this.notifyAll();
+		}
+
+		// Call the listener's method if we need to
+		this.notifyListenerThatRequestIsReady();
+	}
+	
+	/**
+	 * Notify all threads waiting on this request to complete that it 
+	 * encountered an exception and could not properly be handled.<br>
+	 * If there is a listener attached to this request, it will also be notified of this.
+	 * @param ex The exception caused by handling the request
+	 */
+	public void notifyHandleException(FileRequestException ex)
+	{
+		synchronized(this)
+		{
+			// Set the exception, acts as a flag that it happened
+			this.handleException = ex;
+		
+			// Notify anyone waiting that they should stop
+			this.notifyAll();
+		}
+		
+		// Call the listener's exception method
+		this.notifyListenerOfException();
 	}
 	
 	/**
@@ -131,9 +177,18 @@ public abstract class FileRequest<T> {
 	 * IF a listener is attached to this request, call its requestReady() method 
 	 * to take the listener's specified action
 	 */
-	public void actOnListener()
+	public void notifyListenerThatRequestIsReady()
 	{
 		Optional.ofNullable(listener).ifPresent((l) -> l.requestReady(fileDescriptor));
+	}
+	
+	/**
+	 * IF a listener is attached to this request, and an exception occured 
+	 * from handling the request, this method will call the listener's requestException() method.
+	 */
+	public void notifyListenerOfException()
+	{
+		Optional.ofNullable(listener).ifPresent((l) -> l.requestException(handleException));
 	}
 	
 }

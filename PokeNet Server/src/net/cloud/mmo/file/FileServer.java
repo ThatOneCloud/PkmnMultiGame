@@ -4,6 +4,7 @@ import net.cloud.mmo.event.shutdown.ShutdownHook;
 import net.cloud.mmo.event.shutdown.ShutdownService;
 import net.cloud.mmo.event.shutdown.hooks.FileServerShutdownHook;
 import net.cloud.mmo.file.request.FileRequest;
+import net.cloud.mmo.file.request.handler.RequestHandler;
 
 /**
  * The front of the file server module.  Deals with FileRequests. 

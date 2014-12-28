@@ -2,8 +2,8 @@ package net.cloud.mmo.file.request;
 
 import java.io.BufferedReader;
 
-import net.cloud.mmo.file.RequestHandler;
 import net.cloud.mmo.file.address.FileAddress;
+import net.cloud.mmo.file.request.handler.RequestHandler;
 
 public class BufferedReaderRequest extends LoadRequest<BufferedReader> {
 

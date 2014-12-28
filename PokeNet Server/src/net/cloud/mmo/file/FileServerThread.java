@@ -4,6 +4,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import net.cloud.mmo.file.request.FileRequest;
+import net.cloud.mmo.file.request.handler.RequestHandler;
 
 /**
  * Contains the logic loop for the File Server.  Takes care of pulling 
@@ -44,6 +45,8 @@ public class FileServerThread implements Runnable {
 			} catch (InterruptedException e) {
 				// It's even so kind as to throw an InterruptedException (ruddy BufferedReader...)
 				// TODO: This is the kind of thing that gets logged
+				System.err.println("FileServerThread interrupted");
+				e.printStackTrace();
 			}
 		}
 
