@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import net.cloud.mmo.event.command.CommandService;
 import net.cloud.mmo.event.shutdown.ShutdownHandler;
 import net.cloud.mmo.event.task.TaskEngine;
+import net.cloud.mmo.file.FileRequestException;
 import net.cloud.mmo.file.FileServer;
 import net.cloud.mmo.file.address.FileAddressBuilder;
 import net.cloud.mmo.file.request.BufferedReaderRequest;
@@ -29,14 +30,8 @@ public class Server {
 	 * Entry point! Start the server and all of its sub-services
 	 */
 	public static void main(String[] args) {
-		
-		BufferedReaderRequest req = new BufferedReaderRequest(FileAddressBuilder.newBuilder().createCommandScriptAddress("echo"));
-		FileServer.instance().submit(req);
-		
-		
-		
 		// Kick-off the server on the main thread
-//		Server.getInstance().init();
+		Server.getInstance().init();
 	}
 	
 	/** Private default constructor for singleton pattern - does nothing */
@@ -111,6 +106,19 @@ public class Server {
 		
 		// Grab the TaskEngine, put its shutdown hook in here
 		shutdownHandler.addHook(TaskEngine.getInstance().getShutdownHook());
+		
+		// The FileServer is another service we'll start here
+		shutdownHandler.addHook(FileServer.instance().getShutdownHook());
+		
+		
+		
+		// TODO: remove
+		BufferedReaderRequest req = new BufferedReaderRequest(FileAddressBuilder.newBuilder().createCommandScriptAddress("echo"));
+		try {
+			FileServer.instance().submit(req);
+		} catch (FileRequestException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**

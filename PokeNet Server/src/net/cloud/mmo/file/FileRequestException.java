@@ -35,7 +35,13 @@ public class FileRequestException extends Exception {
 	@Override
 	public String toString()
 	{
-		return "[FileRequestException]: " + getMessage();
+		if(super.getCause() == null)
+		{
+			return "[FileRequestException]: " + getMessage();
+		} else {
+			return "[FileRequestException]: " + getMessage() + System.lineSeparator() 
+					+ "   Caused by: " + super.getCause().getMessage();
+		}
 	}
 
 }

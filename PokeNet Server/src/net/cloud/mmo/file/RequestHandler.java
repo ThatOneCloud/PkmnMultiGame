@@ -10,15 +10,5 @@ public class RequestHandler {
 		// TODO Auto-generated method stub
 		System.out.println("br req");
 	}
-	
-//	public void handleRequest(FileRequest<?> req)
-//	{
-//		System.out.println("generic req");
-//	}
-//	
-//	public void handleRequest(LoadRequest<?> req)
-//	{
-//		System.out.println("Handle load request");
-//	}
 
 }
