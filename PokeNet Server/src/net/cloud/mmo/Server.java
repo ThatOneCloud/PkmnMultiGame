@@ -1,8 +1,15 @@
 package net.cloud.mmo;
 
+import java.io.BufferedReader;
+
 import net.cloud.mmo.event.command.CommandService;
 import net.cloud.mmo.event.shutdown.ShutdownHandler;
 import net.cloud.mmo.event.task.TaskEngine;
+import net.cloud.mmo.file.FileServer;
+import net.cloud.mmo.file.address.FileAddressBuilder;
+import net.cloud.mmo.file.request.BufferedReaderRequest;
+import net.cloud.mmo.file.request.FileRequest;
+import net.cloud.mmo.file.request.LoadRequest;
 import net.cloud.mmo.nio.NettyServer;
 import net.cloud.mmo.util.IOUtil;
 
@@ -22,8 +29,14 @@ public class Server {
 	 * Entry point! Start the server and all of its sub-services
 	 */
 	public static void main(String[] args) {
+		
+		BufferedReaderRequest req = new BufferedReaderRequest(FileAddressBuilder.newBuilder().createCommandScriptAddress("echo"));
+		FileServer.instance().submit(req);
+		
+		
+		
 		// Kick-off the server on the main thread
-		Server.getInstance().init();
+//		Server.getInstance().init();
 	}
 	
 	/** Private default constructor for singleton pattern - does nothing */
