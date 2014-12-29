@@ -1,6 +1,7 @@
 package net.cloud.mmo;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 
 import net.cloud.mmo.event.command.CommandService;
 import net.cloud.mmo.event.shutdown.ShutdownHandler;
@@ -115,8 +116,24 @@ public class Server {
 		// TODO: remove
 		BufferedReaderRequest req = new BufferedReaderRequest(FileAddressBuilder.newBuilder().createCommandScriptAddress("echo"));
 		try {
-			FileServer.instance().submit(req);
-		} catch (FileRequestException e) {
+//			FileServer.instance().submit(req);
+//			
+//			System.out.println("waiting");
+//			
+//			req.waitForRequest();
+//			
+//			System.out.println("done waiting");
+//			
+//			BufferedReader br = req.getFileDescriptor();
+			
+			BufferedReader br = FileServer.instance().submitAndWaitForDescriptor(req);
+			
+			System.out.println("reading");
+			
+			System.out.println(br.readLine());
+			
+			System.out.println("done reading");
+		} catch (FileRequestException | IOException e) {
 			e.printStackTrace();
 		}
 	}

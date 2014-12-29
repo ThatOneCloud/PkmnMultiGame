@@ -100,6 +100,9 @@ public abstract class FileRequest<T> {
 	{
 		synchronized(this)
 		{
+			// Update the ready flag
+			this.readyFlag = true;
+			
 			// Notify anything waiting on this request that it's ready
 			this.notifyAll();
 		}

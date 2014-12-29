@@ -80,6 +80,29 @@ public class FileServer implements ShutdownService {
 		// Delegate the submission to the logic object
 		fileServerThread.submit(request);
 	}
+	
+	/**
+	 * A convenience method. It will submit the request to the FileServer, 
+	 * wait for the request to be ready, and then return the file descriptor 
+	 * from the completed request.  This is equivalent to 3 method calls:<br>
+	 * <code>
+	 * FileServer.instance().submit(request);<br>
+	 * request.waitForRequest();<br>
+	 * request.getFileDescriptor();<br>
+	 * </code>
+	 * @param request The request to submit and wait on
+	 * @param <T> The type of the file descriptor object. Should be inferred from the request.
+	 * @return The file descriptor that is being requested
+	 * @throws FileRequestException If any of these convenient steps fail
+	 */
+	public <T> T submitAndWaitForDescriptor(FileRequest<T> request) throws FileRequestException
+	{
+		submit(request);
+		
+		request.waitForRequest();
+		
+		return request.getFileDescriptor();
+	}
 
 	/**
 	 * Obtain the ShutdownHook for the FileServer. It will stop the service, so 

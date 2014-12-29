@@ -3,10 +3,10 @@ package net.cloud.mmo.file.request.handler;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.InputStreamReader;
 
 import net.cloud.mmo.file.FileRequestException;
 import net.cloud.mmo.file.request.BufferedReaderRequest;
+import net.cloud.mmo.util.IOUtil;
 
 /**
  * A handler class which specifically deals with requests 
@@ -25,13 +25,13 @@ public class LoadRequestHandler {
 	/**
 	 * Attempt to handle a BufferedReaderRequest.<br>
 	 * That is, it will create a BufferedReader to the requested file and 
-	 * notify the Request object that it is ready or that an exception occured.
+	 * notify the Request object that it is ready or that an exception occurred.
 	 * @param req The request to fulfill
 	 */
 	public void handleRequest(BufferedReaderRequest req) {
 		// Going to create a BufferedReader with lots of wrappers. Here goes
 		try {
-			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(req.address().getPath())));
+			BufferedReader br = IOUtil.streamToReader(new FileInputStream(req.address().getPath()));
 			
 			// Now that we've got the reader, assign it to the request
 			req.setFileDescriptor(br);
