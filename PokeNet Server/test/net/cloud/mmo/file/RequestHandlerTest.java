@@ -73,6 +73,8 @@ public class RequestHandlerTest {
 		// Read the test line
 		String readLine = req.getFileDescriptor().readLine();
 		
+		req.getFileDescriptor().close();
+		
 		// Make sure it matches
 		assertTrue(readLine.equals(TEST_LINE));
 	}
@@ -88,6 +90,8 @@ public class RequestHandlerTest {
 		// Write to the file. Just a line
 		req.getFileDescriptor().println(TEST_WRITE);
 		req.getFileDescriptor().flush();
+		
+		req.getFileDescriptor().close();
 		
 		// Make sure the file was at least created
 		assertTrue(Files.exists(Paths.get(tempFile.getAbsolutePath())));

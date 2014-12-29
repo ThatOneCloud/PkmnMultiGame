@@ -35,6 +35,8 @@ public class FileServerTest {
 			// We know what the first line should be
 			String readLine = br.readLine();
 			
+			br.close();
+			
 			// Make sure what we read matches what we expected
 			assertTrue(readLine.equals(TEST_LINE));
 		} catch (FileRequestException | IOException e) {

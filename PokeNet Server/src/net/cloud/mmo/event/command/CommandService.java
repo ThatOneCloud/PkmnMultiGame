@@ -8,6 +8,12 @@ import net.cloud.mmo.event.shutdown.ShutdownHook;
 import net.cloud.mmo.event.shutdown.ShutdownService;
 import net.cloud.mmo.event.shutdown.hooks.CommandServiceShutdownHook;
 
+/**
+ * A CommandService is a service running on its own thread 
+ * that will read commands from the provided input, parse them, 
+ * have them executed via the task engine, and return the result 
+ * of the command through the provided output.
+ */
 public class CommandService implements ShutdownService {
 	
 	/** Reasonable default for polling time on the input */

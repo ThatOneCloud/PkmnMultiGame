@@ -18,9 +18,11 @@ public class CommandPrototypes {
 	// Static initializer - map will get populated the first time this class is referenced
 	static
 	{
-		prototypes.put("test", new TestCommand());
+		// These are alphabetized. Yay order!
+		prototypes.put("cmdscript", new CmdScriptCommand());
 		prototypes.put("echo", new EchoCommand());
 		prototypes.put("shutdown", new ShutdownCommand());
+		prototypes.put("test", new TestCommand());
 	}
 	
 	/**

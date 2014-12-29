@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 
 /**
  * A class filled with utility methods concerning 
@@ -39,6 +40,17 @@ public class IOUtil {
 	public static PrintWriter streamToWriter(OutputStream out)
 	{
 		return new PrintWriter(new BufferedWriter(new OutputStreamWriter(out)));
+	}
+	
+	/**
+	 * Wraps the given StringWriter into a PrintWriter so that the Writer 
+	 * may be used throughout the server. 
+	 * @param stringWriter The StringWriter which will ultimately collect output
+	 * @return A PrintWriter which will write to the StringWriter
+	 */
+	public static PrintWriter writerToString(StringWriter stringWriter)
+	{
+		return new PrintWriter(stringWriter);
 	}
 
 }

@@ -1,1 +1,2 @@
 ::echo "A silly echo script"
+::echo "So that command" -c " scripts can be tested"

@@ -1,0 +1,27 @@
+PokeNet File Server notes
+
+The File Server takes care of file system stuff.  The idea is that other 
+parts of the server don't really need to know about the file system. 
+They can request access to a file.  They can then manipulate that file 
+themselves or have a listener to do it for them.
+
+Steps the system takes:
+1. Request is created
+2. Request is submitted to server
+3. Request gets its turn to be handled
+	3.1 Request has its handle(...) method called
+	3.2 That method then calls the RequestHandler its been given
+4. RequestHandler delegates to a more specific handler
+   (breaking down the problem)
+5. Specific handler takes care of nitty gritty details
+6. Request is notified that it's ready
+
+To create a request, you need a FileAddress. Again, this exists 
+to decouple the file system from the rest of the server modules. 
+FileAddressBuilder is there to help.
+
+In a nutshell, you create and submit a request. 
+You can then wait for the request to be ready and carry on from 
+where you submitted it, or you can specify a listener to take action 
+on the file when it's ready.  So blocking and non-blocking behavior 
+is supported easy-peasy.

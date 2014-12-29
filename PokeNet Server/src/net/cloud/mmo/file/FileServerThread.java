@@ -46,7 +46,6 @@ public class FileServerThread implements Runnable {
 				// It's even so kind as to throw an InterruptedException (ruddy BufferedReader...)
 				// TODO: This is the kind of thing that gets logged
 				System.err.println("FileServerThread interrupted");
-				e.printStackTrace();
 			}
 		}
 
