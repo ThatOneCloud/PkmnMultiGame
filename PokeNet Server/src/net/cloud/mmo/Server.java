@@ -1,17 +1,9 @@
 package net.cloud.mmo;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-
 import net.cloud.mmo.event.command.CommandService;
 import net.cloud.mmo.event.shutdown.ShutdownHandler;
 import net.cloud.mmo.event.task.TaskEngine;
-import net.cloud.mmo.file.FileRequestException;
 import net.cloud.mmo.file.FileServer;
-import net.cloud.mmo.file.address.FileAddressBuilder;
-import net.cloud.mmo.file.request.BufferedReaderRequest;
-import net.cloud.mmo.file.request.FileRequest;
-import net.cloud.mmo.file.request.LoadRequest;
 import net.cloud.mmo.nio.NettyServer;
 import net.cloud.mmo.util.IOUtil;
 
@@ -110,32 +102,6 @@ public class Server {
 		
 		// The FileServer is another service we'll start here
 		shutdownHandler.addHook(FileServer.instance().getShutdownHook());
-		
-		
-		
-		// TODO: remove
-		BufferedReaderRequest req = new BufferedReaderRequest(FileAddressBuilder.newBuilder().createCommandScriptAddress("echo"));
-		try {
-//			FileServer.instance().submit(req);
-//			
-//			System.out.println("waiting");
-//			
-//			req.waitForRequest();
-//			
-//			System.out.println("done waiting");
-//			
-//			BufferedReader br = req.getFileDescriptor();
-			
-			BufferedReader br = FileServer.instance().submitAndWaitForDescriptor(req);
-			
-			System.out.println("reading");
-			
-			System.out.println(br.readLine());
-			
-			System.out.println("done reading");
-		} catch (FileRequestException | IOException e) {
-			e.printStackTrace();
-		}
 	}
 	
 	/**
