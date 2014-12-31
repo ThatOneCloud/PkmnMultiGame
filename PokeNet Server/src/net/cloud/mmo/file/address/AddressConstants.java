@@ -11,6 +11,9 @@ public class AddressConstants {
 	/** Location of command script files */
 	public static final String SPACE_COMMAND_SCRIPTS = "./data/scripts/commands/";
 	
+	/** Location of log report files */
+	public static final String SPACE_LOG_FILES = "./data/logs/";
+	
 	
 	/** Text file extension */
 	public static final String EXT_TEXT = "txt";

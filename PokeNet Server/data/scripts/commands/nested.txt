@@ -1,0 +1,3 @@
+::echo "a nested command script"
+::cmdscript echo
+::echo neat!

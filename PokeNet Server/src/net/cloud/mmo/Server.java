@@ -4,6 +4,7 @@ import net.cloud.mmo.event.command.CommandService;
 import net.cloud.mmo.event.shutdown.ShutdownHandler;
 import net.cloud.mmo.event.task.TaskEngine;
 import net.cloud.mmo.file.FileServer;
+import net.cloud.mmo.logging.Logger;
 import net.cloud.mmo.nio.NettyServer;
 import net.cloud.mmo.util.IOUtil;
 
@@ -102,6 +103,12 @@ public class Server {
 		
 		// The FileServer is another service we'll start here
 		shutdownHandler.addHook(FileServer.instance().getShutdownHook());
+		
+		// Ideally having the Logging service last means it'll shutdown last
+		if(Logger.LOGGING_ENABLED)
+		{
+			shutdownHandler.addHook(Logger.instance().getShutdownHook());
+		}
 	}
 	
 	/**

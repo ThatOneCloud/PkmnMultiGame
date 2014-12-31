@@ -1,5 +1,7 @@
 package net.cloud.mmo.file.address;
 
+import java.time.LocalDateTime;
+
 /**
  * This class is useful for building a FileAddress. (As the name implies...)
  * To use it, obtain a new instance via the static factory method. 
@@ -92,6 +94,31 @@ public class FileAddressBuilder {
 	{
 		this.space = AddressConstants.SPACE_COMMAND_SCRIPTS;
 		this.name = scriptName;
+		this.extension = AddressConstants.EXT_TEXT;
+		
+		return createAddress();
+	}
+	
+	/**
+	 * Create and return a FileAddress which will lead to a file 
+	 * to be used as a log report. This file will be created essentially 
+	 * on a per-run basis where it can be located by time of run.
+	 * @param logName The name to define the log, so there may be specific log files
+	 * @return A FileAddress for creation of a log file
+	 */
+	public FileAddress createLogFileAddress(String logName)
+	{
+		// Name is the current time. The day is a folder, the file is the time
+		this.space = AddressConstants.SPACE_LOG_FILES;
+		LocalDateTime now = LocalDateTime.now();
+		StringBuilder name = new StringBuilder();
+		name.append(now.getMonthValue()).append('-')
+			.append(now.getDayOfMonth()).append('-')
+			.append(now.getYear()).append('/')
+			.append(now.getHour()).append('-')
+			.append(now.getMinute()).append('/')
+			.append(logName);
+		this.name = name.toString();
 		this.extension = AddressConstants.EXT_TEXT;
 		
 		return createAddress();

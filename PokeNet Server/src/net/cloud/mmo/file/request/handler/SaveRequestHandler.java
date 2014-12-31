@@ -1,8 +1,11 @@
 package net.cloud.mmo.file.request.handler;
 
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import net.cloud.mmo.file.FileRequestException;
 import net.cloud.mmo.file.request.PrintWriterRequest;
@@ -32,14 +35,22 @@ public class SaveRequestHandler {
 	{
 		// Going to create a PrintWriter with lots of wrappers. Here goes
 		try {
-			PrintWriter pw = IOUtil.streamToWriter(new FileOutputStream(req.address().getPath()));
-
+			String address = req.address().getPath();
+			Path path = Paths.get(address);
+			
+			// Create any directories leading up to the path that don't already exist
+			// I'm a little concerned this may fail in the future, if something requests a bad path
+			Files.createDirectories(path.getParent());
+			
+			// Create a PrintWriter to the given address
+			PrintWriter pw = IOUtil.streamToWriter(new FileOutputStream(address));
+			
 			// Now that we've got the writer, assign it to the request
 			req.setFileDescriptor(pw);
 
 			// And notify the request it's ready
 			req.notifyReady();
-		} catch (FileNotFoundException e) {
+		} catch (IOException e) {
 			// Uh oh. The file couldn't be opened. Let the request know so the exception can propagate
 			req.notifyHandleException(new FileRequestException("Requested file could not be opened", e));
 		}
