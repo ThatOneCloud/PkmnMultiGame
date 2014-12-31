@@ -63,13 +63,14 @@ public class Server {
 
 		// Sit back, wait for someone to tell us it's shutdown time
 		try {
-			shutdownHandler.waitForShutdown(IOUtil.SYS_OUT);
+			shutdownHandler.waitForShutdown(Logger.writer());
 			
-			System.out.println("Shutdown complete");
+			Logger.writer().println("Shutdown complete");
+			Logger.writer().flush();
 		} catch (Exception e) {
 			// Something went wrong with the shutdown process.. not much we can do.
 			// Just won't be a graceful shutdown.
-			e.printStackTrace();
+			Logger.instance().logException("Could not gracefully shutdown", e);
 		}
 	}
 	
@@ -89,13 +90,12 @@ public class Server {
 			// Add the hook from the Netty server
 			shutdownHandler.addHook(nettyServer.getShutdownHook());
 		} catch (InterruptedException e) {
-			System.err.println("Could not start server. Shutting down.");
-			e.printStackTrace();
+			Logger.instance().logException("Could not start server. Shutting down.", e);
 			System.exit(1);
 		}
 
 		// Start a CommandService on the standard in and out
-		CommandService consoleCommandService = new CommandService(IOUtil.SYS_IN, IOUtil.SYS_OUT);
+		CommandService consoleCommandService = new CommandService(IOUtil.SYS_IN, Logger.writer());
 		shutdownHandler.addHook(consoleCommandService.getShutdownHook());
 		
 		// Grab the TaskEngine, put its shutdown hook in here
@@ -105,7 +105,7 @@ public class Server {
 		shutdownHandler.addHook(FileServer.instance().getShutdownHook());
 		
 		// Ideally having the Logging service last means it'll shutdown last
-		if(Logger.LOGGING_ENABLED)
+		if(ConfigConstants.LOGGING_ENABLED)
 		{
 			shutdownHandler.addHook(Logger.instance().getShutdownHook());
 		}
@@ -119,12 +119,13 @@ public class Server {
 	{
 		// But hey, that's what a ShutdownHandler is for, right?
 		try {
-			System.out.println("Starting shutdown");
-			
-			shutdownHandler.shutdownAll(IOUtil.SYS_OUT);
+			Logger.writer().println("Starting shutdown");
+			Logger.writer().flush();
+		
+			shutdownHandler.shutdownAll(Logger.writer());
 		} catch (Exception e) {
 			// Hey look. The end of an exception chain
-			e.printStackTrace();
+			Logger.instance().logException("Shutdown resulted in an exception", e);
 		}
 	}
 

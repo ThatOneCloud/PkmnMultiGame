@@ -5,6 +5,7 @@ import java.util.Optional;
 import net.cloud.mmo.event.shutdown.ShutdownHook;
 import net.cloud.mmo.event.shutdown.ShutdownService;
 import net.cloud.mmo.event.shutdown.hooks.NettyShutdownHook;
+import net.cloud.mmo.logging.Logger;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
@@ -52,7 +53,8 @@ public class NettyServer implements ShutdownService {
 		// This allows for incoming connections, waits until binding is done
 		ChannelFuture future = bootStrap.bind(PORT).sync();
 
-		System.out.println("PokeNet Server is now running on port " + PORT);
+		Logger.writer().println("PokeNet Server is now running on port " + PORT);
+		Logger.writer().flush();
 
 		// Create the ShutdownHook now
 		shutdownHook = new NettyShutdownHook(future, bossGroup, workerGroup);

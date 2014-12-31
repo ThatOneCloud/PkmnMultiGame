@@ -4,6 +4,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import net.cloud.mmo.event.task.TaskException;
+import net.cloud.mmo.logging.Logger;
 import net.cloud.mmo.util.function.QuadFunction;
 import net.cloud.mmo.util.function.TriFunction;
 
@@ -91,8 +92,6 @@ public class ErrorLoggingVoidTask implements VoidTask {
 	@Override
 	public final void execute()
 	{
-		// TODO: Ship errors off to some logging facility
-		
 		// Delegate to the underlying task
 		try {
 			
@@ -101,17 +100,14 @@ public class ErrorLoggingVoidTask implements VoidTask {
 		// Catch issues in this order - report them slightly differently
 		// Re-throw so the worker thread can deal with it appropriately as well
 		} catch(TaskException taskExc) {
-			taskExc.printStackTrace();
+			Logger.instance().logException("Task execution resulting in an exception", taskExc);
 			throw taskExc;
 		} catch(RuntimeException runExc) {
-			runExc.printStackTrace();
+			Logger.instance().logException("Task execution resulting in an exception", runExc);
 			throw runExc;
 		} catch(Exception exc) {
-			exc.printStackTrace();
+			Logger.instance().logException("Task execution resulting in an exception", exc);
 			throw exc;
-		} catch(Throwable t) {
-			t.printStackTrace();
-			throw t;
 		}
 	}
 

@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import net.cloud.mmo.entity.player.Player;
 import net.cloud.mmo.game.World;
+import net.cloud.mmo.logging.Logger;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
@@ -29,7 +30,8 @@ public class PacketHandler extends ChannelInboundHandlerAdapter {
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
 		// Exception occurred, close the connection
-		System.err.println(cause.getClass().getName() + " :\n   " + cause.getMessage() + "\n   Closing connection.");
+		Logger.writer().println("[ERR] " + cause.getClass().getName() + " :\n   " + cause.getMessage() + "\n   Closing connection.");
+		Logger.writer().flush();
 		ctx.close();
 	}
 

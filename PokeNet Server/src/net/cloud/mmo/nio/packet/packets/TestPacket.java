@@ -2,6 +2,7 @@ package net.cloud.mmo.nio.packet.packets;
 
 import io.netty.buffer.ByteBuf;
 import net.cloud.mmo.entity.player.Player;
+import net.cloud.mmo.logging.Logger;
 import net.cloud.mmo.nio.packet.Packet;
 import net.cloud.mmo.nio.packet.PacketConstants;
 
@@ -29,7 +30,8 @@ public class TestPacket implements Packet {
 		// Write some data
 		buffer.writeInt(testValue);
 
-		System.out.println("Test packet encoded");
+		Logger.writer().println("Test packet encoded");
+		Logger.writer().flush();
 	}
 
 	@Override
@@ -40,7 +42,8 @@ public class TestPacket implements Packet {
 
 	@Override
 	public void handlePacket(Player player) {
-		System.out.println(player + ": Handling test packet, value: " + testValue);
+		Logger.writer().println(player + ": Handling test packet, value: " + testValue);
+		Logger.writer().flush();
 	}
 
 }

@@ -1,6 +1,7 @@
 package net.cloud.mmo.file.request.listener;
 
 import net.cloud.mmo.file.FileRequestException;
+import net.cloud.mmo.logging.Logger;
 
 /**
  * Listener to take action when a FileRequest has been served and is ready. 
@@ -31,9 +32,7 @@ public interface FileRequestListener<T> {
 	 */
 	public default void requestException(FileRequestException ex)
 	{
-		// TODO: This is where logging should happen
-		System.err.println("FileRequestListener: requestException called");
-		ex.printStackTrace();
+		Logger.instance().logException("FileRequestListener: requestException called", ex);
 	}
 
 }

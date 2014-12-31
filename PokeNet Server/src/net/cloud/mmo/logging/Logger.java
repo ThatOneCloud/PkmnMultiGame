@@ -2,6 +2,7 @@ package net.cloud.mmo.logging;
 
 import java.io.PrintWriter;
 
+import net.cloud.mmo.ConfigConstants;
 import net.cloud.mmo.event.shutdown.ShutdownHook;
 import net.cloud.mmo.event.shutdown.ShutdownService;
 import net.cloud.mmo.event.shutdown.hooks.LoggerShutdownHook;
@@ -19,13 +20,6 @@ import net.cloud.mmo.util.IOUtil;
  */
 public class Logger implements ShutdownService {
 	
-	/** 
-	 * Determines if log files will be created. No matter what this service will run, 
-	 * but if this flag is true, logging will be sent to both SYS_OUT <b>and</b> a log file. 
-	 * If it is false, the output will <b>only</b> go to SYS_OUT.
-	 */
-	public static final boolean LOGGING_ENABLED = false;
-	
 	/** Singleton instance of the Logger class */
 	private static Logger instance;
 	
@@ -42,7 +36,7 @@ public class Logger implements ShutdownService {
 	private Logger()
 	{
 		// Stop short if logging isn't a-go
-		if(!LOGGING_ENABLED)
+		if(!ConfigConstants.LOGGING_ENABLED)
 		{
 			return;
 		}
@@ -80,7 +74,7 @@ public class Logger implements ShutdownService {
 	public void submit(LogReport report)
 	{
 		// Don't bother submitting anything if we're not logging
-		if(!LOGGING_ENABLED)
+		if(!ConfigConstants.LOGGING_ENABLED)
 		{
 			return;
 		}
@@ -95,8 +89,11 @@ public class Logger implements ShutdownService {
 	 * @param msg A brief message detailing what happened
 	 * @param ex The exception that occurred
 	 */
-	public void submitExceptionReport(String msg, Exception ex)
+	public void logException(String msg, Exception ex)
 	{
+		// For exceptions, throw out a notice in the console as well
+		this.logWriter().println("[EXCEPTION]" + msg);
+		this.logWriter().flush();
 		submit(new ExceptionLogReport(msg, ex));
 	}
 	
@@ -107,8 +104,11 @@ public class Logger implements ShutdownService {
 	 * @param ex The exception that occurred
 	 * @param section Which log file this report should be placed in
 	 */
-	public void submitExceptionReport(String msg, Exception ex, LogSection section)
+	public void logException(String msg, Exception ex, LogSection section)
 	{
+		// For exceptions, throw out a notice in the console as well
+		this.logWriter().println("[EXCEPTION]" + msg);
+		this.logWriter().flush();
 		submit(new ExceptionLogReport(msg, ex, section));
 	}
 	
@@ -118,7 +118,7 @@ public class Logger implements ShutdownService {
 	 * @param msg The message to report
 	 * @param section Which log file this report should be placed in
 	 */
-	public void submitMessageReport(String msg, LogSection section)
+	public void logMessage(String msg, LogSection section)
 	{
 		submit(new MessageLogReport(msg, section));
 	}
@@ -128,7 +128,7 @@ public class Logger implements ShutdownService {
 	 * and simple report. The default log file will be used. 
 	 * @param msg The message to report
 	 */
-	public void submitMessageReport(String msg)
+	public void logMessage(String msg)
 	{
 		submit(new MessageLogReport(msg));
 	}
@@ -145,7 +145,7 @@ public class Logger implements ShutdownService {
 	public PrintWriter logWriter()
 	{
 		// If logging isn't enabled, just throw back SYS_OUT
-		if(!LOGGING_ENABLED)
+		if(!ConfigConstants.LOGGING_ENABLED)
 		{
 			return IOUtil.SYS_OUT;
 		}
