@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import net.cloud.mmo.ConfigConstants;
 import net.cloud.mmo.file.FileRequestException;
 import net.cloud.mmo.file.FileServer;
 import net.cloud.mmo.file.address.FileAddressBuilder;
@@ -17,9 +18,6 @@ import net.cloud.mmo.util.IOUtil;
  * processed and saved to file.
  */
 public class LoggerService implements Runnable {
-	
-	/** Amount of time in ms between each saving of the queued reports */
-	private static final int CYCLE_TIME = 5000;
 	
 	/** Queue of all reports waiting to be written to file */
 	private Queue<LogReport> reportQueue;
@@ -82,7 +80,7 @@ public class LoggerService implements Runnable {
 			
 			// Now that the queue has been emptied, wait before doing it again
 			try {
-				Thread.sleep(CYCLE_TIME);
+				Thread.sleep(ConfigConstants.LOG_CYCLE_TIME);
 			} catch (InterruptedException e) {
 				// This is a normal part of shutting down
 				System.err.println("Logger Service interrupted");

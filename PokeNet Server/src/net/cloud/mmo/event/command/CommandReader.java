@@ -7,6 +7,8 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import net.cloud.mmo.logging.Logger;
+
 /**
  * Despite the name, no this class is not a subclass of Reader. 
  * Rather, it takes a BufferedReader and will read lines from it 
@@ -82,13 +84,22 @@ public class CommandReader {
 			
 			// Wait until the future has a result - then show it
 			messageOut(commandFuture.get());
+			
+			// Since we've got results now, log that a command was used
+			Logger.instance().logCommand(commandLine, commandFuture.get());
 		} catch (CommandException e) {
 			// Oops, something came up while handling the command.
 			// Message in the exception is meant for display
 			messageOut(e.getMessage());
+			
+			// The results are an exception message, but that's something to log as well
+			Logger.instance().logCommand(commandLine, e.getMessage());
 		} catch (InterruptedException | ExecutionException | CancellationException e) {
 			// The future's result couldn't be retrieved
 			messageOut("Results of command not available.");
+			
+			// There are no results, but log that nonetheless
+			Logger.instance().logCommand(commandLine, "Results of command not available.");
 		}
 	}
 	
