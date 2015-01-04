@@ -45,7 +45,6 @@ public class Server {
 			instance = new Server();
 		}
 		
-		// This is started from main(). Let's just.. not check it. It'll be our secret
 		return instance;
 	}
 	
@@ -77,7 +76,7 @@ public class Server {
 	/**
 	 * Start the sub-services the main thread is responsible for. 
 	 * These include the Netty Server, a CommandService listening on the console, 
-	 * and the TaskEngine.
+	 * the Task Engine, the file server, and the logging system.
 	 */
 	private void startServices()
 	{

@@ -18,8 +18,8 @@ import net.cloud.mmo.nio.packet.PacketConstants;
  */
 public class CompositePacket implements Packet {
 	
-	// Composed via a list of other packets
-	List<Packet> packets;
+	/** Composed via a list of other packets */
+	private List<Packet> packets;
 	
 	/** Default constructor leaves all data fields default or null */
 	public CompositePacket() {}
@@ -42,6 +42,7 @@ public class CompositePacket implements Packet {
 		return PacketConstants.COMPOSITE_PACKET;
 	}
 
+	/** Encode each of the packets this one is composed of, one after the other */
 	@Override
 	public void encode(ByteBuf buffer) {
 		// Place the number of packets first (may not be necessary, but clears things up)
@@ -59,6 +60,11 @@ public class CompositePacket implements Packet {
 		}
 	}
 
+	/**
+	 * Decode the packet, by decoding each of the packets this one is composed of. 
+	 * Do note that this circumvents PacketDecoder, so each 'composed packet' 
+	 * does not go through the channel pipeline. 
+	 */
 	@Override
 	public Packet decode(ByteBuf data) {
 		// Sorta different - create a blank Packet and initialize its list
@@ -82,6 +88,7 @@ public class CompositePacket implements Packet {
 		return newPacket;
 	}
 
+	/** Handle each packet this one is composed of, in order */
 	@Override
 	public void handlePacket(Player player) {
 		// Handle each of the packets in turn

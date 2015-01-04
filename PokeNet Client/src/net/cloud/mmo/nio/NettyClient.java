@@ -1,7 +1,13 @@
 package net.cloud.mmo.nio;
 
+import java.util.Optional;
+
 import net.cloud.mmo.entity.player.Player;
+import net.cloud.mmo.event.shutdown.ShutdownHook;
+import net.cloud.mmo.event.shutdown.ShutdownService;
+import net.cloud.mmo.event.shutdown.hooks.NettyShutdownHook;
 import net.cloud.mmo.game.World;
+import net.cloud.mmo.logging.Logger;
 import net.cloud.mmo.nio.packet.PacketSender;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
@@ -10,15 +16,28 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
-public class NettyClient {
+/**
+ * The front of the network I/O code. 
+ * Deals with creating a network connection and initializing 
+ * the network channels.
+ */
+public class NettyClient implements ShutdownService {
 	
+	/** Network address of the server */
 	public static final String ADDRESS = "localhost";
 	
+	/** Port to connect to the server on */
 	public static final int PORT = 43594;
+	
+	/** The ShutdownHook that'll take care of shutting down the connection */
+	private NettyShutdownHook shutdownHook;
+	
+	/** The Bootstrap object Netty was started on */
+	private Bootstrap bootstrap;
 
 	/**
 	 * Startup procedure for the client's network communication.
-	 * Sets up Netty and attempts to connect to the server.
+	 * Sets up Netty, but will not attempt connecting yet
 	 * @throws InterruptedException If a channel operation was interrupted
 	 */
 	public void startup() throws InterruptedException
@@ -26,43 +45,48 @@ public class NettyClient {
 		// Create an executor for the client's I/O events
 		EventLoopGroup workerGroup = new NioEventLoopGroup();
 
-		try {
+		// Start up a boostrapper for the client
+		bootstrap = new Bootstrap();
+		bootstrap.group(workerGroup);
+		bootstrap.channel(NioSocketChannel.class);
+		bootstrap.option(ChannelOption.SO_KEEPALIVE, true);
+		bootstrap.handler(new NettyClientChannelInitializer());
+	}
+	
+	/**
+	 * Attempts to connect to the server. When a connection 
+	 * is made, then this client's player object is created.
+	 * @throws InterruptedException If the client could not connect
+	 */
+	public void connectToServer() throws InterruptedException
+	{
+		// Try to connect to the server
+		ChannelFuture f = bootstrap.connect(ADDRESS, PORT).sync();
+		Logger.writer().println("Connected to server.");
+		Logger.writer().flush();
+		
+		// Create the ShutdownHook now
+		shutdownHook = new NettyShutdownHook(f, bootstrap.group());
 
-			// Start up a boostrapper for the client
-			Bootstrap b = new Bootstrap();
-			b.group(workerGroup);
-			b.channel(NioSocketChannel.class);
-			b.option(ChannelOption.SO_KEEPALIVE, true);
-			b.handler(new NettyClientChannelInitializer());
+		// A PacketSender is made based on the channel that was returned
+		PacketSender packetSender = new PacketSender(f.channel());
 
-			// Immediately tries to connect to the server
-			ChannelFuture f = b.connect(ADDRESS, PORT).sync();
-			System.out.println("Connected to server.");
+		// A new Player object is created and given the PacketSender
+		World.getInstance().setPlayer(new Player(packetSender));
 
-//			// Create a PacketSender
-//			PacketSender sender = new PacketSender(f.channel());
-//			sender.sendTestPacket(54);
-//			System.out.println("Sent test packet.");
-			
-			// A PacketSender is made based on the channel that was returned
-			PacketSender packetSender = new PacketSender(f.channel());
-			
-			// A new Player object is created and given the PacketSender
-			World.getInstance().setPlayer(new Player(packetSender));
-			
-			// That player is now going to try to login
-			World.getInstance().getPlayer().getPacketSender().sendLogin();
-
-			// Blocks until the connection to the server is closed
-			f.channel().closeFuture().sync();
-			System.out.println("Channel closed.");
-
-		} finally {
-
-			// When all is said and done, stop the I/O thread
-			workerGroup.shutdownGracefully();
-
-		}
+		// That player is now going to try to login
+		World.getInstance().getPlayer().getPacketSender().sendLogin();
+	}
+	
+	/** 
+	 * Note that this hook is not created until connection is attempted. 
+	 * In other words, it should not be added to a ShutdownHandler right away.
+	 */
+	@Override
+	public ShutdownHook getShutdownHook() throws NullPointerException {
+		// Return the hook or throw NPE if it is null
+		return Optional.ofNullable(shutdownHook)
+				.orElseThrow(() -> new NullPointerException("NettyServer has not created a ShutdownHook"));
 	}
 
 }

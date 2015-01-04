@@ -17,6 +17,6 @@ public class ConfigConstants {
 	public static final int LOG_CYCLE_TIME = 5000;
 	
 	/** Number of threads the task engine will have available for running tasks */
-	public static final int THREAD_POOL_SIZE = 2;
+	public static final int THREAD_POOL_SIZE = 1;
 
 }

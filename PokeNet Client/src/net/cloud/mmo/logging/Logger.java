@@ -6,7 +6,6 @@ import net.cloud.mmo.ConfigConstants;
 import net.cloud.mmo.event.shutdown.ShutdownHook;
 import net.cloud.mmo.event.shutdown.ShutdownService;
 import net.cloud.mmo.event.shutdown.hooks.LoggerShutdownHook;
-import net.cloud.mmo.logging.report.CommandLogReport;
 import net.cloud.mmo.logging.report.ExceptionLogReport;
 import net.cloud.mmo.logging.report.LogReport;
 import net.cloud.mmo.logging.report.LogSection;
@@ -132,16 +131,6 @@ public class Logger implements ShutdownService {
 	public void logMessage(String msg)
 	{
 		submit(new MessageLogReport(msg));
-	}
-	
-	/**
-	 * Submit a log detailing some command that was used on the server. 
-	 * @param line The command that was issued
-	 * @param results The results of that command
-	 */
-	public void logCommand(String line, String results)
-	{
-		submit(new CommandLogReport(line, results));
 	}
 	
 	/**

@@ -14,9 +14,9 @@ public class World {
 	/** The Player using this client */
 	private Player player;
 	
+	/** Default private constructor */
 	private World()
 	{
-		
 	}
 	
 	/**

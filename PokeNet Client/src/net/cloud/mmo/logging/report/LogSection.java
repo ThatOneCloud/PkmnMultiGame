@@ -8,9 +8,6 @@ package net.cloud.mmo.logging.report;
  */
 public enum LogSection {
 	
-	/** Reports on commands that were used and their results */
-	COMMAND("commands"),
-	
 	/** Reports that don't necessary belong to any other section */
 	MISC("misc");
 	

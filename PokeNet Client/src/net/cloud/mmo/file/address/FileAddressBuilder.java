@@ -85,21 +85,6 @@ public class FileAddressBuilder {
 	}
 	
 	/**
-	 * Create and return a FileAddress object in one go. In particular, 
-	 * the address will lead to a file for executing a command script.
-	 * @param scriptName The name of the script
-	 * @return A FileAddress which can be used to request the file
-	 */
-	public FileAddress createCommandScriptAddress(String scriptName)
-	{
-		this.space = AddressConstants.SPACE_COMMAND_SCRIPTS;
-		this.name = scriptName;
-		this.extension = AddressConstants.EXT_TEXT;
-		
-		return createAddress();
-	}
-	
-	/**
 	 * Create and return a FileAddress which will lead to a file 
 	 * to be used as a log report. This file will be created essentially 
 	 * on a per-run basis where it can be located by time of run.
