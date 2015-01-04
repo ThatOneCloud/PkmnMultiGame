@@ -1,6 +1,7 @@
 package net.cloud.mmo.util;
 
 import java.nio.ByteBuffer;
+import java.text.ParseException;
 
 import io.netty.buffer.ByteBuf;
 
@@ -127,6 +128,103 @@ public class StringUtil {
 		}
 		
 		return bytes;
+	}
+	
+	/**
+	 * Figure out what the next token is in a command string, and return it. 
+	 * The token is removed from the StringBuilder, so the first character, if any remain, 
+	 * will be the one immediately following the token.  Leading whitespace is removed.<br>
+	 * The token is defined to be either the block of characters between the beginning 
+	 * of the string and the next space, or the block of characters between a set of 
+	 * quotation marks.<br>
+	 * Ex: <code>' word' returns 'word'</code>, and 
+	 * <code> '"multiple words here"' returns 'multiple words here'</code>
+	 * @param sb The StringBuilder containing the string to parse
+	 * @return The next token in the string, as defined.
+	 * @throws ParseException If the StringBuilder contained no token, or quotations were mismatched
+	 */
+	public static String extractCommandToken(StringBuilder sb) throws ParseException
+	{
+		// A null object would be bad.
+		if(sb == null)
+		{
+			throw new ParseException("Null StringBuilder", -1);
+		}
+		
+		// Trim spaces from beginning
+		trimLeadingSpaces(sb);
+		
+		// Make sure there are still some characters to work on
+		if(sb.length() == 0)
+		{
+			throw new ParseException("Command is empty", -1);
+		}
+				
+		// Decide if the end of the token will be a space or a quotation mark
+		char endOfToken = sb.charAt(0) == '"' ? '"' : ' ';
+		
+		// Now either way, we'll need to know where to stop
+		int endIndex = sb.length();
+		
+		// A space is what will divide this token
+		if(endOfToken == ' ')
+		{
+			// So look for the next space in the string
+			int spaceIndex = sb.indexOf(" ");
+			
+			// If it came back -1, it wasn't in there. Otherwise, the space is our cutoff
+			endIndex = (spaceIndex == -1) ? sb.length() : spaceIndex;
+		}
+		// A pair of quotations is what will divide the token
+		else
+		{
+			// Well, we know a quotation was up front. Remove that one to start
+			sb.deleteCharAt(0);
+			
+			// Now look for the next quotation mark - the matching one
+			int endQuoteIndex = sb.indexOf("\"");
+			
+			// See if the ending quotation mark was found
+			if(endQuoteIndex == -1)
+			{
+				// Nope. Mismatched. Unacceptable formatting
+				throw new ParseException("No matching set of quotation marks", sb.length()-1);
+			} else {
+				// Yup. So it becomes the end index
+				endIndex = endQuoteIndex;
+			}
+		}
+		
+		// So now the token extends from the beginning to the endIndex
+		String token = sb.substring(0, endIndex);
+		
+		// We'll trim off what we're returning right here - since we know the index
+		sb.delete(0, endIndex+1);
+		
+		// And trim off any leading spaces that have been introduced
+		trimLeadingSpaces(sb);
+		
+		// And return the token that we found
+		return token;
+	}
+	
+	/**
+	 * Remove spaces from the beginning of the StringBuilder
+	 * @param sb The StringBuilder to trim
+	 */
+	public static void trimLeadingSpaces(StringBuilder sb)
+	{
+		// A null object would be bad.
+		if(sb == null)
+		{
+			return;
+		}
+
+		// Trim spaces from beginning
+		while(sb.length() > 0 && sb.charAt(0) == ' ')
+		{
+			sb.deleteCharAt(0);
+		}
 	}
 
 }
