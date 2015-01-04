@@ -3,6 +3,7 @@ package net.cloud.mmo.nio.packet.packets;
 import io.netty.buffer.ByteBuf;
 import net.cloud.mmo.entity.player.LoginState;
 import net.cloud.mmo.entity.player.Player;
+import net.cloud.mmo.logging.Logger;
 import net.cloud.mmo.nio.packet.Packet;
 import net.cloud.mmo.nio.packet.PacketConstants;
 import net.cloud.mmo.nio.packet.ReceiveOnlyPacket;
@@ -81,18 +82,20 @@ public class LoginPacket extends SendOnlyPacket {
 			case VALID:
 				// Yay, we can login!
 				player.setLoginState(LoginState.VERIFIED);
-				System.out.println("Got login validation from server");
+				Logger.writer().println("Got login validation from server");
 				break;
 				
 			case INVALID_PASSWORD:
-				System.out.println("Invalid password");
+				Logger.writer().println("Invalid password");
 				break;
 				
 			case INVALID_USERNAME:
-				System.out.println("Invalid username");
+				Logger.writer().println("Invalid username");
 				break;
 				
 			}
+			
+			Logger.writer().flush();
 		}
 		
 	}
