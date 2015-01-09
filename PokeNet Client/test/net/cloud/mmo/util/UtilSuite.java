@@ -6,7 +6,9 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-	StringUtilTest.class
+	ReverseIteratorTest.class,
+	StringUtilTest.class,
+	StrongIteratorTest.class
 })
 public class UtilSuite {
 

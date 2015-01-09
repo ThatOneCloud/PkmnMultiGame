@@ -1,5 +1,6 @@
-package net.cloud.mmo;
+package net.cloud;
 
+import net.cloud.gfx.GfxSuite;
 import net.cloud.mmo.file.FileSuite;
 import net.cloud.mmo.task.TaskSuite;
 import net.cloud.mmo.util.UtilSuite;
@@ -12,7 +13,8 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({ 
 	UtilSuite.class,
 	TaskSuite.class,
-	FileSuite.class
+	FileSuite.class,
+	GfxSuite.class
 })
 public class AllTests {
 	// Nothing goes here. Annotations are all we need
