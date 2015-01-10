@@ -2,6 +2,7 @@ package net.cloud.gfx.elements;
 
 import java.util.LinkedList;
 import java.util.ListIterator;
+import java.util.function.Consumer;
 
 import net.cloud.mmo.util.ReverseIterator;
 import net.cloud.mmo.util.StrongIterator;
@@ -61,6 +62,36 @@ public class ElementList {
 	}
 	
 	/**
+	 * Remove the given element from the list. This will remove the same object, not an 
+	 * element which is simply Object equal to the element. This method is synchronized and 
+	 * modifies the list. 
+	 * @param e The Element to remove from this list
+	 * @return True if an element was removed
+	 */
+	public synchronized boolean remove(Element e)
+	{
+		return list.remove(e);
+	}
+	
+	/**
+	 * Remove all of the elements from this list. 
+	 */
+	public synchronized void removeAll()
+	{
+		list.clear();
+	}
+	
+	/**
+	 * Performs the action on all of the elements. The action is performed 
+	 * in the iterator order. 
+	 * @param action The action to take on each element
+	 */
+	public synchronized void forEach(Consumer<? super Element> action)
+	{
+		list.forEach(action);
+	}
+	
+	/**
 	 * Obtain an iterator over the elements in the list. 
 	 * Consider it a read-only iterator. This is not synchronized, so multiple 
 	 * reads can occur at once but a write will make the iteration fail. 
@@ -72,9 +103,18 @@ public class ElementList {
 		return new StrongIterator<Element>(list.iterator());
 	}
 	
+	/**
+	 * Obtain an iterator over the elements in the list. The elements will be given 
+	 * in the reverse order (by descending priority). Consider it a read-only iterator. 
+	 * It is not synchronized, so multiple reads can occur at once but a write will make the 
+	 * iteration fail. The iterator will throw a checked exception if this list is modified 
+	 * while iteration is happening.
+	 * @return An iterator over the elements in this list, in descending order
+	 */
 	public StrongIterator<Element> reverseIterator()
 	{
 		// Composition! ListIterator wrapped in a ReverseIterator wrapped in a StrongIterator
+		// Doh! LinkedList offers a descending iterator
 		return new StrongIterator<Element>(new ReverseIterator<Element>(list.listIterator()));
 	}
 

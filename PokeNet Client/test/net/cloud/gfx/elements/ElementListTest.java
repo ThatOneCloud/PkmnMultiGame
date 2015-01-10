@@ -16,6 +16,24 @@ public class ElementListTest {
 	private static TestElement el1 = new TestElement(1, 0, 0, 0, 0);
 	private static TestElement el2 = new TestElement(3, 0, 0, 0, 0);
 	private static TestElement el3 = new TestElement(5, 0, 0, 0, 0);
+	
+	@Test
+	public void testRemove() {
+		// Create and fill a list to work on. Assumes add() works correctly
+		ElementList list = new ElementList();
+		list.add(el3);
+		list.add(el2);
+		list.add(el1);
+		
+		// First remove should be successful. After that, not so much. Already gone.
+		assertTrue(list.remove(el2));
+		assertFalse(list.remove(el2));
+		
+		// To test remove all, after it both of the remaining elements should be gone
+		list.removeAll();
+		assertFalse(list.remove(el1));
+		assertFalse(list.remove(el3));
+	}
 
 	/** 
 	 * Test straight forward iteration.

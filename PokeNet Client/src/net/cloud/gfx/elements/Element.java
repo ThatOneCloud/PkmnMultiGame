@@ -106,8 +106,9 @@ public abstract class Element {
 	 * @param g The graphics object to draw to
 	 * @param offsetX How far off on the X axis this element is from the Graphic's origin
 	 * @param offsetY How far off on the Y axis this element is from the Graphic's origin
+	 * @throws IteratorException If there was an issue iterating child elements
 	 */
-	public abstract void drawElement(Graphics g, int offsetX, int offsetY);
+	public abstract void drawElement(Graphics g, int offsetX, int offsetY) throws IteratorException;
 
 	/** 
 	 * Register that this element has focus, both with the 
