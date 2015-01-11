@@ -23,7 +23,6 @@ public abstract class Container extends Element {
 	{
 		super();
 		
-		// Use a LinkedList, nature of usage. I can think of so many 
 		children = new ElementList();
 	}
 	
@@ -37,6 +36,8 @@ public abstract class Container extends Element {
 	 */
 	public Container(Element parent, int priority, int x, int y) {
 		super(parent, priority, x, y, 0, 0, false);
+		
+		children = new ElementList();
 	}
 	
 	/**
@@ -51,6 +52,8 @@ public abstract class Container extends Element {
 	 */
 	public Container(Element parent, int priority, int x, int y, int width, int height) {
 		super(parent, priority, x, y, width, height, false);
+		
+		children = new ElementList();
 	}
 	
 	/**
@@ -72,6 +75,8 @@ public abstract class Container extends Element {
 			int height, 
 			boolean hasFocus) {
 		super(parent, priority, x, y, width, height, hasFocus);
+		
+		children = new ElementList();
 	}
 	
 	/** 

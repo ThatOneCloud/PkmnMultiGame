@@ -18,5 +18,8 @@ public class ConfigConstants {
 	
 	/** Number of threads the task engine will have available for running tasks */
 	public static final int THREAD_POOL_SIZE = 1;
+	
+	/** Frames per second the UI will attempt to draw at */
+	public static final int FRAME_RATE = 15;
 
 }

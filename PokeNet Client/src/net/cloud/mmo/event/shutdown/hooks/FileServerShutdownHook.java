@@ -47,12 +47,11 @@ public class FileServerShutdownHook implements ShutdownHook {
 			thread.interrupt();
 		} catch (Exception e) {
 			// Chain exceptions
-			throw new ShutdownException("Could not interrupt command service thread", e);
+			throw new ShutdownException("Could not interrupt file server thread", e);
 		}
 		
 		out.println("File server shut down");
 		out.flush();
-
 	}
 
 }

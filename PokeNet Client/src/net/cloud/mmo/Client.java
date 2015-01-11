@@ -1,5 +1,6 @@
 package net.cloud.mmo;
 
+import net.cloud.gfx.Mainframe;
 import net.cloud.mmo.event.shutdown.ShutdownHandler;
 import net.cloud.mmo.event.task.TaskEngine;
 import net.cloud.mmo.file.FileServer;
@@ -94,6 +95,9 @@ public class Client {
 	 */
 	private void startServices()
 	{
+		// Grab the frame, which will kick off quite the series of events. (Including getting it showing)
+		shutdownHandler.addHook(Mainframe.instance().gfx().getShutdownHook());
+		
 		// Grab the TaskEngine, put its shutdown hook in here
 		shutdownHandler.addHook(TaskEngine.getInstance().getShutdownHook());
 
