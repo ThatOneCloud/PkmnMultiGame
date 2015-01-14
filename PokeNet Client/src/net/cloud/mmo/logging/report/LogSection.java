@@ -8,6 +8,9 @@ package net.cloud.mmo.logging.report;
  */
 public enum LogSection {
 	
+	/** Report for the status of the system (StatReport) */
+	STATS("stats"),
+	
 	/** Reports that don't necessary belong to any other section */
 	MISC("misc");
 	

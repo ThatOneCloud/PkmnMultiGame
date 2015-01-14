@@ -6,6 +6,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+	BoundedCircularIntArrayTest.class,
 	ReverseIteratorTest.class,
 	StringUtilTest.class,
 	StrongIteratorTest.class

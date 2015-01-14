@@ -4,6 +4,7 @@ import javax.swing.JPanel;
 
 import net.cloud.mmo.ConfigConstants;
 import net.cloud.mmo.logging.Logger;
+import net.cloud.mmo.tracking.StatTracker;
 
 /**
  * This runnable object will run in a loop and have the game graphics redrawn. 
@@ -62,6 +63,9 @@ public class DrawLogic implements Runnable {
 				sleepDuration = sleepDuration < 0 ? 0 : sleepDuration;
 				
 				Thread.sleep(sleepDuration);
+				
+				// Now is the time to report how long the draw loop ended up taking (the end result)
+				StatTracker.instance().updateDrawStats((int) (System.currentTimeMillis() - loopStart));
 			} catch (InterruptedException e) {
 				Logger.instance().logException("Draw thread interrupted", e);
 			}

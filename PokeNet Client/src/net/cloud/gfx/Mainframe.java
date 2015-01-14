@@ -73,6 +73,10 @@ public class Mainframe extends JFrame {
 	{
 		// Set the size of the frame. At least, what it'll hopefully come out to be. Darn layouts.
 //		super.setPreferredSize(new Dimension(WIDTH, HEIGHT));
+		
+		// Make closing it attempt graceful shutdown
+		super.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		super.addWindowListener(new WindowEventHandler());
 	}
 	
 	/**

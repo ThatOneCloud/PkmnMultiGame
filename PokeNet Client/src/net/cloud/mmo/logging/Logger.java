@@ -6,10 +6,9 @@ import net.cloud.mmo.ConfigConstants;
 import net.cloud.mmo.event.shutdown.ShutdownHook;
 import net.cloud.mmo.event.shutdown.ShutdownService;
 import net.cloud.mmo.event.shutdown.hooks.LoggerShutdownHook;
-import net.cloud.mmo.logging.report.ExceptionLogReport;
-import net.cloud.mmo.logging.report.LogReport;
-import net.cloud.mmo.logging.report.LogSection;
-import net.cloud.mmo.logging.report.MessageLogReport;
+import net.cloud.mmo.logging.report.*;
+import net.cloud.mmo.tracking.StatContainer;
+import net.cloud.mmo.tracking.StatReport;
 import net.cloud.mmo.util.IOUtil;
 
 /**
@@ -131,6 +130,15 @@ public class Logger implements ShutdownService {
 	public void logMessage(String msg)
 	{
 		submit(new MessageLogReport(msg));
+	}
+	
+	/**
+	 * Submit a report detailing the status of the system
+	 * @param stats The object with the status information
+	 */
+	public void logStats(StatContainer stats)
+	{
+		submit(new StatReport(stats));
 	}
 	
 	/**
