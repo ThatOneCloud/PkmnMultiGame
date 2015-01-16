@@ -35,6 +35,8 @@ public class KeyEventHandler extends KeyAdapter {
 	{
 		char c = event.getKeyChar();
 		
+		System.out.println("key typed: " + c);
+		
 		// A few characters are simply ignored from the get-go
 		if(c == '\0' || c == KeyEvent.CHAR_UNDEFINED)
 		{
@@ -42,7 +44,7 @@ public class KeyEventHandler extends KeyAdapter {
 		}
 		
 		// The character is good to go. Pass it on
-		elementRoot.keyTyped(event.getKeyChar());
+		elementRoot.keyTyped(c);
 	}
 
 }

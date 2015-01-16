@@ -15,16 +15,21 @@ import net.cloud.mmo.util.IteratorException;
  */
 public class MouseEventHandler extends MouseAdapter {
 	
+	/** The root panel that bridges from swing to game graphics */
+	private RootPanel rootPanel;
+	
 	/** The quasi-root of the element hierarchy, to where events are first handed */
 	private Interface elementRoot;
 	
 	/**
 	 * Create a MouseEventHandler which will hand the events it receives off to 
 	 * the given Interface. Only the events which Elements are interested in, of course. 
+	 * @param rootPanel The root panel. Needed so a click may request focus changes to the panel. 
 	 * @param elementRoot The Interface which is at the top of the element hierarchy
 	 */
-	public MouseEventHandler(Interface elementRoot)
+	public MouseEventHandler(RootPanel rootPanel, Interface elementRoot)
 	{
+		this.rootPanel = rootPanel;
 		this.elementRoot = elementRoot;
 	}
 	
@@ -35,6 +40,9 @@ public class MouseEventHandler extends MouseAdapter {
 	@Override
 	public void mouseClicked(MouseEvent event)
 	{
+		// We want the root panel to take on focus if it has lost it
+		rootPanel.requestFocusInWindow();
+		
 		// Top of the exception chain. Try to hand the event off
 		try {
 			elementRoot.elementClicked(event.getPoint());

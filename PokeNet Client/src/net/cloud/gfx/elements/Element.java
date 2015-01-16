@@ -29,7 +29,7 @@ import net.cloud.mmo.util.IteratorException;
 public abstract class Element {
 	
 	/** Consider it like a Z coordinate - i.e. how the element will stack. Higher is top. */
-	private final int priority;
+	private int priority;
 	
 	/** A rectangle defining the location and size of this element */
 	protected Rectangle rectangle;
@@ -158,6 +158,11 @@ public abstract class Element {
 	/** @return Essentially the Z coordinate. Higher is on top. */
 	public int getPriority() {
 		return priority;
+	}
+	
+	/** @param priority The new priority of the element. This will not have an effect unless re-added to the container. */
+	public void setPriority(int priority) {
+		this.priority = priority;
 	}
 
 	/** @return The width of this element. May be 0. */

@@ -39,10 +39,14 @@ public class RootPanel extends JPanel {
 		super.setSize(size);
 		
 		// Create the root interface
-		elementRoot = new Interface(0, 0, width, height);
+		elementRoot = new QuasiRoot(width, height);
 		
 		// Set up the key and mouse listeners
 		attachListeners();
+		
+		// Focus should now go here first so key events get passed on
+		super.setFocusable(true);
+		super.requestFocusInWindow();
 	}
 	
 	public void paintComponent(Graphics g)
@@ -68,7 +72,7 @@ public class RootPanel extends JPanel {
 	 */
 	private void attachListeners()
 	{
-		MouseEventHandler mouse = new MouseEventHandler(elementRoot);
+		MouseEventHandler mouse = new MouseEventHandler(this, elementRoot);
 		this.addMouseListener(mouse);
 		
 		KeyEventHandler key = new KeyEventHandler(elementRoot);

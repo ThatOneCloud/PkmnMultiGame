@@ -1,6 +1,7 @@
 package net.cloud.mmo.util;
 
 import java.nio.ByteBuffer;
+import java.text.DecimalFormat;
 
 import io.netty.buffer.ByteBuf;
 
@@ -11,6 +12,21 @@ public class StringUtil {
 	
 	/** The line terminator character */
 	public static final char TERMINATOR = 0;
+	
+	/**
+	 * Takes the value and returns a formatted string for the value, without tons of digits showing. 
+	 * @param value The decimal value
+	 * @param maxDigits The maximum number of decimal digits that will show
+	 * @return A cleaned up formatted string
+	 */
+	public static String cleanDecimal(double value, int maxDigits)
+	{
+		// Create a new formatter. Guess it could be re-used, but would need to be thread safe
+		DecimalFormat formatter = new DecimalFormat();
+		formatter.setMaximumFractionDigits(maxDigits);
+		
+		return formatter.format(value);
+	}
 	
 	/**
 	 * Formats a string of text to be upper case letter first, and then lower case. 

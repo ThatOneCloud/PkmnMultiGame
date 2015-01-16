@@ -11,7 +11,7 @@ public class ConfigConstants {
 	 * but if this flag is true, logging will be sent to both SYS_OUT <b>and</b> a log file. 
 	 * If it is false, the output will <b>only</b> go to SYS_OUT.
 	 */
-	public static final boolean LOGGING_ENABLED = true;
+	public static final boolean LOGGING_ENABLED = false;
 	
 	/** Amount of time in milliseconds between each save of queued log reports */
 	public static final int LOG_CYCLE_TIME = 5000;

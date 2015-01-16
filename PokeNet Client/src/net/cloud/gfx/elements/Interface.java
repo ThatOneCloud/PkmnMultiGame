@@ -14,7 +14,7 @@ import net.cloud.mmo.util.StrongIterator;
 public class Interface extends Container {
 	
 	/** Default priority of an Interface. Kinda high. */
-	private static final int PRIORITY = 7;
+	public static final int PRIORITY = 7;
 	
 	// TODO: background sprite
 	
