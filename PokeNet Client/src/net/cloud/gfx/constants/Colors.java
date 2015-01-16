@@ -1,4 +1,4 @@
-package net.cloud.gfx;
+package net.cloud.gfx.constants;
 
 import java.awt.Color;
 

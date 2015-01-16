@@ -5,6 +5,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.Optional;
 
+import net.cloud.gfx.Mainframe;
 import net.cloud.mmo.util.IteratorException;
 
 /**
@@ -121,7 +122,8 @@ public abstract class Element {
 	public void elementClicked(Point relPoint) throws IteratorException {
 		setFocus(true);
 		
-		// TODO: register focus with controller
+		// Register focus with controller
+		Mainframe.instance().gfx().rootPanel().getKeyEventHandler().registerFocus(this);
 	}
 
 	/** 

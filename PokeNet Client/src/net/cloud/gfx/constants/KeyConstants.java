@@ -1,4 +1,4 @@
-package net.cloud.gfx;
+package net.cloud.gfx.constants;
 
 /**
  * A utility class that deals with keys and their events. For example, keys 

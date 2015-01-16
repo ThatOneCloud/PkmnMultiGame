@@ -1,4 +1,4 @@
-package net.cloud.gfx;
+package net.cloud.gfx.handlers;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;

@@ -4,8 +4,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 
-import net.cloud.gfx.Colors;
-import net.cloud.gfx.Fonts;
+import net.cloud.gfx.constants.Colors;
+import net.cloud.gfx.constants.Fonts;
 import net.cloud.mmo.util.IteratorException;
 
 /**

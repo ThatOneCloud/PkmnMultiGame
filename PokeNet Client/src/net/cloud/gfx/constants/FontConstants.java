@@ -1,4 +1,4 @@
-package net.cloud.gfx;
+package net.cloud.gfx.constants;
 
 /**
  * Constants that pair with usage of the Font object throughout the application. 

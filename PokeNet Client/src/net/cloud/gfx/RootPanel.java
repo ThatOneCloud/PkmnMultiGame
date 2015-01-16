@@ -6,6 +6,9 @@ import java.awt.Graphics;
 import javax.swing.JPanel;
 
 import net.cloud.gfx.elements.Interface;
+import net.cloud.gfx.handlers.KeyEventHandler;
+import net.cloud.gfx.handlers.MouseEventHandler;
+import net.cloud.gfx.interfaces.QuasiRoot;
 import net.cloud.mmo.logging.Logger;
 import net.cloud.mmo.util.IteratorException;
 
@@ -23,6 +26,12 @@ public class RootPanel extends JPanel {
 	
 	/** The quasi-root - i.e. the start of the Element hierarchy */
 	private Interface elementRoot;
+	
+	/** Handler that will deal with clicks on elements */
+	private MouseEventHandler mouseEventHandler;
+	
+	/** Handler that will deal with typing keys and sending the event to elements */
+	private KeyEventHandler keyEventHandler;
 	
 	/**
 	 * Create a new RootPanel so that a game's graphics can be contained in an application. 
@@ -49,6 +58,10 @@ public class RootPanel extends JPanel {
 		super.requestFocusInWindow();
 	}
 	
+	/**
+	 * Draws the element hierarchy. 
+	 */
+	@Override
 	public void paintComponent(Graphics g)
 	{
 		// Honor a call to the super method
@@ -67,16 +80,30 @@ public class RootPanel extends JPanel {
 	}
 	
 	/**
+	 * @return The handler taking care of mouse events
+	 */
+	public MouseEventHandler getMouseEventHandler() {
+		return mouseEventHandler;
+	}
+
+	/**
+	 * @return The handler taking care of key events
+	 */
+	public KeyEventHandler getKeyEventHandler() {
+		return keyEventHandler;
+	}
+	
+	/**
 	 * Create and add listeners to deal with key and mouse events 
 	 * on this panel, so that the Element hierarchy will get them. 
 	 */
 	private void attachListeners()
 	{
-		MouseEventHandler mouse = new MouseEventHandler(this, elementRoot);
-		this.addMouseListener(mouse);
+		mouseEventHandler = new MouseEventHandler(this, elementRoot);
+		this.addMouseListener(mouseEventHandler);
 		
-		KeyEventHandler key = new KeyEventHandler(elementRoot);
-		this.addKeyListener(key);
+		keyEventHandler = new KeyEventHandler(elementRoot);
+		this.addKeyListener(keyEventHandler);
 	}
 
 }

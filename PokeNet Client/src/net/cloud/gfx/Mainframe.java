@@ -2,6 +2,8 @@ package net.cloud.gfx;
 
 import javax.swing.JFrame;
 
+import net.cloud.gfx.handlers.WindowEventHandler;
+
 /**
  * The application frame.  Within this frame is the panel containing the game graphics. 
  * It is a singleton class - as there is only one such frame. It serves as an access point 

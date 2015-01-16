@@ -1,9 +1,10 @@
 
-package net.cloud.gfx;
+package net.cloud.gfx.handlers;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import net.cloud.gfx.RootPanel;
 import net.cloud.gfx.elements.Interface;
 import net.cloud.mmo.logging.Logger;
 import net.cloud.mmo.util.IteratorException;
