@@ -5,7 +5,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.util.function.Function;
 
-import net.cloud.mmo.util.IteratorException;
+import net.cloud.client.util.IteratorException;
 
 /**
  * For when some text element will need to be updated, but there is no convenient 

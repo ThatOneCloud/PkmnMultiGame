@@ -1,9 +1,9 @@
 package net.cloud.gfx.interfaces;
 
+import net.cloud.client.tracking.StatTracker;
+import net.cloud.client.util.StringUtil;
 import net.cloud.gfx.elements.Interface;
 import net.cloud.gfx.elements.ReferenceText;
-import net.cloud.mmo.tracking.StatTracker;
-import net.cloud.mmo.util.StringUtil;
 
 import java.util.function.Function;
 

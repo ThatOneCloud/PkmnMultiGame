@@ -2,9 +2,9 @@ package net.cloud.gfx;
 
 import javax.swing.JPanel;
 
-import net.cloud.mmo.ConfigConstants;
-import net.cloud.mmo.logging.Logger;
-import net.cloud.mmo.tracking.StatTracker;
+import net.cloud.client.ConfigConstants;
+import net.cloud.client.logging.Logger;
+import net.cloud.client.tracking.StatTracker;
 
 /**
  * This runnable object will run in a loop and have the game graphics redrawn. 

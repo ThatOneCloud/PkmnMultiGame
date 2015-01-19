@@ -1,8 +1,8 @@
 package net.cloud.gfx.elements;
 
 import static org.junit.Assert.*;
-import net.cloud.mmo.util.IteratorException;
-import net.cloud.mmo.util.StrongIterator;
+import net.cloud.client.util.IteratorException;
+import net.cloud.client.util.StrongIterator;
 
 import org.junit.Test;
 

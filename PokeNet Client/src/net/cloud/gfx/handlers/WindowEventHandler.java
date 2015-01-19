@@ -3,7 +3,7 @@ package net.cloud.gfx.handlers;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import net.cloud.mmo.Client;
+import net.cloud.client.Client;
 
 /**
  * This handler will deal with WindowEvents. It's a WindowListener suited for dealing with 

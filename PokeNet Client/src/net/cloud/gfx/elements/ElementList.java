@@ -4,8 +4,8 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.function.Consumer;
 
-import net.cloud.mmo.util.ReverseIterator;
-import net.cloud.mmo.util.StrongIterator;
+import net.cloud.client.util.ReverseIterator;
+import net.cloud.client.util.StrongIterator;
 
 /**
  * A list of Element objects. A specialized list rather than using simply an 

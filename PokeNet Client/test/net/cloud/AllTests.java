@@ -1,9 +1,9 @@
 package net.cloud;
 
+import net.cloud.client.file.FileSuite;
+import net.cloud.client.task.TaskSuite;
+import net.cloud.client.util.UtilSuite;
 import net.cloud.gfx.GfxSuite;
-import net.cloud.mmo.file.FileSuite;
-import net.cloud.mmo.task.TaskSuite;
-import net.cloud.mmo.util.UtilSuite;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;

@@ -4,10 +4,10 @@ package net.cloud.gfx.handlers;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import net.cloud.client.logging.Logger;
+import net.cloud.client.util.IteratorException;
 import net.cloud.gfx.RootPanel;
 import net.cloud.gfx.elements.Interface;
-import net.cloud.mmo.logging.Logger;
-import net.cloud.mmo.util.IteratorException;
 
 /**
  * This MouseAdapter will listen for mouse events in general and 

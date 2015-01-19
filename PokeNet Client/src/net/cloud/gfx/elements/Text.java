@@ -4,9 +4,9 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 
+import net.cloud.client.util.IteratorException;
 import net.cloud.gfx.constants.Colors;
 import net.cloud.gfx.constants.Fonts;
-import net.cloud.mmo.util.IteratorException;
 
 /**
  * Analogous to the JLabel. Used to display some text string on the screen. 

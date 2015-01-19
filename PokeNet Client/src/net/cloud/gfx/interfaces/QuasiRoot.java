@@ -1,8 +1,8 @@
 package net.cloud.gfx.interfaces;
 
+import net.cloud.client.tracking.StatTracker;
 import net.cloud.gfx.constants.KeyConstants;
 import net.cloud.gfx.elements.Interface;
-import net.cloud.mmo.tracking.StatTracker;
 
 public class QuasiRoot extends Interface {
 

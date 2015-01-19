@@ -5,13 +5,13 @@ import java.awt.Graphics;
 
 import javax.swing.JPanel;
 
+import net.cloud.client.logging.Logger;
+import net.cloud.client.util.IteratorException;
 import net.cloud.gfx.elements.Interface;
 import net.cloud.gfx.focus.FocusController;
 import net.cloud.gfx.handlers.KeyEventHandler;
 import net.cloud.gfx.handlers.MouseEventHandler;
 import net.cloud.gfx.interfaces.QuasiRoot;
-import net.cloud.mmo.logging.Logger;
-import net.cloud.mmo.util.IteratorException;
 
 /**
  * The root of the graphics package. The game's graphics will be housed 

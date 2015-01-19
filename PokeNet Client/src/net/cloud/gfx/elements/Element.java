@@ -5,12 +5,12 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.Optional;
 
+import net.cloud.client.util.IteratorException;
 import net.cloud.gfx.constants.KeyConstants;
 import net.cloud.gfx.focus.FocusController;
 import net.cloud.gfx.focus.FocusHandler;
 import net.cloud.gfx.focus.Focusable;
 import net.cloud.gfx.focus.SingleFocusHandler;
-import net.cloud.mmo.util.IteratorException;
 
 /**
  * A graphic element. This is the root of the graphic element hierarchy. 

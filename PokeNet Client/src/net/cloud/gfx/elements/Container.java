@@ -2,11 +2,11 @@ package net.cloud.gfx.elements;
 
 import java.awt.Point;
 
+import net.cloud.client.util.IteratorException;
+import net.cloud.client.util.StrongIterator;
 import net.cloud.gfx.focus.ContainerFocusHandler;
 import net.cloud.gfx.focus.FocusController;
 import net.cloud.gfx.focus.Focusable;
-import net.cloud.mmo.util.IteratorException;
-import net.cloud.mmo.util.StrongIterator;
 
 /**
  * This abstract class is an element which contains other elements. 

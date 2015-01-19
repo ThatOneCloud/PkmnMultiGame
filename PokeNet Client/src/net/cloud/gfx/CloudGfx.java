@@ -1,8 +1,8 @@
 package net.cloud.gfx;
 
-import net.cloud.mmo.event.shutdown.ShutdownHook;
-import net.cloud.mmo.event.shutdown.ShutdownService;
-import net.cloud.mmo.event.shutdown.hooks.GraphicShutdownHook;
+import net.cloud.client.event.shutdown.ShutdownHook;
+import net.cloud.client.event.shutdown.ShutdownService;
+import net.cloud.client.event.shutdown.hooks.GraphicShutdownHook;
 
 /**
  * A facade of sorts to the.. erm.. CloudGfx system. 

@@ -2,8 +2,8 @@ package net.cloud.gfx.elements;
 
 import java.awt.Graphics;
 
-import net.cloud.mmo.util.IteratorException;
-import net.cloud.mmo.util.StrongIterator;
+import net.cloud.client.util.IteratorException;
+import net.cloud.client.util.StrongIterator;
 
 /**
  * An Interface is an element which contains child elements and behaves just like 
