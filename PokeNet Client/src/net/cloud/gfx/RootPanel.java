@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import javax.swing.JPanel;
 
 import net.cloud.gfx.elements.Interface;
+import net.cloud.gfx.focus.FocusController;
 import net.cloud.gfx.handlers.KeyEventHandler;
 import net.cloud.gfx.handlers.MouseEventHandler;
 import net.cloud.gfx.interfaces.QuasiRoot;
@@ -53,9 +54,13 @@ public class RootPanel extends JPanel {
 		// Set up the key and mouse listeners
 		attachListeners();
 		
-		// Focus should now go here first so key events get passed on
+		// Focus should go here, but we don't wanna consume tab events. Start with the focus.
 		super.setFocusable(true);
+		super.setFocusTraversalKeysEnabled(false);
 		super.requestFocusInWindow();
+		
+		// And similarly, for the element hierarchy, the quasi-root should get focus first
+		FocusController.instance().register(elementRoot);
 	}
 	
 	/**
@@ -102,7 +107,7 @@ public class RootPanel extends JPanel {
 		mouseEventHandler = new MouseEventHandler(this, elementRoot);
 		this.addMouseListener(mouseEventHandler);
 		
-		keyEventHandler = new KeyEventHandler(elementRoot);
+		keyEventHandler = new KeyEventHandler();
 		this.addKeyListener(keyEventHandler);
 	}
 

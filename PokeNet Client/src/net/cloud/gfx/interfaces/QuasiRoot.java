@@ -40,7 +40,6 @@ public class QuasiRoot extends Interface {
 		switch (key) {
 		// Toggle the statistics overlay
 		case KeyConstants.STAT_OVERLAY:
-			System.out.println("stat overlay");
 			toggleStatOverlay();
 			break;
 		}

@@ -5,7 +5,11 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.Optional;
 
-import net.cloud.gfx.Mainframe;
+import net.cloud.gfx.constants.KeyConstants;
+import net.cloud.gfx.focus.FocusController;
+import net.cloud.gfx.focus.FocusHandler;
+import net.cloud.gfx.focus.Focusable;
+import net.cloud.gfx.focus.SingleFocusHandler;
 import net.cloud.mmo.util.IteratorException;
 
 /**
@@ -27,7 +31,7 @@ import net.cloud.mmo.util.IteratorException;
  * When the element is clicked, the only action taken is to 
  * register the new focus through the controlling class.
  */
-public abstract class Element {
+public abstract class Element implements Focusable {
 	
 	/** Consider it like a Z coordinate - i.e. how the element will stack. Higher is top. */
 	private int priority;
@@ -35,8 +39,8 @@ public abstract class Element {
 	/** A rectangle defining the location and size of this element */
 	protected Rectangle rectangle;
 	
-	/** True when the element has key focus */
-	private boolean hasFocus;
+	/** Handles focus actions on this element */
+	private FocusHandler focusHandler;
 	
 	/** The element which contains this one, if any */
 	private Optional<Element> parent;
@@ -96,7 +100,7 @@ public abstract class Element {
 		this.parent = Optional.ofNullable(parent);
 		this.priority = priority;
 		this.rectangle = new Rectangle(x, y, width, height);
-		this.hasFocus = hasFocus;
+		this.focusHandler = new SingleFocusHandler();
 	}
 	
 	/**
@@ -120,19 +124,32 @@ public abstract class Element {
 	 * @throws IteratorException If searching for the clicked element fails
 	 */
 	public void elementClicked(Point relPoint) throws IteratorException {
-		setFocus(true);
-		
 		// Register focus with controller
-		Mainframe.instance().gfx().rootPanel().getKeyEventHandler().registerFocus(this);
+		FocusController.instance().register(this);
 	}
 
 	/** 
-	 * Pass the event to the parent Element, if there is a parent. 
+	 * Does two things. First, will check to see if the event is telling us 
+	 * that we should change focus over to the next thing in line. This behavior can 
+	 * be stopped by intercepting the CHANGE_FOCUS_NEXT event. <br>
+	 * Otherwise, the event will be passed to the parent Element, if there is a parent. 
 	 * If a subclass overrides this for interest in some keys but not all, 
-	 * it can certainly call <code>super.keyTyped(key)</code> to allow the 
+	 * it should certainly call <code>super.keyTyped(key)</code> to allow the 
 	 * other keys to propagate. (Chain of responsibility)
 	 */
+	@Override
 	public void keyTyped(char key) {
+		// Take care of tab'ing over to the next focusable here
+		if(key == KeyConstants.CHANGE_FOCUS_NEXT)
+		{
+			focusHandler.traverseNext();
+		}
+		// And then there's a special character for tabbing backwards
+		else if(key == KeyConstants.CHANGE_FOCUS_PREVIOUS)
+		{
+			focusHandler.traversePrevious();
+		}
+		
 		// Pass the event to the parent, if we aren't an orphan :(
 		parent.ifPresent((p) -> p.keyTyped(key));
 	}
@@ -187,14 +204,14 @@ public abstract class Element {
 		rectangle.height = height;
 	}
 
-	/** @return True if this element currently has key focus */
-	public boolean hasFocus() {
-		return hasFocus;
+	/** @return The handler taking care of focus actions for this element */
+	public FocusHandler getFocusHandler() {
+		return focusHandler;
 	}
-
-	/** @param hasFocus Whether or not the element currently has key focus */
-	public void setFocus(boolean hasFocus) {
-		this.hasFocus = hasFocus;
+	
+	/** @param focusHandler The handler that will take care of focus actions for this elements */
+	public void setFocusHandler(FocusHandler focusHandler) {
+		this.focusHandler = focusHandler;
 	}
 	
 	/** @return An Optional which may contain the element containing this one */

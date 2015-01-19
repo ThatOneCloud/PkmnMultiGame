@@ -2,6 +2,9 @@ package net.cloud.gfx.elements;
 
 import java.awt.Point;
 
+import net.cloud.gfx.focus.ContainerFocusHandler;
+import net.cloud.gfx.focus.FocusController;
+import net.cloud.gfx.focus.Focusable;
 import net.cloud.mmo.util.IteratorException;
 import net.cloud.mmo.util.StrongIterator;
 
@@ -23,6 +26,9 @@ public abstract class Container extends Element {
 	{
 		super();
 		
+		// Use a different kind of FocusHandler, rather than the default one Element provides
+		super.setFocusHandler(new ContainerFocusHandler());
+		
 		children = new ElementList();
 	}
 	
@@ -36,6 +42,9 @@ public abstract class Container extends Element {
 	 */
 	public Container(Element parent, int priority, int x, int y) {
 		super(parent, priority, x, y, 0, 0, false);
+		
+		// Use a different kind of FocusHandler, rather than the default one Element provides
+		super.setFocusHandler(new ContainerFocusHandler());
 		
 		children = new ElementList();
 	}
@@ -52,6 +61,9 @@ public abstract class Container extends Element {
 	 */
 	public Container(Element parent, int priority, int x, int y, int width, int height) {
 		super(parent, priority, x, y, width, height, false);
+		
+		// Use a different kind of FocusHandler, rather than the default one Element provides
+		super.setFocusHandler(new ContainerFocusHandler());
 		
 		children = new ElementList();
 	}
@@ -75,6 +87,9 @@ public abstract class Container extends Element {
 			int height, 
 			boolean hasFocus) {
 		super(parent, priority, x, y, width, height, hasFocus);
+		
+		// Use a different kind of FocusHandler, rather than the default one Element provides
+		super.setFocusHandler(new ContainerFocusHandler());
 		
 		children = new ElementList();
 	}
@@ -150,6 +165,78 @@ public abstract class Container extends Element {
 		children.forEach((child) -> child.setParent(null));
 		
 		children.removeAll();
+	}
+	
+	/**
+	 * Tell this container that the given element (which should be a child of this container) 
+	 * is the one which will receive focus first, upon traversing forward. This should be done 
+	 * before linking this container to another Focusable. 
+	 * @param firstChild The child to traverse to first
+	 */
+	public void setFirstFocusTraversalChild(Element firstChild)
+	{
+		((ContainerFocusHandler) super.getFocusHandler()).setFirst(firstChild);
+	}
+	
+	/**
+	 * Tell this container that the given element (which should be a child of this container) 
+	 * is the one which will receive focus last, upon traversing forward. This should be done 
+	 * before linking this container to another Focusable. 
+	 * @param lastChild The child to traverse to last
+	 */
+	public void setLastFocusTraversalChild(Element lastChild)
+	{
+		((ContainerFocusHandler) super.getFocusHandler()).setLast(lastChild);
+	}
+	
+	/**
+	 * Link this container to another Focusable so that after focus has traversed through 
+	 * this container's children, it will then go onto the provided Focusable. 
+	 * If there is no child to traverse to, then the link will instead be from this container itself 
+	 * to the provided Focusable to preserve the traversal chain. 
+	 */
+	@Override
+	public void linkNextFocusable(Focusable next)
+	{
+		ContainerFocusHandler handler = (ContainerFocusHandler) super.getFocusHandler();
+		
+		// Set the next one up in the handler, it can be used to skip forward when there aren't children
+		handler.setNext(next);
+		
+		// Link the last child and next focusable
+		if(handler.getLast() != null)
+		{
+			FocusController.link(handler.getLast(), next);
+		}
+		// There's no last child, so link the container and next instead to preserve chain
+		else {
+			FocusController.link(this, next);
+		}
+	}
+	
+	/**
+	 * Link this container to another Focusable so that the given Focusable will lead 
+	 * to this container. Rather than leading directly to the first child, the link will be made between 
+	 * the previous and this container. The container will then link to the first child, so it's sort 
+	 * of like a two-step connection. If there are no children, then it won't make the second link 
+	 * and the traversal will just be one step. 
+	 */
+	@Override
+	public void linkPreviousFocusable(Focusable previous)
+	{
+		ContainerFocusHandler handler = (ContainerFocusHandler) super.getFocusHandler();
+		
+		// Set the previous so that it's there
+		handler.setPrevious(previous);
+		
+		// We link from the container previous Focusable to the container 
+		FocusController.link(previous, this);
+		
+		// and then from the container to the first child
+		if(handler.getFirst() != null)
+		{
+			FocusController.link(this, handler.getFirst());
+		}
 	}
 
 }
