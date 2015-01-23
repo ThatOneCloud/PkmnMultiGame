@@ -96,6 +96,8 @@ public class Server {
 		// Start a CommandService on the standard in and out
 		CommandService consoleCommandService = new CommandService(IOUtil.SYS_IN, Logger.writer());
 		shutdownHandler.addHook(consoleCommandService.getShutdownHook());
+		Logger.writer().println("Commands may now be entered via the console");
+		Logger.writer().flush();
 		
 		// Grab the TaskEngine, put its shutdown hook in here
 		shutdownHandler.addHook(TaskEngine.getInstance().getShutdownHook());

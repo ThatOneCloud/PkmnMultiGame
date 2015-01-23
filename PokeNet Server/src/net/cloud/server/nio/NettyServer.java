@@ -36,6 +36,9 @@ public class NettyServer implements ShutdownService {
 	{
 		// I've followed the guide at http://netty.io/wiki/user-guide-for-4.x.html
 		// so a large amount of code will be the same or similar to that.
+		
+		Logger.writer().println("Starting PokeNet Server...");
+		Logger.writer().flush();
 
 		// First, EventLoopGroups are created - for handling tasks
 		EventLoopGroup bossGroup = new NioEventLoopGroup();

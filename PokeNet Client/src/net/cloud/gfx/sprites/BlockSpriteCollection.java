@@ -44,7 +44,7 @@ public class BlockSpriteCollection extends SpriteCollection {
 		// Initialize them all to binary semaphores
 		for(int i = 0; i < locks.length; ++i)
 		{
-			locks[i] = new Semaphore(1);
+			locks[i] = new Semaphore(1, false);
 		}
 	}
 

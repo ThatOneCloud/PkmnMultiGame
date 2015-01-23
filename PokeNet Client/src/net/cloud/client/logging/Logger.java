@@ -49,6 +49,9 @@ public class Logger implements ShutdownService {
 		
 		// Now we can create a shutdown hook accordingly
 		shutdownHook = new LoggerShutdownHook(thread, loggerService);
+		
+		Logger.writer().println("Logger now running");
+		Logger.writer().flush();
 	}
 	
 	/**

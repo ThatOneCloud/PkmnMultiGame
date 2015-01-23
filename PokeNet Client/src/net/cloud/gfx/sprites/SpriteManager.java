@@ -136,6 +136,9 @@ public class SpriteManager {
 			}
 		}
 		
+		Logger.writer().println("Startup-loading Sprite Sets are now loaded");
+		Logger.writer().flush();
+		
 		// Because I wanted to write it using streams. Just because. Oh, and I didn't feel like deleting it. 
 //		Arrays.stream(SpriteSet.values()).filter((set) -> set.loadOnStartup()).forEach((set) -> spriteLoader.loadEntireSet(set));
 	}

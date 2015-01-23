@@ -5,6 +5,7 @@ import net.cloud.client.event.shutdown.ShutdownService;
 import net.cloud.client.event.shutdown.hooks.FileServerShutdownHook;
 import net.cloud.client.file.request.FileRequest;
 import net.cloud.client.file.request.handler.RequestHandler;
+import net.cloud.client.logging.Logger;
 
 /**
  * The front of the file server module.  Deals with FileRequests. 
@@ -51,6 +52,9 @@ public class FileServer implements ShutdownService {
 		
 		// Create a shutdown hook to stop this process
 		shutdownHook = new FileServerShutdownHook(logicThread, fileServerThread);
+		
+		Logger.writer().println("File Server now running");
+		Logger.writer().flush();
 	}
 	
 	/**

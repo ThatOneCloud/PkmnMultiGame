@@ -42,6 +42,9 @@ public class NettyClient implements ShutdownService {
 	 */
 	public void startup() throws InterruptedException
 	{
+		Logger.writer().println("Starting Netty service...");
+		Logger.writer().flush();
+		
 		// Create an executor for the client's I/O events
 		EventLoopGroup workerGroup = new NioEventLoopGroup();
 
@@ -51,6 +54,9 @@ public class NettyClient implements ShutdownService {
 		bootstrap.channel(NioSocketChannel.class);
 		bootstrap.option(ChannelOption.SO_KEEPALIVE, true);
 		bootstrap.handler(new NettyClientChannelInitializer());
+		
+		Logger.writer().println("Netty service started");
+		Logger.writer().flush();
 	}
 	
 	/**

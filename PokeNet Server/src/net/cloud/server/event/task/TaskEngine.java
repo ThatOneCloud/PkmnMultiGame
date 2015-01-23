@@ -10,6 +10,7 @@ import net.cloud.server.event.shutdown.ShutdownService;
 import net.cloud.server.event.shutdown.hooks.TaskEngineShutdownHook;
 import net.cloud.server.event.task.tasks.Task;
 import net.cloud.server.event.task.voidtasks.VoidTask;
+import net.cloud.server.logging.Logger;
 
 /**
  * The TaskEngine is responsible for running jobs for other parts of the server. 
@@ -37,6 +38,9 @@ public class TaskEngine implements ShutdownService {
 		
 		// Create the hook now - the pool starts when this instance is created
 		shutdownHook = new TaskEngineShutdownHook(taskExecutor);
+		
+		Logger.writer().println("Task Engine now running");
+		Logger.writer().flush();
 	}
 	
 	
