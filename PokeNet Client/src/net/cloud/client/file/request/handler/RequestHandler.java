@@ -1,6 +1,8 @@
 package net.cloud.client.file.request.handler;
 
 import net.cloud.client.file.request.BufferedReaderRequest;
+import net.cloud.client.file.request.CachedFileRegionRequest;
+import net.cloud.client.file.request.CachedFileRequest;
 import net.cloud.client.file.request.PrintWriterRequest;
 
 /**
@@ -29,6 +31,22 @@ public class RequestHandler {
 	 * See {@link LoadRequestHandler#handleRequest(BufferedReaderRequest)}
 	 */
 	public void handleRequest(BufferedReaderRequest req) {
+		// Delegate the call off to a more specific handler
+		loadRequestHandler.handleRequest(req);
+	}
+	
+	/**
+	 * See {@link LoadRequestHandler#handleRequest(CachedFileRequest)}
+	 */
+	public void handleRequest(CachedFileRequest req) {
+		// Delegate the call off to a more specific handler
+		loadRequestHandler.handleRequest(req);
+	}
+	
+	/**
+	 * See {@link LoadRequestHandler#handleRequest(CachedFileRegionRequest)}
+	 */
+	public void handleRequest(CachedFileRegionRequest req) {
 		// Delegate the call off to a more specific handler
 		loadRequestHandler.handleRequest(req);
 	}

@@ -3,9 +3,14 @@ package net.cloud.client.file.request.handler;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 
 import net.cloud.client.file.FileRequestException;
+import net.cloud.client.file.cache.CacheTable;
 import net.cloud.client.file.request.BufferedReaderRequest;
+import net.cloud.client.file.request.CachedFileRegionRequest;
+import net.cloud.client.file.request.CachedFileRequest;
 import net.cloud.client.util.IOUtil;
 
 /**
@@ -28,7 +33,8 @@ public class LoadRequestHandler {
 	 * notify the Request object that it is ready or that an exception occurred.
 	 * @param req The request to fulfill
 	 */
-	public void handleRequest(BufferedReaderRequest req) {
+	public void handleRequest(BufferedReaderRequest req)
+	{
 		// Going to create a BufferedReader with lots of wrappers. Here goes
 		try {
 			BufferedReader br = IOUtil.streamToReader(new FileInputStream(req.address().getPath()));
@@ -41,6 +47,58 @@ public class LoadRequestHandler {
 		} catch (FileNotFoundException e) {
 			// Uh oh. The path wasn't right. Let the request know so the exception can propagate
 			req.notifyHandleException(new FileRequestException("Requested file could not be found", e));
+		}
+	}
+	
+	/**
+	 * Attempt to handle a CachedFileRequest.<br>
+	 * That is, create a CachedFile object which holds the data being requested. 
+	 * The Request object will be notified when it is ready or if an exception occurred. 
+	 * @param req The request to fulfill
+	 */
+	public void handleRequest(CachedFileRequest req) 
+	{
+		try {
+			// We'll need to create some RAFs to the desired files
+			RandomAccessFile table = new RandomAccessFile(req.getTableAddress().getPath(), "r");
+			RandomAccessFile cache = new RandomAccessFile(req.address().getPath(), "r");
+			
+			// Then a CacheTable object handily can take care of details (and let's just do this in one swoop...)
+			req.setFileDescriptor(new CacheTable(table, cache).getFile(req.getIndexInCache()));
+			
+			req.notifyReady();
+		} catch (FileNotFoundException e) {
+			// Uh oh. The path wasn't right. Let the request know so the exception can propagate
+			req.notifyHandleException(new FileRequestException("Requested file(s) could not be found", e));
+		} catch (IOException e) {
+			// Something went wrong during reading of the files
+			req.notifyHandleException(new FileRequestException("File could not be retrieved from cache", e));
+		}
+	}
+	
+	/**
+	 * Attempt to handle a CachedFileRegionRequest.<br>
+	 * That is, create a CachedFileRegion object which holds the data being requested. 
+	 * The Request object will be notified when it is ready or if an exception occurred. 
+	 * @param req The request to fulfill
+	 */
+	public void handleRequest(CachedFileRegionRequest req) 
+	{
+		try {
+			// We'll need to create some RAFs to the desired files
+			RandomAccessFile table = new RandomAccessFile(req.getTableAddress().getPath(), "r");
+			RandomAccessFile cache = new RandomAccessFile(req.address().getPath(), "r");
+			
+			// Then a CacheTable object handily can take care of details (and let's just do this in one swoop...)
+			req.setFileDescriptor(new CacheTable(table, cache).getFileRegion(req.getStartIndex(), req.getEndIndex()));
+			
+			req.notifyReady();
+		} catch (FileNotFoundException e) {
+			// Uh oh. The path wasn't right. Let the request know so the exception can propagate
+			req.notifyHandleException(new FileRequestException("Requested file(s) could not be found", e));
+		} catch (IOException e) {
+			// Something went wrong during reading of the files
+			req.notifyHandleException(new FileRequestException("File could not be retrieved from cache", e));
 		}
 	}
 

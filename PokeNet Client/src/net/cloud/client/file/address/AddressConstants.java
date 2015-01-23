@@ -11,8 +11,14 @@ public class AddressConstants {
 	/** Location of log report files */
 	public static final String SPACE_LOG_FILES = "./data/logs/";
 	
+	/** Location of sprites in general */
+	public static final String SPACE_SPRITES = "./data/resources/sprites/";
+	
 	
 	/** Text file extension */
 	public static final String EXT_TEXT = "txt";
+	
+	/** Extension used for cache files */
+	public static final String EXT_CACHE = "dat";
 
 }
