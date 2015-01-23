@@ -11,6 +11,7 @@ import net.cloud.client.file.cache.CacheTable;
 import net.cloud.client.file.request.BufferedReaderRequest;
 import net.cloud.client.file.request.CachedFileRegionRequest;
 import net.cloud.client.file.request.CachedFileRequest;
+import net.cloud.client.file.request.RandomAccessFileLoadRequest;
 import net.cloud.client.util.IOUtil;
 
 /**
@@ -51,6 +52,26 @@ public class LoadRequestHandler {
 	}
 	
 	/**
+	 * Attempt to handle a RandomAccessFileLoadRequest.<br>
+	 * That is, it will create a read-only RandomAccessFile to the requested file and 
+	 * notify the Request object that it is ready or that an exception occurred.
+	 * @param req The request to fulfill
+	 */
+	public void handleRequest(RandomAccessFileLoadRequest req)
+	{
+		try {
+			// Obtain a RAF in read mode
+			RandomAccessFile raf = new RandomAccessFile(req.address().getPath(), "r");
+			
+			req.setFileDescriptor(raf);
+			
+			req.notifyReady();
+		} catch (FileNotFoundException e) {
+			req.notifyHandleException(new FileRequestException("Requested file could not be found", e));
+		}
+	}
+	
+	/**
 	 * Attempt to handle a CachedFileRequest.<br>
 	 * That is, create a CachedFile object which holds the data being requested. 
 	 * The Request object will be notified when it is ready or if an exception occurred. 
@@ -58,12 +79,13 @@ public class LoadRequestHandler {
 	 */
 	public void handleRequest(CachedFileRequest req) 
 	{
-		try {
-			// We'll need to create some RAFs to the desired files
+		// Try-with-resources will close the RAFs on its own, and mask any closing exception
+		try (
+
 			RandomAccessFile table = new RandomAccessFile(req.getTableAddress().getPath(), "r");
-			RandomAccessFile cache = new RandomAccessFile(req.address().getPath(), "r");
-			
-			// Then a CacheTable object handily can take care of details (and let's just do this in one swoop...)
+			RandomAccessFile cache = new RandomAccessFile(req.address().getPath(), "r")
+		) {
+			// A CacheTable object handily can take care of details (and let's just do this in one swoop...)
 			req.setFileDescriptor(new CacheTable(table, cache).getFile(req.getIndexInCache()));
 			
 			req.notifyReady();
@@ -84,12 +106,12 @@ public class LoadRequestHandler {
 	 */
 	public void handleRequest(CachedFileRegionRequest req) 
 	{
-		try {
-			// We'll need to create some RAFs to the desired files
+		// Try-with-resources will close the RAFs on its own, and mask any closing exception
+		try (
 			RandomAccessFile table = new RandomAccessFile(req.getTableAddress().getPath(), "r");
-			RandomAccessFile cache = new RandomAccessFile(req.address().getPath(), "r");
-			
-			// Then a CacheTable object handily can take care of details (and let's just do this in one swoop...)
+			RandomAccessFile cache = new RandomAccessFile(req.address().getPath(), "r")
+		) {
+			// A CacheTable object handily can take care of details (and let's just do this in one swoop...)
 			req.setFileDescriptor(new CacheTable(table, cache).getFileRegion(req.getStartIndex(), req.getEndIndex()));
 			
 			req.notifyReady();

@@ -186,7 +186,7 @@ public abstract class FileRequest<T> {
 	}
 	
 	/**
-	 * IF a listener is attached to this request, and an exception occured 
+	 * IF a listener is attached to this request, and an exception occurred 
 	 * from handling the request, this method will call the listener's requestException() method.
 	 */
 	public void notifyListenerOfException()

@@ -1,5 +1,8 @@
 package net.cloud.client.file.cache;
 
+import java.util.Arrays;
+import java.util.Iterator;
+
 /**
  * A block of one or more CachedFile objects. In other words, a region of a cache file 
  * represented as each individual file. The region is contiguous, and so will contain 
@@ -97,6 +100,15 @@ public class CachedFileRegion {
 	public CachedFile getFileRel(int index)
 	{
 		return files[index];
+	}
+	
+	/**
+	 * Obtain an iterator which will iterate over all of the CachedFiles contained in this region
+	 * @return An iterator which will iterate over all of the CachedFiles contained in this region
+	 */
+	public Iterator<CachedFile> getFileIterator()
+	{
+		return Arrays.stream(files).iterator();
 	}
 
 }

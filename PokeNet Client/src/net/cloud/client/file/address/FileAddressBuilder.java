@@ -110,6 +110,37 @@ public class FileAddressBuilder {
 	}
 	
 	/**
+	 * Create a FileAddress which will lead to the cache file for a set of sprites. 
+	 * This address can be passed as the only parameter to the constructor of the cache request, 
+	 * or can be used in combination with <code>createSpriteCacheTableAddress</code>
+	 * @param setCanonicalName The canonical name of the sprite set
+	 * @return A FileAddress to request some file in a packed sprite set
+	 */
+	public FileAddress createSpriteCacheAddress(String setCanonicalName)
+	{
+		this.space = AddressConstants.SPACE_SPRITES;
+		this.name = setCanonicalName + "/cache";
+		this.extension = AddressConstants.EXT_CACHE;
+		
+		return createAddress();
+	}
+	
+	/**
+	 * Create a FileAddress which will lead to the cache table file for a set of sprites. 
+	 * This address is to be used in combination with <code>createSpriteCacheAddress</code>
+	 * @param setCanonicalName The canonical name of the sprite set
+	 * @return A FileAddress to request some file in a packed sprite set
+	 */
+	public FileAddress createSpriteCacheTableAddress(String setCanonicalName)
+	{
+		this.space = AddressConstants.SPACE_SPRITES;
+		this.name = setCanonicalName + "/cacheTable";
+		this.extension = AddressConstants.EXT_CACHE;
+		
+		return createAddress();
+	}
+	
+	/**
 	 * Obtain a new FileAddress object which will refer to the file this builder 
 	 * has been making a path to. No exceptions will occur if the builder 
 	 * has not been fully specified.

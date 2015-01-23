@@ -3,6 +3,7 @@ package net.cloud.gfx;
 import net.cloud.client.event.shutdown.ShutdownHook;
 import net.cloud.client.event.shutdown.ShutdownService;
 import net.cloud.client.event.shutdown.hooks.GraphicShutdownHook;
+import net.cloud.gfx.sprites.SpriteManager;
 
 /**
  * A facade of sorts to the.. erm.. CloudGfx system. 
@@ -21,8 +22,6 @@ public class CloudGfx implements ShutdownService {
 	/** The object that will make drawing happen [regularly] */
 	private DrawLogic drawLogic;
 	
-	// TODO: Sprites
-	
 	/** The hook that will stop drawing activity */
 	private ShutdownHook shutdownHook;
 	
@@ -36,8 +35,8 @@ public class CloudGfx implements ShutdownService {
 	 */
 	public CloudGfx(int width, int height)
 	{
-		// TODO: init sprites first
-		
+		// Grab the SpriteManager, which will start it loading
+		SpriteManager.instance();
 		
 		// Initialize the panel
 		rootPanel = new RootPanel(width, height);
