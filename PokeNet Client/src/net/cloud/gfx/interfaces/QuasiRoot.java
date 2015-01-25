@@ -8,6 +8,9 @@ public class QuasiRoot extends Interface {
 
 	/** This interface will show various system statistics on the screen */
 	private Interface statOverlay;
+	
+	/** An interface for testing whatever */
+	private Interface testInterface;
 
 	/**
 	 * Create a new root interface to the graphic element hierarchy. This is
@@ -24,6 +27,7 @@ public class QuasiRoot extends Interface {
 		super(0, 0, width, height);
 
 		statOverlay = null;
+		testInterface = null;
 	}
 
 	/**
@@ -38,9 +42,15 @@ public class QuasiRoot extends Interface {
 	public void keyTyped(char key) {
 		// Check if we want to do something with the key
 		switch (key) {
+		
 		// Toggle the statistics overlay
 		case KeyConstants.STAT_OVERLAY:
 			toggleStatOverlay();
+			break;
+			
+		// Open the test interface. It should close itself too 
+		case KeyConstants.TEST_INTERFACE:
+			toggleTestInterface();
 			break;
 		}
 
@@ -74,6 +84,24 @@ public class QuasiRoot extends Interface {
 
 			// And tell the StatTracker it can stop for now
 			StatTracker.instance().overlayClosed();
+		}
+	}
+	
+	/**
+	 * Show the test interface - made to see if sprites or whatever are working. 
+	 * It should well and remove itself. 
+	 */
+	private void toggleTestInterface()
+	{
+		if(testInterface == null)
+		{
+			// Change the constructor for different test interfaces
+			testInterface = new SpriteTestInterface(getWidth(), getHeight());
+			
+			add(testInterface);
+		} else {
+			super.remove(testInterface);
+			testInterface = null;
 		}
 	}
 

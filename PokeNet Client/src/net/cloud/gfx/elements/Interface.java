@@ -4,6 +4,7 @@ import java.awt.Graphics;
 
 import net.cloud.client.util.IteratorException;
 import net.cloud.client.util.StrongIterator;
+import net.cloud.gfx.constants.Priority;
 
 /**
  * An Interface is an element which contains child elements and behaves just like 
@@ -14,7 +15,7 @@ import net.cloud.client.util.StrongIterator;
 public class Interface extends Container {
 	
 	/** Default priority of an Interface. Kinda high. */
-	public static final int PRIORITY = 7;
+	public static final int PRIORITY = Priority.MED_HIGH;
 	
 	// TODO: background sprite
 	

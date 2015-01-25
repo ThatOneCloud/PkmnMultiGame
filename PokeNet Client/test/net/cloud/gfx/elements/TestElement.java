@@ -30,7 +30,7 @@ public class TestElement extends Element {
 	 * @param height The height of this element. May be 0.
 	 * @param hasFocus Whether or not the element already has key focus
 	 */
-	public TestElement(Element parent, int priority, int x, int y, int width,
+	public TestElement(Container parent, int priority, int x, int y, int width,
 			int height, boolean hasFocus) {
 		super(parent, priority, x, y, width, height, hasFocus);
 	}

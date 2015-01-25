@@ -13,7 +13,10 @@ public enum SpriteSet {
 	DEFAULT(	"default",	false,	SpriteCollectionType.SIMPLE,	null),
 	
 	/** Set for images dedicated to the user interface */
-	UI(			"ui",		false,	SpriteCollectionType.SIMPLE,	null);
+	UI(			"ui",		false,	SpriteCollectionType.SIMPLE,	null),
+	
+	/** Set whose config may change, and has some sprites for testing things */
+	TEST(		"test",		false,	SpriteCollectionType.SIMPLE,	null);
 	
 	/** Canonical name for general use */
 	private String canonName;

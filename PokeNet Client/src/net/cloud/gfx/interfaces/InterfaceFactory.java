@@ -2,6 +2,7 @@ package net.cloud.gfx.interfaces;
 
 import net.cloud.client.tracking.StatTracker;
 import net.cloud.client.util.StringUtil;
+import net.cloud.gfx.constants.Priority;
 import net.cloud.gfx.elements.Interface;
 import net.cloud.gfx.elements.ReferenceText;
 
@@ -30,6 +31,7 @@ public class InterfaceFactory {
 	public static Interface createStatOverlay(int width, int height) {
 		// Create an interface to add components to
 		Interface overlay = new Interface();
+		overlay.setPriority(Priority.MAX);
 
 		// Add components which will show statistics
 		// The text which will show the current fps

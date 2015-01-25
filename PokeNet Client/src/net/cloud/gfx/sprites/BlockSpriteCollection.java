@@ -118,7 +118,10 @@ public class BlockSpriteCollection extends SpriteCollection {
 			throw new IllegalArgumentException("Block index out of bounds: " + blockIndex);
 		}
 		
-		return ((blockIndex + 1) * blockSize) - 1;
+		int lastIdx = ((blockIndex + 1) * blockSize) - 1;
+		
+		// Possible the last index from above extends beyond size. Prevent that.
+		return (lastIdx >= super.getSize()) ? (super.getSize() - 1) : (lastIdx);
 	}
 
 }

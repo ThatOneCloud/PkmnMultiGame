@@ -40,7 +40,7 @@ public abstract class Container extends Element {
 	 * @param x The X coordinate of this element relative to its parent
 	 * @param y The Y coordinate of this element relative to its parent
 	 */
-	public Container(Element parent, int priority, int x, int y) {
+	public Container(Container parent, int priority, int x, int y) {
 		super(parent, priority, x, y, 0, 0, false);
 		
 		// Use a different kind of FocusHandler, rather than the default one Element provides
@@ -59,7 +59,7 @@ public abstract class Container extends Element {
 	 * @param width The width of this element. May be 0.
 	 * @param height The height of this element. May be 0.
 	 */
-	public Container(Element parent, int priority, int x, int y, int width, int height) {
+	public Container(Container parent, int priority, int x, int y, int width, int height) {
 		super(parent, priority, x, y, width, height, false);
 		
 		// Use a different kind of FocusHandler, rather than the default one Element provides
@@ -79,7 +79,7 @@ public abstract class Container extends Element {
 	 * @param hasFocus Whether or not the element already has key focus
 	 */
 	public Container(
-			Element parent,
+			Container parent,
 			int priority,
 			int x, 
 			int y, 

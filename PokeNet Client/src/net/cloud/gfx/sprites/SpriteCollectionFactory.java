@@ -3,6 +3,7 @@ package net.cloud.gfx.sprites;
 import java.io.IOException;
 
 import net.cloud.client.file.FileRequestException;
+import net.cloud.client.file.FileServer;
 import net.cloud.client.file.address.FileAddressBuilder;
 import net.cloud.client.file.request.RandomAccessFileLoadRequest;
 
@@ -28,6 +29,7 @@ public class SpriteCollectionFactory {
 		RandomAccessFileLoadRequest req = new RandomAccessFileLoadRequest(FileAddressBuilder.newBuilder().createSpriteCacheAddress(set.getCanonicalName()));
 		
 		// Wait for the file to be opened
+		FileServer.instance().submit(req);
 		req.waitForRequest();
 		
 		// Read the size from the file, then we can close it.

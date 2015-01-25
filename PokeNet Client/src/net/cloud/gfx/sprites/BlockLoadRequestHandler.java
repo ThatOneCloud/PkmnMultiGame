@@ -38,25 +38,40 @@ public class BlockLoadRequestHandler implements FileRequestListener<CachedFileRe
 	 */
 	@Override
 	public void requestReady(CachedFileRegion region) {
+		try {
+			// Encapsulate the method in a try block. No matter what happens... 
+			loadBlock(region);
+		} finally {
+			// we want to release the lock to avoid deadlock
+			collection.unlock(firstSpriteID);
+		}
+	}
+	
+	/**
+	 * Helper method for dealing with the request
+	 * @param region The file region containing the image data
+	 */
+	private void loadBlock(CachedFileRegion region)
+	{
 		// Create and place an image for all of the loaded files
 		Iterator<CachedFile> fileIt = region.getFileIterator();
 		int spriteIndex = firstSpriteID;
-		
+
+		// Go through each file
 		while(fileIt.hasNext())
 		{
 			try {
+				// Make a sprite out of it
 				BufferedImage sprite = ImageIO.read(fileIt.next().asInputStream());
-			
+
+				// Place it in the collection and move forward
 				collection.putSprite(spriteIndex, sprite);
 				spriteIndex++;
 			} catch (IOException e) {
 				// There's no callback built in, this is an asynchronous call basically. Just shout something happened.
 				Logger.instance().logException("Could not load sprite #" + spriteIndex, e);
-				
+
 				// I'm opting out of skimming past bad sprites, to enforce fixing the issue. So no continue.
-			} finally {
-				// No matter what happens, we want to release the lock that should still be held
-				collection.unlock(firstSpriteID);
 			}
 		}
 	}

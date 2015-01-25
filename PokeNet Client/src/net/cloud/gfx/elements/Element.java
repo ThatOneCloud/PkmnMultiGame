@@ -43,7 +43,7 @@ public abstract class Element implements Focusable {
 	private FocusHandler focusHandler;
 	
 	/** The element which contains this one, if any */
-	private Optional<Element> parent;
+	private Optional<Container> parent;
 	
 	/**
 	 * Default initialization for an AbstractElement
@@ -61,7 +61,7 @@ public abstract class Element implements Focusable {
 	 * @param x The X coordinate of this element relative to its parent
 	 * @param y The Y coordinate of this element relative to its parent
 	 */
-	public Element(Element parent, int priority, int x, int y) {
+	public Element(Container parent, int priority, int x, int y) {
 		this(parent, priority, x, y, 0, 0, false);
 	}
 	
@@ -75,7 +75,7 @@ public abstract class Element implements Focusable {
 	 * @param width The width of this element. May be 0.
 	 * @param height The height of this element. May be 0.
 	 */
-	public Element(Element parent, int priority, int x, int y, int width, int height) {
+	public Element(Container parent, int priority, int x, int y, int width, int height) {
 		this(parent, priority, x, y, width, height, false);
 	}
 	
@@ -90,7 +90,7 @@ public abstract class Element implements Focusable {
 	 * @param hasFocus Whether or not the element already has key focus
 	 */
 	public Element(
-			Element parent,
+			Container parent,
 			int priority,
 			int x, 
 			int y, 
@@ -215,13 +215,13 @@ public abstract class Element implements Focusable {
 	}
 	
 	/** @return An Optional which may contain the element containing this one */
-	public Optional<Element> getParent()
+	public Optional<Container> getParent()
 	{
 		return parent;
 	}
 	
 	/** @param parent The element which contains this one */
-	public void setParent(Element parent)
+	public void setParent(Container parent)
 	{
 		this.parent = Optional.ofNullable(parent);
 	}

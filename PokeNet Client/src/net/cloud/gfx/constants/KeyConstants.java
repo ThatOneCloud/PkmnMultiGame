@@ -25,6 +25,9 @@ public class KeyConstants {
 	/** Global hotkey - show stat overlay */
 	public static final char STAT_OVERLAY = 'o';
 	
+	/** Global hotkey - show test interface (set to null to disable) */
+	public static final char TEST_INTERFACE = 't';
+	
 	/** Constant for the character which will traverse to the next Focusable in line */
 	public static final char CHANGE_FOCUS_NEXT = '\t';
 	
