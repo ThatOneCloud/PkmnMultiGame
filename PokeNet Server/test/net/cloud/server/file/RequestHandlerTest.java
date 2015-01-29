@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -15,6 +16,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
+import net.cloud.server.file.request.CachedFileRegionRequest;
+import net.cloud.server.file.request.CachedFileRequest;
 import net.cloud.server.file.FileRequestException;
 import net.cloud.server.file.address.FileAddress;
 import net.cloud.server.file.request.BufferedReaderRequest;
@@ -96,6 +99,48 @@ public class RequestHandlerTest {
 		
 		// Make sure the file was at least created
 		assertTrue(Files.exists(Paths.get(tempFile.getAbsolutePath())));
+	}
+	
+	/** See if a test CachedFileRequest will work */
+	@Test
+	public void testCachedFileRequest() throws IOException, FileRequestException {
+		// What we know the file should contain
+		byte[] TEST_DATA = new byte[] {0, 0, 0, 2};
+
+		CachedFileRequest req = new CachedFileRequest(1, new FileAddress("./data/test/testCache.dat"));
+		
+		// Go directly to the handler
+		handler.handleRequest(req);
+		
+		// Read the bytes
+		byte readData[] = req.getFileDescriptor().getData();
+		
+		// Make sure it matches
+		assertTrue(Arrays.equals(readData, TEST_DATA));
+	}
+	
+	/** See if a test CachedFileRegionRequest will work */
+	@Test
+	public void testCachedFileRegionRequest() throws IOException, FileRequestException {
+		// What we know the file should contain
+		byte[][] TEST_DATA = {
+				new byte[] {0, 0, 0, 1},
+				new byte[] {0, 0, 0, 2},
+				new byte[] {0, 0, 0, 3}
+		};
+
+		CachedFileRegionRequest req = new CachedFileRegionRequest(0, 2, new FileAddress("./data/test/testCache.dat"));
+		
+		// Go directly to the handler
+		handler.handleRequest(req);
+		
+		// Check all the data
+		for(int i = 0; i < 3; ++i)
+		{
+			byte readData[] = req.getFileDescriptor().getFileRel(i).getData();
+			
+			assertTrue(Arrays.equals(readData, TEST_DATA[i]));
+		}
 	}
 	
 }

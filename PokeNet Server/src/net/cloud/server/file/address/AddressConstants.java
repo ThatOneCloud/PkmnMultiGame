@@ -17,5 +17,8 @@ public class AddressConstants {
 	
 	/** Text file extension */
 	public static final String EXT_TEXT = "txt";
+	
+	/** Extension used for cache files */
+	public static final String EXT_CACHE = "dat";
 
 }

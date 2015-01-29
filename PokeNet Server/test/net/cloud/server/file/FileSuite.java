@@ -1,5 +1,7 @@
 package net.cloud.server.file;
 
+import net.cloud.server.file.cache.CacheSuite;
+
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -8,7 +10,9 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({ 
 	FileServerTest.class,
 	AddressBuilderTest.class,
-	RequestHandlerTest.class
+	RequestHandlerTest.class,
+	
+	CacheSuite.class
 })
 public class FileSuite {
 
