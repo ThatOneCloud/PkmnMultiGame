@@ -1,10 +1,14 @@
 package net.cloud.gfx.elements;
 
 import java.awt.Graphics;
+import java.awt.Image;
+import java.util.Optional;
 
 import net.cloud.client.util.IteratorException;
 import net.cloud.client.util.StrongIterator;
 import net.cloud.gfx.constants.Priority;
+import net.cloud.gfx.sprites.SpriteManager;
+import net.cloud.gfx.sprites.SpriteSet;
 
 /**
  * An Interface is an element which contains child elements and behaves just like 
@@ -17,7 +21,8 @@ public class Interface extends Container {
 	/** Default priority of an Interface. Kinda high. */
 	public static final int PRIORITY = Priority.MED_HIGH;
 	
-	// TODO: background sprite
+	/** Optional background image */
+	private Optional<Image> background;
 	
 	/** 
 	 * Default constructor. Creates an interface with all default parameters. 
@@ -26,6 +31,8 @@ public class Interface extends Container {
 	public Interface()
 	{
 		super();
+		
+		this.background = Optional.empty();
 	}
 	
 	/**
@@ -39,6 +46,8 @@ public class Interface extends Container {
 	public Interface(int x, int y, int width, int height)
 	{
 		super(null, PRIORITY, x, y, width, height);
+		
+		this.background = Optional.empty();
 	}
 	
 	/**
@@ -52,8 +61,9 @@ public class Interface extends Container {
 	 */
 	public Interface(int priority, int x, int y, int width, int height)
 	{
-		// TODO: background image
 		super(null, priority, x, y, width, height);
+		
+		this.background = Optional.empty();
 	}
 
 	/**
@@ -64,7 +74,8 @@ public class Interface extends Container {
 	 */
 	@Override
 	public void drawElement(Graphics g, int offsetX, int offsetY) throws IteratorException {
-		// TODO draw background sprite
+		// Draw background sprite
+		background.ifPresent((img) -> g.drawImage(img, offsetX, offsetY, null));
 
 		// Obtain an iterator and go through all of the children
 		StrongIterator<Element> it = children.iterator();
@@ -75,6 +86,28 @@ public class Interface extends Container {
 			// Now the child will paint itself, knowing its own offset
 			child.drawElement(g, offsetX + child.getX(), offsetY + child.getY());
 		}
+	}
+	
+	/**
+	 * Set a background image via a request from the sprite manager. 
+	 * It will appear behind all of the child elements. 
+	 * To remove a background, call <code>setBackground(null)</code>
+	 * @param set The set of sprites the background is from
+	 * @param spriteID The ID of the sprite
+	 */
+	public void setBackground(SpriteSet set, int spriteID)
+	{
+		setBackground(SpriteManager.instance().getSprite(set, spriteID));
+	}
+	
+	/**
+	 * Set a background image to this interface. It will appear behind all of the 
+	 * child elements. Set to null to remove. 
+	 * @param background The image to use as a background
+	 */
+	public void setBackground(Image background)
+	{
+		this.background = Optional.ofNullable(background);
 	}
 
 }

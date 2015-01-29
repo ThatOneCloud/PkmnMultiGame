@@ -63,7 +63,13 @@ public class Logger implements ShutdownService {
 	{
 		if(instance == null)
 		{
-			instance = new Logger();
+			synchronized(Logger.class)
+			{
+				if(instance == null)
+				{
+					instance = new Logger();
+				}
+			}
 		}
 		
 		return instance;

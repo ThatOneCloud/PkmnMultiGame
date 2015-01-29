@@ -6,6 +6,7 @@ import net.cloud.server.event.task.TaskEngine;
 import net.cloud.server.file.FileServer;
 import net.cloud.server.logging.Logger;
 import net.cloud.server.nio.NettyServer;
+import net.cloud.server.tracking.StatTracker;
 import net.cloud.server.util.IOUtil;
 
 /**
@@ -42,7 +43,13 @@ public class Server {
 	{
 		if(instance == null)
 		{
-			instance = new Server();
+			synchronized(Server.class)
+			{
+				if(instance == null)
+				{
+					instance = new Server();
+				}
+			}
 		}
 		
 		return instance;
@@ -110,6 +117,7 @@ public class Server {
 		{
 			shutdownHandler.addHook(Logger.instance().getShutdownHook());
 		}
+		StatTracker.instance().updatePlayersOnline(5);
 	}
 	
 	/**

@@ -1,7 +1,7 @@
-package net.cloud.client.tracking;
+package net.cloud.server.tracking;
 
-import net.cloud.client.event.task.TaskEngine;
-import net.cloud.client.event.task.voidtasks.CancellableVoidTask;
+import net.cloud.server.event.task.TaskEngine;
+import net.cloud.server.event.task.voidtasks.CancellableVoidTask;
 
 /**
  * A class which can be updated with various game statistics to keep 
@@ -21,7 +21,7 @@ public class StatTracker {
 	{
 		/** Tracking will always happen for the lifetime of the client */
 		ALWAYS_ON, 
-		/** Tracking will only happen when the statistics overlay is showing */
+		/** Tracking will only happen when the command has toggled it on */
 		TEMP_ON, 
 		/** Not an effective mode, but either way this means tracking isn't occurring */
 		OFF
@@ -76,10 +76,10 @@ public class StatTracker {
 	}
 	
 	/**
-	 * Inform the StatTracker that the statistics overlay has been opened and is now showing. 
+	 * Inform the StatTracker that there is interest in starting tracking.
 	 * If the mode is set to TEMP_ON, then this will start tracking. 
 	 */
-	public synchronized void overlayOpened()
+	public synchronized void startTracking()
 	{
 		// Take advantage of ALWAYS_ON mode never being off
 		if(mode == TrackingMode.OFF)
@@ -93,10 +93,10 @@ public class StatTracker {
 	}
 	
 	/**
-	 * Inform the StatTracker that the statistics overlay has been closed is is no longer showing. 
+	 * Inform the StatTracker that there is no longer interest in tracking stats. 
 	 * If the mode is set to TEMP_ON, then this will stop tracking. 
 	 */
-	public synchronized void overlayClosed()
+	public synchronized void stopTracking()
 	{
 		// Same as above. ALWAYS_ON won't become off, so this is safe to do. 
 		if(mode == TrackingMode.TEMP_ON)
@@ -107,6 +107,20 @@ public class StatTracker {
 			// Stop the task which [should] be currently running
 			trackingTask.cancel();
 			trackingTask = null;
+		}
+	}
+
+	/**
+	 * Toggle the tracking on or off. If the mode is set to ALWAYS_ON this will do nothing. So really, 
+	 * it will toggle it on or off if the tracking is in temporary mode. 
+	 */
+	public synchronized void toggleTracking()
+	{
+		if(tracking())
+		{
+			stopTracking();
+		} else {
+			startTracking();
 		}
 	}
 	
@@ -121,26 +135,25 @@ public class StatTracker {
 	}
 	
 	/**
-	 * Update statistics and status information pertaining to drawing. 
-	 * @param time The amount of time the draw loop took in milliseconds
+	 * Update statistics on the players that are currently online
+	 * @param currentlyOnline The number of players that are currently online
 	 */
-	public void updateDrawStats(int time)
+	public void updatePlayersOnline(int currentlyOnline)
 	{
 		if(!tracking())
 		{
 			return;
 		}
 		
-		// Figure out the fps. Protect against division by zero.
-		int fps = time == 0 ? 1000 : (1000 / time);
-		stats.updateFpsStat(fps);
+		// Just tell it like it is, no figurin' to do
+		stats.updatePlayersOnline(currentlyOnline);
 	}
 	
 	/**
 	 * Check to see if we are currently tracking statistics
 	 * @return True if tracking should be done
 	 */
-	private boolean tracking()
+	public boolean tracking()
 	{
 		return mode != TrackingMode.OFF;
 	}

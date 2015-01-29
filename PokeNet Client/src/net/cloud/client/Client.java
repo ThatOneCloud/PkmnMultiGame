@@ -47,7 +47,13 @@ public class Client {
 	{
 		if(instance == null)
 		{
-			instance = new Client();
+			synchronized(Client.class)
+			{
+				if(instance == null)
+				{
+					instance = new Client();
+				}
+			}
 		}
 		
 		return instance;

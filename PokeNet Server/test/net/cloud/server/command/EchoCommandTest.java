@@ -16,7 +16,7 @@ public class EchoCommandTest {
 		String expectedResult = "hello";
 		
 		try {
-			String result = CommandHandler.getInstance().handleCommand("::echo hello").get();
+			String result = CommandHandler.instance().handleCommand("::echo hello").get();
 			
 			assertTrue(result.equals(expectedResult));
 		} catch (InterruptedException | ExecutionException | CommandException e) {
@@ -29,7 +29,7 @@ public class EchoCommandTest {
 		String expectedResult = "helloworld";
 		
 		try {
-			String result = CommandHandler.getInstance().handleCommand("::echo hello -c world").get();
+			String result = CommandHandler.instance().handleCommand("::echo hello -c world").get();
 			
 			assertTrue(result.equals(expectedResult));
 		} catch (InterruptedException | ExecutionException | CommandException e) {
@@ -42,7 +42,7 @@ public class EchoCommandTest {
 		String expectedResult = "helloworld";
 		
 		try {
-			String result = CommandHandler.getInstance().handleCommand("::echo hello --concat world").get();
+			String result = CommandHandler.instance().handleCommand("::echo hello --concat world").get();
 			
 			assertTrue(result.equals(expectedResult));
 		} catch (InterruptedException | ExecutionException | CommandException e) {
@@ -55,7 +55,7 @@ public class EchoCommandTest {
 		String expectedResult = "hello world";
 		
 		try {
-			String result = CommandHandler.getInstance().handleCommand("::echo hello -c \" world\"").get();
+			String result = CommandHandler.instance().handleCommand("::echo hello -c \" world\"").get();
 			
 			assertTrue(result.equals(expectedResult));
 		} catch (InterruptedException | ExecutionException | CommandException e) {
@@ -66,7 +66,7 @@ public class EchoCommandTest {
 	@Test
 	public void testInvalParam() {
 		try {
-			CommandHandler.getInstance().handleCommand("::echo").get();
+			CommandHandler.instance().handleCommand("::echo").get();
 			
 			fail("Exception should have been thrown");
 		} catch (InterruptedException | ExecutionException | CommandException e) {

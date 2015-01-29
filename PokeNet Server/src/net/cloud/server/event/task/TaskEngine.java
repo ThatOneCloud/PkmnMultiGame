@@ -53,7 +53,13 @@ public class TaskEngine implements ShutdownService {
 	{
 		if(instance == null)
 		{
-			instance = new TaskEngine();
+			synchronized(TaskEngine.class)
+			{
+				if(instance == null)
+				{
+					instance = new TaskEngine();
+				}
+			}
 		}
 		
 		return instance;

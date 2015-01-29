@@ -54,12 +54,19 @@ public class SpriteManager {
 	{
 		if(instance == null)
 		{
-			try {
-				instance = new SpriteManager();
-			} catch (FileRequestException | IOException e) {
-				// If we can't create this object, it's fatal to the application. 
-				Logger.instance().logException("[FATAL] Could not create SpriteManager", e);
+			synchronized(SpriteManager.class)
+			{
+				if(instance == null)
+				{
+					try {
+						instance = new SpriteManager();
+					} catch (FileRequestException | IOException e) {
+						// If we can't create this object, it's fatal to the application. 
+						Logger.instance().logException("[FATAL] Could not create SpriteManager", e);
+					}
+				}
 			}
+			
 		}
 		
 		return instance;

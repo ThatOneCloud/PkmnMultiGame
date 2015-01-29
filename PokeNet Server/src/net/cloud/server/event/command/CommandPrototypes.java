@@ -23,6 +23,7 @@ public class CommandPrototypes {
 		prototypes.put("echo", new EchoCommand());
 		prototypes.put("shutdown", new ShutdownCommand());
 		prototypes.put("test", new TestCommand());
+		prototypes.put("track_stats", new ToggleStatTrackingCommand());
 	}
 	
 	/**

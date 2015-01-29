@@ -68,32 +68,6 @@ public abstract class Container extends Element {
 		children = new ElementList();
 	}
 	
-	/**
-	 * Initialize a Container so each of its fields are set to the given values.
-	 * @param parent The element containing this one, or null
-	 * @param priority Essentially the Z coordinate. Higher is on top.
-	 * @param x The X coordinate of this element relative to its parent
-	 * @param y The Y coordinate of this element relative to its parent
-	 * @param width The width of this element. May be 0.
-	 * @param height The height of this element. May be 0.
-	 * @param hasFocus Whether or not the element already has key focus
-	 */
-	public Container(
-			Container parent,
-			int priority,
-			int x, 
-			int y, 
-			int width, 
-			int height, 
-			boolean hasFocus) {
-		super(parent, priority, x, y, width, height, hasFocus);
-		
-		// Use a different kind of FocusHandler, rather than the default one Element provides
-		super.setFocusHandler(new ContainerFocusHandler());
-		
-		children = new ElementList();
-	}
-	
 	/** 
 	 * Propagates the click to the top contained element that intersects the location 
 	 * of the click. The coordinates passed to the contained element become relative to 

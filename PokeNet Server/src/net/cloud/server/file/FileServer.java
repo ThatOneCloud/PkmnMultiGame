@@ -5,7 +5,6 @@ import net.cloud.server.event.shutdown.ShutdownService;
 import net.cloud.server.event.shutdown.hooks.FileServerShutdownHook;
 import net.cloud.server.file.request.FileRequest;
 import net.cloud.server.file.request.handler.RequestHandler;
-import net.cloud.server.logging.Logger;
 
 /**
  * The front of the file server module.  Deals with FileRequests. 
@@ -25,7 +24,7 @@ import net.cloud.server.logging.Logger;
 public class FileServer implements ShutdownService {
 	
 	/** Singleton instance to the FileServer */
-	private static FileServer instance;
+	private static volatile FileServer instance;
 	
 	/** An instance of RequestHandler to delegate request to */
 	private RequestHandler requestHandler;
@@ -52,9 +51,6 @@ public class FileServer implements ShutdownService {
 		
 		// Create a shutdown hook to stop this process
 		shutdownHook = new FileServerShutdownHook(logicThread, fileServerThread);
-		
-		Logger.writer().println("File Server now running");
-		Logger.writer().flush();
 	}
 	
 	/**
@@ -66,7 +62,13 @@ public class FileServer implements ShutdownService {
 	{
 		if(instance == null)
 		{
-			instance = new FileServer();
+			synchronized(FileServer.class)
+			{
+				if(instance == null)
+				{
+					instance = new FileServer();
+				}
+			}
 		}
 		
 		return instance;

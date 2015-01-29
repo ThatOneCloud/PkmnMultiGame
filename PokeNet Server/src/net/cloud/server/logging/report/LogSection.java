@@ -11,6 +11,9 @@ public enum LogSection {
 	/** Reports on commands that were used and their results */
 	COMMAND("commands"),
 	
+	/** Report for the status of the system (StatReport) */
+	STATS("stats"),
+	
 	/** Reports that don't necessary belong to any other section */
 	MISC("misc");
 	

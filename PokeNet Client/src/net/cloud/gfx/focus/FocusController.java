@@ -30,7 +30,13 @@ public class FocusController {
 	{
 		if(instance == null)
 		{
-			instance = new FocusController();
+			synchronized(FocusController.class)
+			{
+				if(instance == null)
+				{
+					instance = new FocusController();
+				}
+			}
 		}
 		
 		return instance;

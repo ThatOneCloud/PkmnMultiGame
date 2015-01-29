@@ -66,7 +66,13 @@ public class FileServer implements ShutdownService {
 	{
 		if(instance == null)
 		{
-			instance = new FileServer();
+			synchronized(FileServer.class)
+			{
+				if(instance == null)
+				{
+					instance = new FileServer();
+				}
+			}
 		}
 		
 		return instance;

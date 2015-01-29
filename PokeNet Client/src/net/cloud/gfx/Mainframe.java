@@ -53,7 +53,13 @@ public class Mainframe extends JFrame {
 	{
 		if(instance == null)
 		{
-			instance = new Mainframe();
+			synchronized(Mainframe.class)
+			{
+				if(instance == null)
+				{
+					instance = new Mainframe();
+				}
+			}
 		}
 		
 		return instance;

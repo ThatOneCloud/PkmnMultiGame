@@ -80,7 +80,7 @@ public class CommandReader {
 		// CommandHandler takes over, to deal with.. well.. handling.
 		try {
 			// A Future is returned. It's value is a result message from the command once executed
-			Future<String> commandFuture = CommandHandler.getInstance().handleCommand(commandLine);
+			Future<String> commandFuture = CommandHandler.instance().handleCommand(commandLine);
 			
 			// Wait until the future has a result - then show it
 			messageOut(commandFuture.get());

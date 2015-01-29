@@ -6,6 +6,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+	BoundedCircularIntArrayTest.class,
 	StringUtilTest.class
 })
 public class UtilSuite {

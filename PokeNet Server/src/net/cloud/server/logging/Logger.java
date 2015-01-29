@@ -2,15 +2,13 @@ package net.cloud.server.logging;
 
 import java.io.PrintWriter;
 
+import net.cloud.server.tracking.StatContainer;
+import net.cloud.server.tracking.StatReport;
 import net.cloud.server.ConfigConstants;
 import net.cloud.server.event.shutdown.ShutdownHook;
 import net.cloud.server.event.shutdown.ShutdownService;
 import net.cloud.server.event.shutdown.hooks.LoggerShutdownHook;
-import net.cloud.server.logging.report.CommandLogReport;
-import net.cloud.server.logging.report.ExceptionLogReport;
-import net.cloud.server.logging.report.LogReport;
-import net.cloud.server.logging.report.LogSection;
-import net.cloud.server.logging.report.MessageLogReport;
+import net.cloud.server.logging.report.*;
 import net.cloud.server.util.IOUtil;
 
 /**
@@ -22,7 +20,7 @@ import net.cloud.server.util.IOUtil;
 public class Logger implements ShutdownService {
 	
 	/** Singleton instance of the Logger class */
-	private static Logger instance;
+	private static volatile Logger instance;
 	
 	/** The thread the service is running on */
 	private Thread thread;
@@ -62,7 +60,13 @@ public class Logger implements ShutdownService {
 	{
 		if(instance == null)
 		{
-			instance = new Logger();
+			synchronized(Logger.class)
+			{
+				if(instance == null)
+				{
+					instance = new Logger();
+				}
+			}
 		}
 		
 		return instance;
@@ -142,6 +146,15 @@ public class Logger implements ShutdownService {
 	public void logCommand(String line, String results)
 	{
 		submit(new CommandLogReport(line, results));
+	}
+	
+	/**
+	 * Submit a report detailing the status of the system
+	 * @param stats The object with the status information
+	 */
+	public void logStats(StatContainer stats)
+	{
+		submit(new StatReport(stats));
 	}
 	
 	/**

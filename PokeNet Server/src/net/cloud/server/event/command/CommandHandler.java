@@ -21,11 +21,17 @@ public class CommandHandler {
 	/**
 	 * @return A reference to the singleton instance
 	 */
-	public static CommandHandler getInstance()
+	public static CommandHandler instance()
 	{
 		if(instance == null)
 		{
-			instance = new CommandHandler();
+			synchronized(CommandHandler.class)
+			{
+				if(instance == null)
+				{
+					instance = new CommandHandler();
+				}
+			}
 		}
 		
 		return instance;

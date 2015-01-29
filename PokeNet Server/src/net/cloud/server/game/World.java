@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.cloud.server.entity.player.Player;
+import net.cloud.server.tracking.StatTracker;
 
 /**
  * Represents the entire Game World.  There can be only one! (singleton class)
@@ -33,7 +34,13 @@ public class World {
 	{
 		if(instance == null)
 		{
-			instance = new World();
+			synchronized(World.class)
+			{
+				if(instance == null)
+				{
+					instance = new World();
+				}
+			}
 		}
 		
 		return instance;
@@ -57,6 +64,9 @@ public class World {
 	 */
 	public void placePlayer(Channel channel, Player player) {
 		players.put(channel, player);
+		
+		// Report that the number of players online has changed.
+		StatTracker.instance().updatePlayersOnline(players.size());
 	}
 
 }
