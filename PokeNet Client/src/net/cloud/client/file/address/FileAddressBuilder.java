@@ -91,10 +91,12 @@ public class FileAddressBuilder {
 	 * @param logName The name to define the log, so there may be specific log files
 	 * @return A FileAddress for creation of a log file
 	 */
-	public FileAddress createLogFileAddress(String logName)
+	public static FileAddress createLogFileAddress(String logName)
 	{
+		FileAddressBuilder b = newBuilder();
+		
 		// Name is the current time. The day is a folder, the file is the time
-		this.space = AddressConstants.SPACE_LOG_FILES;
+		b.space = AddressConstants.SPACE_LOG_FILES;
 		LocalDateTime now = LocalDateTime.now();
 		StringBuilder name = new StringBuilder();
 		name.append(now.getMonthValue()).append('-')
@@ -103,10 +105,10 @@ public class FileAddressBuilder {
 			.append(now.getHour()).append('-')
 			.append(now.getMinute()).append('/')
 			.append(logName);
-		this.name = name.toString();
-		this.extension = AddressConstants.EXT_TEXT;
+		b.name = name.toString();
+		b.extension = AddressConstants.EXT_TEXT;
 		
-		return createAddress();
+		return b.createAddress();
 	}
 	
 	/**
@@ -116,13 +118,15 @@ public class FileAddressBuilder {
 	 * @param setCanonicalName The canonical name of the sprite set
 	 * @return A FileAddress to request some file in a packed sprite set
 	 */
-	public FileAddress createSpriteCacheAddress(String setCanonicalName)
+	public static FileAddress createSpriteCacheAddress(String setCanonicalName)
 	{
-		this.space = AddressConstants.SPACE_SPRITES;
-		this.name = setCanonicalName + "/cache";
-		this.extension = AddressConstants.EXT_CACHE;
+		FileAddressBuilder b = newBuilder();
 		
-		return createAddress();
+		b.space = AddressConstants.SPACE_SPRITES;
+		b.name = setCanonicalName + "/cache";
+		b.extension = AddressConstants.EXT_CACHE;
+		
+		return b.createAddress();
 	}
 	
 	/**
@@ -131,13 +135,15 @@ public class FileAddressBuilder {
 	 * @param setCanonicalName The canonical name of the sprite set
 	 * @return A FileAddress to request some file in a packed sprite set
 	 */
-	public FileAddress createSpriteCacheTableAddress(String setCanonicalName)
+	public static FileAddress createSpriteCacheTableAddress(String setCanonicalName)
 	{
-		this.space = AddressConstants.SPACE_SPRITES;
-		this.name = setCanonicalName + "/cacheTable";
-		this.extension = AddressConstants.EXT_CACHE;
+		FileAddressBuilder b = newBuilder();
 		
-		return createAddress();
+		b.space = AddressConstants.SPACE_SPRITES;
+		b.name = setCanonicalName + "/cacheTable";
+		b.extension = AddressConstants.EXT_CACHE;
+		
+		return b.createAddress();
 	}
 	
 	/**

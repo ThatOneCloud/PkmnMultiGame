@@ -26,7 +26,7 @@ public class SpriteCollectionFactory {
 	public static SpriteCollection createCollectionByType(SpriteSet set) throws FileRequestException, IOException
 	{
 		// The size needs to be determined regardless of type. It's the first 4 bytes in the cache. 
-		RandomAccessFileLoadRequest req = new RandomAccessFileLoadRequest(FileAddressBuilder.newBuilder().createSpriteCacheAddress(set.getCanonicalName()));
+		RandomAccessFileLoadRequest req = new RandomAccessFileLoadRequest(FileAddressBuilder.createSpriteCacheAddress(set.getCanonicalName()));
 		
 		// Wait for the file to be opened
 		FileServer.instance().submit(req);

@@ -70,7 +70,7 @@ public class CommandScriptReader {
 	 */
 	private void initBR() throws FileRequestException
 	{
-		BufferedReaderRequest req = new BufferedReaderRequest(FileAddressBuilder.newBuilder().createCommandScriptAddress(scriptName));
+		BufferedReaderRequest req = new BufferedReaderRequest(FileAddressBuilder.createCommandScriptAddress(scriptName));
 		in = FileServer.instance().submitAndWaitForDescriptor(req);
 	}
 	

@@ -137,7 +137,7 @@ public class LoggerService implements Runnable {
 	 */
 	private void initLogFile() {
 		// Obtain a PrintWriter to a file to use for logging
-		PrintWriterRequest fileRequest = new PrintWriterRequest(FileAddressBuilder.newBuilder().createLogFileAddress("std_out"));
+		PrintWriterRequest fileRequest = new PrintWriterRequest(FileAddressBuilder.createLogFileAddress("std_out"));
 		
 		try {
 			// Given the file is opened, use that

@@ -32,9 +32,8 @@ public class SpriteLoader {
 	 */
 	public void loadEntireSet(SpriteSet set, SpriteCollection collection) throws FileRequestException, IOException {
 		// Get the address to both the cache and cache table. We'll need them both anyways. 
-		FileAddressBuilder addrBuilder = FileAddressBuilder.newBuilder();
-		FileAddress cacheAddr = addrBuilder.createSpriteCacheAddress(set.getCanonicalName());
-		FileAddress tableAddr = addrBuilder.createSpriteCacheTableAddress(set.getCanonicalName());
+		FileAddress cacheAddr = FileAddressBuilder.createSpriteCacheAddress(set.getCanonicalName());
+		FileAddress tableAddr = FileAddressBuilder.createSpriteCacheTableAddress(set.getCanonicalName());
 		
 		// We want the whole thing! So get a region for the whole thing. 
 		CachedFileRegionRequest req = new CachedFileRegionRequest(0, collection.getSize()-1, tableAddr, cacheAddr);
@@ -87,9 +86,8 @@ public class SpriteLoader {
 		}
 		
 		// Was not already loaded. We'll have to do the lifting. First things first, for all collection types, a single load. 
-		FileAddressBuilder addrBuilder = FileAddressBuilder.newBuilder();
-		FileAddress cacheAddr = addrBuilder.createSpriteCacheAddress(set.getCanonicalName());
-		FileAddress tableAddr = addrBuilder.createSpriteCacheTableAddress(set.getCanonicalName());
+		FileAddress cacheAddr = FileAddressBuilder.createSpriteCacheAddress(set.getCanonicalName());
+		FileAddress tableAddr = FileAddressBuilder.createSpriteCacheTableAddress(set.getCanonicalName());
 		CachedFileRequest singleReq = new CachedFileRequest(spriteID, tableAddr, cacheAddr);
 		
 		FileServer.instance().submit(singleReq);

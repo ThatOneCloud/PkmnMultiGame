@@ -1,11 +1,6 @@
 package net.cloud.server.file.request.handler;
 
-import net.cloud.server.file.request.RandomAccessFileLoadRequest;
-import net.cloud.server.file.request.CachedFileRegionRequest;
-import net.cloud.server.file.request.CachedFileRequest;
-import net.cloud.server.file.request.handler.LoadRequestHandler;
-import net.cloud.server.file.request.BufferedReaderRequest;
-import net.cloud.server.file.request.PrintWriterRequest;
+import net.cloud.server.file.request.*;
 
 /**
  * A class which serves as a facade to other, more specific, handlers. 
@@ -65,6 +60,14 @@ public class RequestHandler {
 	 * See {@link SaveRequestHandler#handleRequest(PrintWriterRequest)}
 	 */
 	public void handleRequest(PrintWriterRequest req) {
+		// Delegate the call off to a more specific handler
+		saveRequestHandler.handleRequest(req);
+	}
+	
+	/**
+	 * See {@link SaveRequestHandler#handleRequest(FileOutputStreamRequest)}
+	 */
+	public void handleRequest(FileOutputStreamRequest req) {
 		// Delegate the call off to a more specific handler
 		saveRequestHandler.handleRequest(req);
 	}

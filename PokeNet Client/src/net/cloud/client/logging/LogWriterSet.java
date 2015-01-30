@@ -88,7 +88,7 @@ public class LogWriterSet {
 	private void placeWriterInMap(LogSection section)
 	{
 		// Request a file catered to the section
-		PrintWriterRequest fileRequest = new PrintWriterRequest(FileAddressBuilder.newBuilder().createLogFileAddress(section.logName()));
+		PrintWriterRequest fileRequest = new PrintWriterRequest(FileAddressBuilder.createLogFileAddress(section.logName()));
 		try {
 			PrintWriter file = FileServer.instance().submitAndWaitForDescriptor(fileRequest);
 			

@@ -3,6 +3,7 @@ package net.cloud.server.game;
 import io.netty.channel.Channel;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import net.cloud.server.entity.player.Player;
@@ -68,5 +69,18 @@ public class World {
 		// Report that the number of players online has changed.
 		StatTracker.instance().updatePlayersOnline(players.size());
 	}
+	
+	/**
+	 * Obtain an iterator over every player in the world. This includes players that may have recently connected 
+	 * and are not fully logged in yet, as well as players that are no longer connected but have not been removed yet. 
+	 * @return An iterator over every player held in the World
+	 */
+//	public Iterator<Player> getAllPlayers()
+//	{
+		// TODO: Think this over. How to iterate in a fast way. Stamped lock?
+		//       Also how to get it down to just players, maybe. 
+		//       Also offer one that'll just give players that are logged in?
+		//       And a way to remove players
+//	}
 
 }

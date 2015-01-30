@@ -1,0 +1,19 @@
+Cache Contents:
+First:
+Number of files in the cache (5)
+So 0x00 00 00 05
+
+Then:
+5 integers (4 bytes each)... 1, 2, 3, 4, 5
+0x00 00 00 01
+0x00 00 00 02
+etc
+
+
+Cache Table Contents:
+5 rows, 8 bytes each (for position of each test integer)
+0x00 00 00 00 00 00 00 04
+0x00 00 00 00 00 00 00 08
+0x00 00 00 00 00 00 00 0C
+0x00 00 00 00 00 00 00 10
+0x00 00 00 00 00 00 00 14

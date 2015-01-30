@@ -2,6 +2,8 @@ package net.cloud.server.file.address;
 
 import java.time.LocalDateTime;
 
+import net.cloud.server.entity.player.Player;
+
 /**
  * This class is useful for building a FileAddress. (As the name implies...)
  * To use it, obtain a new instance via the static factory method. 
@@ -90,13 +92,15 @@ public class FileAddressBuilder {
 	 * @param scriptName The name of the script
 	 * @return A FileAddress which can be used to request the file
 	 */
-	public FileAddress createCommandScriptAddress(String scriptName)
+	public static FileAddress createCommandScriptAddress(String scriptName)
 	{
-		this.space = AddressConstants.SPACE_COMMAND_SCRIPTS;
-		this.name = scriptName;
-		this.extension = AddressConstants.EXT_TEXT;
+		FileAddressBuilder b = newBuilder();
 		
-		return createAddress();
+		b.space = AddressConstants.SPACE_COMMAND_SCRIPTS;
+		b.name = scriptName;
+		b.extension = AddressConstants.EXT_TEXT;
+		
+		return b.createAddress();
 	}
 	
 	/**
@@ -106,10 +110,12 @@ public class FileAddressBuilder {
 	 * @param logName The name to define the log, so there may be specific log files
 	 * @return A FileAddress for creation of a log file
 	 */
-	public FileAddress createLogFileAddress(String logName)
+	public static FileAddress createLogFileAddress(String logName)
 	{
+		FileAddressBuilder b = newBuilder();
+		
 		// Name is the current time. The day is a folder, the file is the time
-		this.space = AddressConstants.SPACE_LOG_FILES;
+		b.space = AddressConstants.SPACE_LOG_FILES;
 		LocalDateTime now = LocalDateTime.now();
 		StringBuilder name = new StringBuilder();
 		name.append(now.getMonthValue()).append('-')
@@ -118,10 +124,25 @@ public class FileAddressBuilder {
 			.append(now.getHour()).append('-')
 			.append(now.getMinute()).append('/')
 			.append(logName);
-		this.name = name.toString();
-		this.extension = AddressConstants.EXT_TEXT;
+		b.name = name.toString();
+		b.extension = AddressConstants.EXT_TEXT;
 		
-		return createAddress();
+		return b.createAddress();
+	}
+	
+	/**
+	 * Create and return a FileAddress which will lead to the file storing a player's save data
+	 * @return A FileAddress for player save data
+	 */
+	public static FileAddress createPlayerDataAddress(Player player) {
+		FileAddressBuilder b = newBuilder();
+		
+		// File is the player's username. 
+		b.space = AddressConstants.SPACE_PLAYER_DATA;
+		b.name = player.getUsername();
+		b.extension = AddressConstants.EXT_P_DATA;
+		
+		return b.createAddress();
 	}
 	
 	/**

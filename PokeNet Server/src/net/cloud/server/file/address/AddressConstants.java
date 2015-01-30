@@ -14,11 +14,17 @@ public class AddressConstants {
 	/** Location of log report files */
 	public static final String SPACE_LOG_FILES = "./data/logs/";
 	
+	/** Location of player save files */
+	public static final String SPACE_PLAYER_DATA = "./data/players/";
+	
 	
 	/** Text file extension */
 	public static final String EXT_TEXT = "txt";
 	
 	/** Extension used for cache files */
 	public static final String EXT_CACHE = "dat";
+	
+	/** Extension use for player data files */
+	public static final String EXT_P_DATA = "dat";
 
 }
