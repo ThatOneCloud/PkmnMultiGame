@@ -1,5 +1,9 @@
 package net.cloud.server.game;
 
+import net.cloud.server.ConfigConstants;
+import net.cloud.server.entity.player.save.PlayerSaveTask;
+import net.cloud.server.event.task.TaskEngine;
+
 /**
  * Represents the entire Game World.  There can be only one! (singleton class)
  * Keeps track of global information, such as all of the players online.
@@ -16,6 +20,9 @@ public class World {
 	{
 		// Initialize map of online players
 		playerMap = new WorldPlayerMap();
+		
+		// Now that we have the list of players, can safely kick off the saving task
+		TaskEngine.getInstance().scheduleImmediate(new PlayerSaveTask(), ConfigConstants.SAVE_INTERVAL);
 	}
 	
 	/**

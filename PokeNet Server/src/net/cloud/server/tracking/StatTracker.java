@@ -1,5 +1,6 @@
 package net.cloud.server.tracking;
 
+import net.cloud.server.ConfigConstants;
 import net.cloud.server.event.task.TaskEngine;
 import net.cloud.server.event.task.voidtasks.CancellableVoidTask;
 
@@ -12,9 +13,6 @@ import net.cloud.server.event.task.voidtasks.CancellableVoidTask;
  * Updates will periodically be written to a log file, via a scheduled task.
  */
 public class StatTracker {
-	
-	/** How frequently the current system status will be logged (ms) */
-	public static final int TASK_INTERVAL = 10000;
 	
 	/** The various operating modes that are possible */
 	private enum TrackingMode 
@@ -170,7 +168,7 @@ public class StatTracker {
 		CancellableVoidTask task = new TrackingTask();
 		
 		// Also have this submit the task to the engine. 'cause why not.
-		TaskEngine.getInstance().scheduleImmediate(task, TASK_INTERVAL);
+		TaskEngine.getInstance().scheduleImmediate(task, ConfigConstants.TASK_INTERVAL);
 		
 		return task;
 	}

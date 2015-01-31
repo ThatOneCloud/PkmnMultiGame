@@ -19,4 +19,10 @@ public class ConfigConstants {
 	/** Number of threads the task engine will have available for running tasks */
 	public static final int THREAD_POOL_SIZE = 2;
 
+	/** How frequently the current system status will be logged (ms) */
+	public static final int TASK_INTERVAL = 10000;
+	
+	/** How frequently the server will save all players */
+	public static final int SAVE_INTERVAL = 30000;
+
 }
