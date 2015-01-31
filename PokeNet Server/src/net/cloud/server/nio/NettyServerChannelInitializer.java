@@ -24,7 +24,7 @@ public class NettyServerChannelInitializer extends ChannelInitializer<SocketChan
 		// Place a Player in the world for this new connection
 		PacketSender packetSender = new PacketSender(ch);
 		Player newPlayer = new Player(packetSender);
-		World.getInstance().placePlayer(ch, newPlayer);
+		World.getInstance().getPlayerMap().place(ch, newPlayer);
 		
 		// Inbound handlers
 		ch.pipeline().addLast(new LengthFieldBasedFrameDecoder(

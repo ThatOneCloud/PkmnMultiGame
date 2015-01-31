@@ -20,7 +20,7 @@ public class PacketHandler extends ChannelInboundHandlerAdapter {
 		Packet packet = (Packet) msg;
 		
 		// Channel context provides a Channel - which is how we find the Player that sent the packet
-		Optional<Player> player = Optional.ofNullable(World.getInstance().getPlayer(ctx.channel()));
+		Optional<Player> player = Optional.ofNullable(World.getInstance().getPlayerMap().get(ctx.channel()));
 
 		// Handle the packet, or throw an exception if the Player came back null from World
 		String nullMsg = "Error: No Player in World associated with Channel";
