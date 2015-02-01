@@ -36,7 +36,7 @@ public class SaveRequestHandler {
 	{
 		// Going to create a PrintWriter with lots of wrappers. Here goes
 		try {
-			String address = req.address().getPath();
+			String address = req.address().getPathString();
 			Path path = Paths.get(address);
 			
 			// Create any directories leading up to the path that don't already exist
@@ -67,7 +67,7 @@ public class SaveRequestHandler {
 	{
 		// Going to create a FileOutputStream right to the file - not buffered
 		try {
-			String address = req.address().getPath();
+			String address = req.address().getPathString();
 			Path path = Paths.get(address);
 			
 			// Create any directories leading up to the path that don't already exist

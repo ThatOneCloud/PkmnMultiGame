@@ -38,7 +38,7 @@ public class LoadRequestHandler {
 	{
 		// Going to create a BufferedReader with lots of wrappers. Here goes
 		try {
-			BufferedReader br = IOUtil.streamToReader(new FileInputStream(req.address().getPath()));
+			BufferedReader br = IOUtil.streamToReader(new FileInputStream(req.address().getPathString()));
 			
 			// Now that we've got the reader, assign it to the request
 			req.setFileDescriptor(br);
@@ -61,7 +61,7 @@ public class LoadRequestHandler {
 	{
 		try {
 			// Obtain a RAF in read mode
-			RandomAccessFile raf = new RandomAccessFile(req.address().getPath(), "r");
+			RandomAccessFile raf = new RandomAccessFile(req.address().getPathString(), "r");
 			
 			req.setFileDescriptor(raf);
 			
@@ -82,8 +82,8 @@ public class LoadRequestHandler {
 		// Try-with-resources will close the RAFs on its own, and mask any closing exception
 		try (
 
-			RandomAccessFile table = new RandomAccessFile(req.getTableAddress().getPath(), "r");
-			RandomAccessFile cache = new RandomAccessFile(req.address().getPath(), "r")
+			RandomAccessFile table = new RandomAccessFile(req.getTableAddress().getPathString(), "r");
+			RandomAccessFile cache = new RandomAccessFile(req.address().getPathString(), "r")
 		) {
 			// A CacheTable object handily can take care of details (and let's just do this in one swoop...)
 			req.setFileDescriptor(new CacheTable(table, cache).getFile(req.getIndexInCache()));
@@ -108,8 +108,8 @@ public class LoadRequestHandler {
 	{
 		// Try-with-resources will close the RAFs on its own, and mask any closing exception
 		try (
-			RandomAccessFile table = new RandomAccessFile(req.getTableAddress().getPath(), "r");
-			RandomAccessFile cache = new RandomAccessFile(req.address().getPath(), "r")
+			RandomAccessFile table = new RandomAccessFile(req.getTableAddress().getPathString(), "r");
+			RandomAccessFile cache = new RandomAccessFile(req.address().getPathString(), "r")
 		) {
 			// A CacheTable object handily can take care of details (and let's just do this in one swoop...)
 			req.setFileDescriptor(new CacheTable(table, cache).getFileRegion(req.getStartIndex(), req.getEndIndex()));

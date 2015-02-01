@@ -1,5 +1,8 @@
 package net.cloud.server.file.address;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 /**
  * The location of a file behind the File Server.  
  * The idea is that this address is relative to the location of the file 
@@ -27,9 +30,17 @@ public class FileAddress {
 	 * Get the address - the path - to the path
 	 * @return A fully qualified path and filename
 	 */
-	public String getPath()
+	public String getPathString()
 	{
 		return path;
+	}
+	
+	/**
+	 * @return A Path object for the address
+	 */
+	public Path getPath()
+	{
+		return Paths.get(path);
 	}
 
 }

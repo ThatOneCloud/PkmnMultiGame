@@ -2,6 +2,7 @@ package net.cloud.client.util;
 
 import java.nio.ByteBuffer;
 import java.text.DecimalFormat;
+import java.util.regex.Pattern;
 
 import io.netty.buffer.ByteBuf;
 
@@ -12,6 +13,12 @@ public class StringUtil {
 	
 	/** The line terminator character */
 	public static final char TERMINATOR = 0;
+	
+	/** Re-usable pattern for alphanumeric regular expressions */
+	private static final Pattern ALPHA_NUMERIC = Pattern.compile("[a-zA-Z0-9_]+");
+	
+	/** Re-usable pattern for alphanumeric and most of the number row special chars */
+	private static final Pattern ALPHA_NUMERIC_SPECIAL = Pattern.compile("[a-zA-Z0-9_!@#$%^&*]+");
 	
 	/**
 	 * Takes the value and returns a formatted string for the value, without tons of digits showing. 
@@ -143,6 +150,27 @@ public class StringUtil {
 		}
 		
 		return bytes;
+	}
+	
+	/**
+	 * Check to see if a string contains only alphabetical, numerical, or underscore characters. 
+	 * @param s The string to test
+	 * @return True if the string matches
+	 */
+	public static boolean isAlphaNumeric(String s)
+	{
+		return ALPHA_NUMERIC.matcher(s).matches();
+	}
+	
+	/**
+	 * Check to see if a string contains only alphabetical, numerical, underscore, 
+	 * or the special characters from the number keys. 
+	 * @param s The string to test
+	 * @return True if the string matches
+	 */
+	public static boolean isAlphaNumericSpecial(String s)
+	{
+		return ALPHA_NUMERIC_SPECIAL.matcher(s).matches();
 	}
 
 }

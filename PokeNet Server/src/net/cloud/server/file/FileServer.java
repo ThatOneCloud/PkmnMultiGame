@@ -1,8 +1,11 @@
 package net.cloud.server.file;
 
+import java.nio.file.Files;
+
 import net.cloud.server.event.shutdown.ShutdownHook;
 import net.cloud.server.event.shutdown.ShutdownService;
 import net.cloud.server.event.shutdown.hooks.FileServerShutdownHook;
+import net.cloud.server.file.address.FileAddress;
 import net.cloud.server.file.request.FileRequest;
 import net.cloud.server.file.request.handler.RequestHandler;
 
@@ -108,6 +111,17 @@ public class FileServer implements ShutdownService {
 		request.waitForRequest();
 		
 		return request.getFileDescriptor();
+	}
+	
+	/**
+	 * Check to see if a file exists. This is not a typical request and is not handled asynchronously. 
+	 * Rather, the method is here to maintain the division of responsibility.
+	 * @param address The location of the file
+	 * @return True if the file already exists
+	 */
+	public boolean fileExists(FileAddress address)
+	{
+		return Files.exists(address.getPath());
 	}
 
 	/**

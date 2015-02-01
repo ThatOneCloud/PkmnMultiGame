@@ -1,6 +1,7 @@
 package net.cloud.server.nio;
 
 import net.cloud.server.entity.player.Player;
+import net.cloud.server.entity.player.PlayerFactory;
 import net.cloud.server.game.World;
 import net.cloud.server.nio.packet.PacketConstants;
 import net.cloud.server.nio.packet.PacketDecoder;
@@ -23,7 +24,7 @@ public class NettyServerChannelInitializer extends ChannelInitializer<SocketChan
 	protected void initChannel(SocketChannel ch) throws Exception {
 		// Place a Player in the world for this new connection
 		PacketSender packetSender = new PacketSender(ch);
-		Player newPlayer = new Player(packetSender);
+		Player newPlayer = PlayerFactory.createOnNewConnection(packetSender);
 		World.getInstance().getPlayerMap().place(ch, newPlayer);
 		
 		// Inbound handlers

@@ -132,14 +132,24 @@ public class FileAddressBuilder {
 	
 	/**
 	 * Create and return a FileAddress which will lead to the file storing a player's save data
+	 * @param player The player object to get the save file for
 	 * @return A FileAddress for player save data
 	 */
 	public static FileAddress createPlayerDataAddress(Player player) {
+		return createPlayerDataAddress(player.getUsername());
+	}
+	
+	/**
+	 * Create and return a FileAddress which will lead to the file storing a player's save data
+	 * @param username The username of the player
+	 * @return A FileAddress for player save data
+	 */
+	public static FileAddress createPlayerDataAddress(String username) {
 		FileAddressBuilder b = newBuilder();
 		
 		// File is the player's username. 
 		b.space = AddressConstants.SPACE_PLAYER_DATA;
-		b.name = player.getUsername();
+		b.name = username;
 		b.extension = AddressConstants.EXT_P_DATA;
 		
 		return b.createAddress();

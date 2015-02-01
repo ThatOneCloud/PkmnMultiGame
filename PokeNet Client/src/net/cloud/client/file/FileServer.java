@@ -1,11 +1,14 @@
 package net.cloud.client.file;
 
+import java.nio.file.Files;
+
 import net.cloud.client.event.shutdown.ShutdownHook;
 import net.cloud.client.event.shutdown.ShutdownService;
 import net.cloud.client.event.shutdown.hooks.FileServerShutdownHook;
 import net.cloud.client.file.request.FileRequest;
 import net.cloud.client.file.request.handler.RequestHandler;
 import net.cloud.client.logging.Logger;
+import net.cloud.client.file.address.FileAddress;
 
 /**
  * The front of the file server module.  Deals with FileRequests. 
@@ -25,7 +28,7 @@ import net.cloud.client.logging.Logger;
 public class FileServer implements ShutdownService {
 	
 	/** Singleton instance to the FileServer */
-	private static FileServer instance;
+	private static volatile FileServer instance;
 	
 	/** An instance of RequestHandler to delegate request to */
 	private RequestHandler requestHandler;
@@ -112,6 +115,17 @@ public class FileServer implements ShutdownService {
 		request.waitForRequest();
 		
 		return request.getFileDescriptor();
+	}
+	
+	/**
+	 * Check to see if a file exists. This is not a typical request and is not handled asynchronously. 
+	 * Rather, the method is here to maintain the division of responsibility.
+	 * @param address The location of the file
+	 * @return True if the file already exists
+	 */
+	public boolean fileExists(FileAddress address)
+	{
+		return Files.exists(address.getPath());
 	}
 
 	/**

@@ -34,7 +34,7 @@ public class CachedFileRequest extends LoadRequest<CachedFile> {
 		this.indexInCache = indexInCache;
 		
 		// Mutate the address
-		StringBuilder tableB = new StringBuilder(cacheAddress.getPath());
+		StringBuilder tableB = new StringBuilder(cacheAddress.getPathString());
 		tableB.insert(tableB.lastIndexOf(AddressConstants.EXT_CACHE) - 1, "Table");
 		this.tableAddress = new FileAddress(tableB.toString());
 	}

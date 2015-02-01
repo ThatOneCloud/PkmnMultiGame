@@ -34,10 +34,6 @@ public class Player extends Entity implements Bufferable {
 	 */
 	public Player(PacketSender packetSender)
 	{
-		// TODO: remove. only a temporary solution until account creation implemented. 
-		username = "username";
-		password = "password";
-		
 		this.packetSender = packetSender;
 		
 		// They start off as a new player - only connected
@@ -47,32 +43,34 @@ public class Player extends Entity implements Bufferable {
 		saveHandler = Optional.empty();
 	}
 	
-	/**
-	 * @return The player's username
-	 */
+	/** @return The player's username */
 	public String getUsername()
 	{
 		return username;
 	}
 	
-	/**
-	 * @return The player's password
-	 */
+	/** @param username the username to set */
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	/** @return The player's password */
 	public String getPassword()
 	{
 		return password;
 	}
 	
-	/**
-	 * @return The LoginState for this player. Ie, which step of login process they are in
-	 */
+	/** @param password the password to set */
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	
+	/** @return The LoginState for this player. Ie, which step of login process they are in */
 	public LoginState getLoginState() {
 		return loginState;
 	}
 
-	/**
-	 * @param loginState Which step of the login process the player is now in
-	 */
+	/** @param loginState Which step of the login process the player is now in */
 	public void setLoginState(LoginState loginState) {
 		this.loginState = loginState;
 	}

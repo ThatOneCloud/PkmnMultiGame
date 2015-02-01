@@ -39,7 +39,7 @@ public class CachedFileRegionRequest extends LoadRequest<CachedFileRegion> {
 		this.endIndex = endIndex;
 		
 		// Mutate the address
-		StringBuilder tableB = new StringBuilder(cacheAddress.getPath());
+		StringBuilder tableB = new StringBuilder(cacheAddress.getPathString());
 		tableB.insert(tableB.lastIndexOf(AddressConstants.EXT_CACHE) - 1, "Table");
 		this.tableAddress = new FileAddress(tableB.toString());
 	}

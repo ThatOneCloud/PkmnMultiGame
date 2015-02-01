@@ -53,5 +53,31 @@ public class StringUtilTest {
 			fail("No exceptions expected");
 		}
 	}
+	
+	@Test
+	public void testIsAlphaNumeric() {
+		String t1 = "A_Z_a_z_0_9_SimPlE_1234";
+		String t2 = "";
+		String t3 = "\r\f";
+		String t4 = "!@#$";
+		
+		assertTrue(StringUtil.isAlphaNumeric(t1));
+		assertFalse(StringUtil.isAlphaNumeric(t2));
+		assertFalse(StringUtil.isAlphaNumeric(t3));
+		assertFalse(StringUtil.isAlphaNumeric(t4));
+	}
+	
+	@Test
+	public void testIsAlphaNumericSpecial() {
+		String t1 = "A_Z_a_z_0_9_SimPlE_1234";
+		String t2 = "";
+		String t3 = "\r\f";
+		String t4 = "!@#$";
+		
+		assertTrue(StringUtil.isAlphaNumericSpecial(t1));
+		assertFalse(StringUtil.isAlphaNumericSpecial(t2));
+		assertFalse(StringUtil.isAlphaNumericSpecial(t3));
+		assertTrue(StringUtil.isAlphaNumericSpecial(t4));
+	}
 
 }
