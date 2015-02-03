@@ -5,6 +5,11 @@ import net.cloud.client.file.request.CachedFileRegionRequest;
 import net.cloud.client.file.request.CachedFileRequest;
 import net.cloud.client.file.request.PrintWriterRequest;
 import net.cloud.client.file.request.RandomAccessFileLoadRequest;
+import net.cloud.client.file.request.FileOutputStreamRequest;
+import net.cloud.client.file.request.XmlLoadRequest;
+import net.cloud.client.file.request.XmlSaveRequest;
+import net.cloud.client.file.request.handler.LoadRequestHandler;
+import net.cloud.client.file.request.handler.SaveRequestHandler;
 
 /**
  * A class which serves as a facade to other, more specific, handlers. 
@@ -61,9 +66,33 @@ public class RequestHandler {
 	}
 	
 	/**
+	 * See {@link LoadRequestHandler#handleRequest(XmlLoadRequest)}
+	 */
+	public <T> void handleRequest(XmlLoadRequest<T> req) {
+		// Delegate the call off to a more specific handler
+		loadRequestHandler.handleRequest(req);
+	}
+	
+	/**
 	 * See {@link SaveRequestHandler#handleRequest(PrintWriterRequest)}
 	 */
 	public void handleRequest(PrintWriterRequest req) {
+		// Delegate the call off to a more specific handler
+		saveRequestHandler.handleRequest(req);
+	}
+	
+	/**
+	 * See {@link SaveRequestHandler#handleRequest(FileOutputStreamRequest)}
+	 */
+	public void handleRequest(FileOutputStreamRequest req) {
+		// Delegate the call off to a more specific handler
+		saveRequestHandler.handleRequest(req);
+	}
+	
+	/**
+	 * See {@link SaveRequestHandler#handleRequest(XmlSaveRequest)}
+	 */
+	public void handleRequest(XmlSaveRequest req) {
 		// Delegate the call off to a more specific handler
 		saveRequestHandler.handleRequest(req);
 	}

@@ -1,10 +1,14 @@
 package net.cloud.client.file.request.handler;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.RandomAccessFile;
+
+import com.thoughtworks.xstream.XStreamException;
 
 import net.cloud.client.file.FileRequestException;
 import net.cloud.client.file.cache.CacheTable;
@@ -13,6 +17,8 @@ import net.cloud.client.file.request.CachedFileRegionRequest;
 import net.cloud.client.file.request.CachedFileRequest;
 import net.cloud.client.file.request.RandomAccessFileLoadRequest;
 import net.cloud.client.util.IOUtil;
+import net.cloud.client.file.XStreamHandler;
+import net.cloud.client.file.request.XmlLoadRequest;
 
 /**
  * A handler class which specifically deals with requests 
@@ -121,6 +127,43 @@ public class LoadRequestHandler {
 		} catch (IOException e) {
 			// Something went wrong during reading of the files
 			req.notifyHandleException(new FileRequestException("File could not be retrieved from cache", e));
+		}
+	}
+	
+	/**
+	 * Attempt to handle an XmlLoadRequest. <br>
+	 * The file storing the XML information will be opened, and then be parsed to create an object. 
+	 * That object will be set as the file descriptor, and the XML file will be closed. 
+	 * @param req The request to fulfill
+	 */
+	public <T> void handleRequest(XmlLoadRequest<T> req)
+	{
+		// Try-with-resources, use a FileInputStream since we'll just need to get the data quick
+		try (InputStream input = new FileInputStream(req.address().getPathString()))
+		{
+			// Buffer it up, of course. 
+			InputStream bufferedInput = new BufferedInputStream(input);
+			
+			// Delegate deserializing action off to the handler
+			Object obj = XStreamHandler.instance().from(bufferedInput);
+			
+			// Attempt a type-cast on the object. If it doesn't match, that's where the exception comes in
+			@SuppressWarnings("unchecked")
+			T castedObj = (T) obj;
+			
+			// Now set the object as the file descriptor
+			req.setFileDescriptor(castedObj);
+			
+			// Finally ready, the object should now be successfully deserialized
+			req.notifyReady();
+		} catch (FileNotFoundException e) {
+			req.notifyHandleException(new FileRequestException("Requested XML file does not exist", e));
+		} catch (IOException e) {
+			req.notifyHandleException(new FileRequestException("IO Exception on XML file", e));
+		} catch (XStreamException e) {
+			req.notifyHandleException(new FileRequestException("Could not deserialize XML", e));
+		} catch (ClassCastException e) {
+			req.notifyHandleException(new FileRequestException("Deserialized object type did not match requested type", e));
 		}
 	}
 

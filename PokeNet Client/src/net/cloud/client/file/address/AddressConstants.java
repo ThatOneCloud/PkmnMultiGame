@@ -14,11 +14,17 @@ public class AddressConstants {
 	/** Location of sprites in general */
 	public static final String SPACE_SPRITES = "./data/resources/sprites/";
 	
+	/** Location of XML data files */
+	public static final String SPACE_XML_DATA = "./data/resources/xml/";
+	
 	
 	/** Text file extension */
 	public static final String EXT_TEXT = "txt";
 	
 	/** Extension used for cache files */
 	public static final String EXT_CACHE = "dat";
+	
+	/** Extension for XML files. Go figure. */
+	public static final String EXT_XML = "xml";
 
 }

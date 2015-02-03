@@ -2,6 +2,10 @@ package net.cloud.client.file.address;
 
 import java.time.LocalDateTime;
 
+import net.cloud.client.file.address.AddressConstants;
+import net.cloud.client.file.address.FileAddress;
+import net.cloud.client.file.address.FileAddressBuilder;
+
 /**
  * This class is useful for building a FileAddress. (As the name implies...)
  * To use it, obtain a new instance via the static factory method. 
@@ -142,6 +146,22 @@ public class FileAddressBuilder {
 		b.space = AddressConstants.SPACE_SPRITES;
 		b.name = setCanonicalName + "/cacheTable";
 		b.extension = AddressConstants.EXT_CACHE;
+		
+		return b.createAddress();
+	}
+	
+	/**
+	 * Create and return a FileAddress for an XML data resource file. 
+	 * @param resName The name of the XML resource (filename)
+	 * @return A FileAddress to the XML file
+	 */
+	public static FileAddress createXmlDataAddress(String resName)
+	{
+		FileAddressBuilder b = newBuilder();
+		
+		b.space = AddressConstants.SPACE_XML_DATA;
+		b.name = resName;
+		b.extension = AddressConstants.EXT_XML;
 		
 		return b.createAddress();
 	}

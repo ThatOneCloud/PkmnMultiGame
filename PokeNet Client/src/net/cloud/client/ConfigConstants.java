@@ -22,4 +22,7 @@ public class ConfigConstants {
 	/** Frames per second the UI will attempt to draw at */
 	public static final int FRAME_RATE = 15;
 
+	/** How frequently the current system status will be logged (ms) */
+	public static final int TRACK_TASK_INTERVAL = 10000;
+
 }

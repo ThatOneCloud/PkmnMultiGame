@@ -144,14 +144,25 @@ public abstract class FileRequest<T> {
 	/**
 	 * Obtain the object representing the file this request was for. 
 	 * This object will not be assigned until the request has been successfully 
-	 * served. If this method is called before that, it will throw an exception.
+	 * served. If this method is called before that, it will throw an exception. 
+	 * If the request resulted in an exception, that exception will be thrown. 
 	 * @return The file this request was for
 	 * @throws FileRequestException If the descriptor is for some reason not available
 	 */
 	public T getFileDescriptor() throws FileRequestException
 	{
-		String msg = "File descriptor not available";
-		return Optional.ofNullable(fileDescriptor).orElseThrow(() -> new FileRequestException(msg));
+		if(handleException != null)
+		{
+			throw handleException;
+		} 
+		else if(fileDescriptor == null) 
+		{
+			throw new FileRequestException("File descriptor not available");
+		} 
+		else 
+		{
+			return fileDescriptor;
+		}
 	}
 	
 	/**
