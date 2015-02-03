@@ -11,6 +11,7 @@ import org.junit.runners.Suite.SuiteClasses;
 	FileServerTest.class,
 	AddressBuilderTest.class,
 	RequestHandlerTest.class,
+	XmlRequestTest.class,
 	
 	CacheSuite.class
 })

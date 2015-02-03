@@ -17,6 +17,8 @@ public class AddressConstants {
 	/** Location of player save files */
 	public static final String SPACE_PLAYER_DATA = "./data/players/";
 	
+	/** Location of XML data files */
+	public static final String SPACE_XML_DATA = "./data/resources/xml/";
 	
 	/** Text file extension */
 	public static final String EXT_TEXT = "txt";
@@ -26,5 +28,8 @@ public class AddressConstants {
 	
 	/** Extension use for player data files */
 	public static final String EXT_P_DATA = "dat";
+	
+	/** Extension for XML files. Go figure. */
+	public static final String EXT_XML = "xml";
 
 }

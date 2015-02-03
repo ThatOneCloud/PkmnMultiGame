@@ -2,6 +2,8 @@ package net.cloud.server.entity.player;
 
 import java.util.Optional;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+
 import io.netty.buffer.ByteBuf;
 import net.cloud.server.entity.Entity;
 import net.cloud.server.entity.player.save.PlayerSaveException;
@@ -11,16 +13,22 @@ import net.cloud.server.nio.bufferable.BufferableException;
 import net.cloud.server.nio.packet.PacketSender;
 import net.cloud.server.util.StringUtil;
 
+/**
+ * The Player object. Home of the player. Holds the player's data. 
+ * Keeps the player's data safe. A hub for all of the player's information. 
+ * The root of the save data. Yes.
+ */
+@XStreamAlias("Player")
 public class Player extends Entity implements Bufferable {
 	
 	/** Describes the player's connectivity to the game */
-	private LoginState loginState;
+	private transient LoginState loginState;
 	
 	/** The PacketSender assigned to this player. Used for communication. */
-	private PacketSender packetSender;
+	private transient PacketSender packetSender;
 	
 	/** This player's save handler. They should hold onto it, it may save them one day... */
-	private Optional<PlayerSaveHandler> saveHandler;
+	private transient Optional<PlayerSaveHandler> saveHandler;
 	
 	/** The player's username. */
 	private String username;

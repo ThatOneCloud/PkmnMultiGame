@@ -90,6 +90,32 @@ public class PlayerSaveHandler {
 	}
 	
 	/**
+	 * Save the player data to its own file. This will perform the action regardless of whether or not the player 
+	 * data is completely restored. This variant shorts the file server and does the write on the calling 
+	 * thread as well.
+	 * @param An open stream to write to the save data file
+	 * @throws PlayerSaveException If the save could not be started. Not thrown if the file write fails. 
+	 */
+	public void saveToFile(FileOutputStream saveData) throws PlayerSaveException
+	{
+		// We'll take care of prepping for write. First we'll need a ByteBuf to write to
+		ByteBuf buffer = Unpooled.buffer(saveSize);
+		
+		// Then on this thread, have the data placed in the buffer. 
+		try {
+			serialize(buffer);
+		} catch (BufferableException e) {
+			throw new PlayerSaveException(player, "Could not serialize player data.", e);
+		}
+		
+		// Adjust the save size based on how large this one was. It'll probably be close next time. 
+		saveSize = buffer.readableBytes();
+		
+		// Short the file server and go straight to writing 
+		new PlayerSaveRequestHandler(player, buffer).requestReady(saveData);
+	}
+	
+	/**
 	 * A FileRequestListener which will write to the player's data file when the file is ready. 
 	 * This is so that the FileServer thread(s) handle the load rather than the calling thread. 
 	 * If an exception occurs and writing is not completed, the exception will be logged with a message 

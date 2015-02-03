@@ -14,7 +14,7 @@ public class FileOutputStreamRequest extends SaveRequest<FileOutputStream> {
 
 	/**
 	 * Simply calls the super constructor. See {@link LoadRequest#LoadRequest(FileAddress)}
-	 * @param address The location of the file we want to obtain a BufferedReader for
+	 * @param address The location of the file
 	 */
 	public FileOutputStreamRequest(FileAddress address) {
 		super(address);

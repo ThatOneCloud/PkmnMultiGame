@@ -57,6 +57,14 @@ public class RequestHandler {
 	}
 	
 	/**
+	 * See {@link LoadRequestHandler#handleRequest(XmlLoadRequest)}
+	 */
+	public <T> void handleRequest(XmlLoadRequest<T> req) {
+		// Delegate the call off to a more specific handler
+		loadRequestHandler.handleRequest(req);
+	}
+	
+	/**
 	 * See {@link SaveRequestHandler#handleRequest(PrintWriterRequest)}
 	 */
 	public void handleRequest(PrintWriterRequest req) {
@@ -68,6 +76,14 @@ public class RequestHandler {
 	 * See {@link SaveRequestHandler#handleRequest(FileOutputStreamRequest)}
 	 */
 	public void handleRequest(FileOutputStreamRequest req) {
+		// Delegate the call off to a more specific handler
+		saveRequestHandler.handleRequest(req);
+	}
+	
+	/**
+	 * See {@link SaveRequestHandler#handleRequest(XmlSaveRequest)}
+	 */
+	public void handleRequest(XmlSaveRequest req) {
 		// Delegate the call off to a more specific handler
 		saveRequestHandler.handleRequest(req);
 	}

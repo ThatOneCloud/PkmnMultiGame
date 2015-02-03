@@ -156,6 +156,22 @@ public class FileAddressBuilder {
 	}
 	
 	/**
+	 * Create and return a FileAddress for an XML data resource file. 
+	 * @param resName The name of the XML resource (filename)
+	 * @return A FileAddress to the XML file
+	 */
+	public static FileAddress createXmlDataAddress(String resName)
+	{
+		FileAddressBuilder b = newBuilder();
+		
+		b.space = AddressConstants.SPACE_XML_DATA;
+		b.name = resName;
+		b.extension = AddressConstants.EXT_XML;
+		
+		return b.createAddress();
+	}
+	
+	/**
 	 * Obtain a new FileAddress object which will refer to the file this builder 
 	 * has been making a path to. No exceptions will occur if the builder 
 	 * has not been fully specified.

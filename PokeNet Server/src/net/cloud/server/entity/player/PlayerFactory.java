@@ -95,5 +95,19 @@ public class PlayerFactory {
 		
 		return newPlayer;
 	}
+	
+	/**
+	 * Create a lightweight player object for when save data is being updated to the latest format. 
+	 * Only has a username set, nothing else - so that the data can be loaded from this. 
+	 * @param username I.e. the file name
+	 * @return A player object to load data into 
+	 */
+	public static Player createPlayerForDataUpdate(String username)
+	{
+		Player p = new Player(null);
+		p.setUsername(username);
+		
+		return p;
+	}
 
 }

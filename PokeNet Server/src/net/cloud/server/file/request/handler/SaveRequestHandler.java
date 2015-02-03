@@ -1,15 +1,22 @@
 package net.cloud.server.file.request.handler;
 
+import java.io.BufferedOutputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import com.thoughtworks.xstream.XStreamException;
+
 import net.cloud.server.file.FileRequestException;
+import net.cloud.server.file.XStreamHandler;
 import net.cloud.server.file.request.FileOutputStreamRequest;
 import net.cloud.server.file.request.PrintWriterRequest;
+import net.cloud.server.file.request.XmlSaveRequest;
 import net.cloud.server.util.IOUtil;
 
 /**
@@ -85,6 +92,46 @@ public class SaveRequestHandler {
 		} catch (IOException e) {
 			// Uh oh. The file couldn't be opened. Let the request know so the exception can propagate
 			req.notifyHandleException(new FileRequestException("Requested file could not be opened", e));
+		}
+	}
+	
+	/**
+	 * Attempt to handle a XmlSaveRequest.<br>
+	 * A file stream will be opened for the request, and the object saved in the request will be 
+	 * serialized to an XML file. The stream is then closed. There is no usable file descriptor. 
+	 * @param req The request to fulfill
+	 */
+	public void handleRequest(XmlSaveRequest req)
+	{
+		String address = req.address().getPathString();
+		Path path = Paths.get(address);
+		
+		// Again up front make sure the directory exists. Before trying to open the file.
+		try {
+			Files.createDirectories(path.getParent());
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		// Try-with-resources. Just a quick one-off usage of an output stream
+		try (OutputStream output = new FileOutputStream(address))
+		{
+			// Buffer it. Can you imagine all the tiny writes?
+			OutputStream bufferedOutput = new BufferedOutputStream(output);
+			
+			// Have serialization taken care of
+			XStreamHandler.instance().to(req.getSaveObject(), bufferedOutput);
+			
+			// Sort of a dummy FD - necessary to unblock if waiting
+			req.setFileDescriptor(new Object());
+			req.notifyReady();
+		} catch (FileNotFoundException e) {
+			req.notifyHandleException(new FileRequestException("Could not open or create XML file", e));
+		} catch (IOException e) {
+			req.notifyHandleException(new FileRequestException("IO Exception on XML file", e));
+		} catch (XStreamException e) {
+			req.notifyHandleException(new FileRequestException("Could not serialize XML", e));
 		}
 	}
 

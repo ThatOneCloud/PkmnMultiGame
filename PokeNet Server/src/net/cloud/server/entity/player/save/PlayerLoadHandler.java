@@ -58,22 +58,37 @@ public class PlayerLoadHandler {
 		// Try-with-resources to the File Server. Neat. So the all important file will be closed when we're done
 		try (RandomAccessFile dataFile = getSaveFile()) 
 		{
-			// Memory map the data, I think it's a feasible choice here
-			ByteBuffer nioBuffer = getMappedBuffer(dataFile);
-			
-			// Then wrap it in a Netty ByteBuf since that's what Bufferable objects expect
-			ByteBuf nettyBuffer = getNettyBuffer(nioBuffer);
-			
-			// Have the player object go through deserialization - not on a different thread
-			restorePlayerData(nettyBuffer);
-			
-			// At the end of all the loading, tell the player they have been restored and are now ready to save data
-			player.finishedLoading();
+			loadFromFile(dataFile);
 		} 
 		catch(IOException e) {
 			// Only occurs when the file could not be closed. So... re-throw I guess. It'd probably become an issue going forward.
 			throw new PlayerLoadException(player, "Player save file could not be closed. Unsafe to proceed.", e);
 		}
+	}
+	
+	/**
+	 * Load a player's data from the provided save file. This does not validate the player's credentials. Instead, it will 
+	 * take an existing player object and have the rest of the information restored to the save state. This only needs 
+	 * to be done once near the end of login. It will also tell the player that it has been loaded, so that it will 
+	 * be ready for saving. <br>
+	 * All of the work is done on the calling thread, so this does not return until the player has been completely 
+	 * and successfully loaded. If something goes wrong, an exception <b>will</b> be thrown. 
+	 * @param dataFile An open file to read player save data from
+	 * @throws PlayerLoadException If the player data could not be restored for some reason
+	 */
+	public void loadFromFile(RandomAccessFile dataFile) throws PlayerLoadException
+	{
+		// Memory map the data, I think it's a feasible choice here
+		ByteBuffer nioBuffer = getMappedBuffer(dataFile);
+
+		// Then wrap it in a Netty ByteBuf since that's what Bufferable objects expect
+		ByteBuf nettyBuffer = getNettyBuffer(nioBuffer);
+
+		// Have the player object go through deserialization - not on a different thread
+		restorePlayerData(nettyBuffer);
+
+		// At the end of all the loading, tell the player they have been restored and are now ready to save data
+		player.finishedLoading();
 	}
 	
 	/**
