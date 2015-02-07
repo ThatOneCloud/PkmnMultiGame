@@ -1,5 +1,7 @@
 package net.cloud.gfx.sprites;
 
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.EnumMap;
@@ -108,6 +110,69 @@ public class SpriteManager {
 				return DEFAULT_IMAGE;
 			}
 		}
+	}
+	
+	/**
+	 * Obtain a scaled sprite in the form of a BufferedImage. This relies on normal sprite retrieval. 
+	 * Then if the requested size already matches the original sprite, that original is returned. 
+	 * Otherwise, a scaled image is created (with some existing render hints) and returned. Leaving width 
+	 * or height -1 will maintain the width or height of the original. Leaving both -1 will result in 
+	 * an IllegalArgumentException. 
+	 * @param set The set the sprite belongs to
+	 * @param spriteID The index of the sprite within the set
+	 * @param width The desire width of the scaled image. -1 maintains ratio with height
+	 * @param height The desired height of the scaled image -1 maintains ratio with width
+	 * @return A BufferedImage that may be the original sprite, or a new image. Right size either way.
+	 * @throws IllegalArgumentException If both width and height are -1
+	 */
+	public BufferedImage getScaledSprite(SpriteSet set, int spriteID, int width, int height)
+	{
+		// Get the original
+		BufferedImage original = getSprite(set, spriteID);
+		
+		// Get an image of the requested size
+		return getScaledSprite(original, width, height);
+	}
+	
+	public BufferedImage getScaledSprite(BufferedImage original, int width, int height)
+	{
+		// If it's already the right size, don't even bother
+		if(original.getWidth() == width && original.getHeight() == height)
+		{
+			return original;
+		}
+
+		if(width == -1 && height == -1)
+		{
+			throw new IllegalArgumentException("Width and height may not both be -1");
+		}
+		// Maintain same width
+		else if(width == -1) {
+			width = original.getWidth();
+		}
+		// Maintain same height
+		else if(height == -1) {
+			height = original.getHeight();
+		}
+
+		// Create a new BufferedImage which we'll draw the scaled one into
+		BufferedImage scaledImg = new BufferedImage(width, height, original.getType());
+
+		// Utilize Graphics2D to create a quick scaled image
+		Graphics2D g2d = scaledImg.createGraphics();
+
+		// Make sure we dispose of the graphics, in case anything happens. 
+		try {
+			g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+			g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
+
+			g2d.drawImage(original, 0, 0, width, height, null);
+		} finally {
+			g2d.dispose();
+		}
+
+		// Return the scaled image, which has now been drawn to
+		return scaledImg;
 	}
 	
 	/**

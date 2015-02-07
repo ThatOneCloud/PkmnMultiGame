@@ -7,16 +7,18 @@ package net.cloud.gfx.sprites;
  */
 public enum SpriteSet {
 	
-	//			Canon Name	Load	Collection Type					Parameters
+	//			Canon Name			Load	Collection Type					Parameters
 	
 	/** Default set with various and miscellaneous sprites */
-	DEFAULT(	"default",	false,	SpriteCollectionType.SIMPLE,	null),
+	DEFAULT(	"default",			false,	SpriteCollectionType.SIMPLE,	null),
 	
 	/** Set for images dedicated to the user interface */
-	UI(			"ui",		false,	SpriteCollectionType.SIMPLE,	null),
+	UI(			"ui",				false,	SpriteCollectionType.SIMPLE,	null),
+	
+	TEXT_FIELD(	"ui/text_field",	false,	SpriteCollectionType.SIMPLE,	null),
 	
 	/** Set whose config may change, and has some sprites for testing things */
-	TEST(		"test",		false,	SpriteCollectionType.SIMPLE,	null);
+	TEST(		"test",				false,	SpriteCollectionType.SIMPLE,	null);
 	
 	/** Canonical name for general use */
 	private String canonName;

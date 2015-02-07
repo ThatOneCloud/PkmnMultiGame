@@ -1,0 +1,5 @@
+<XmlTestObject>
+	<str>hello</str>
+	<num>56</num>
+	<notafield>null</notafield>
+</XmlTestObject>

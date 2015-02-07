@@ -17,7 +17,7 @@ public class TestElement extends Element {
 	 * @param height The height of this element. May be 0.
 	 */
 	public TestElement(int priority, int x, int y, int width, int height) {
-		super(null, priority, x, y, width, height, false);
+		super(null, priority, x, y, width, height);
 	}
 	
 	/**
@@ -28,11 +28,10 @@ public class TestElement extends Element {
 	 * @param y The Y coordinate of this element relative to its parent
 	 * @param width The width of this element. May be 0.
 	 * @param height The height of this element. May be 0.
-	 * @param hasFocus Whether or not the element already has key focus
 	 */
 	public TestElement(Container parent, int priority, int x, int y, int width,
-			int height, boolean hasFocus) {
-		super(parent, priority, x, y, width, height, hasFocus);
+			int height) {
+		super(parent, priority, x, y, width, height);
 	}
 
 	@Override

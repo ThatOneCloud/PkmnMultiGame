@@ -41,7 +41,7 @@ public abstract class Container extends Element {
 	 * @param y The Y coordinate of this element relative to its parent
 	 */
 	public Container(Container parent, int priority, int x, int y) {
-		super(parent, priority, x, y, 0, 0, false);
+		super(parent, priority, x, y, 0, 0);
 		
 		// Use a different kind of FocusHandler, rather than the default one Element provides
 		super.setFocusHandler(new ContainerFocusHandler());
@@ -60,7 +60,7 @@ public abstract class Container extends Element {
 	 * @param height The height of this element. May be 0.
 	 */
 	public Container(Container parent, int priority, int x, int y, int width, int height) {
-		super(parent, priority, x, y, width, height, false);
+		super(parent, priority, x, y, width, height);
 		
 		// Use a different kind of FocusHandler, rather than the default one Element provides
 		super.setFocusHandler(new ContainerFocusHandler());
@@ -88,7 +88,7 @@ public abstract class Container extends Element {
 			if(child.rectangle.contains(relPoint))
 			{
 				// It does. First one is on top, because reverse order. Adjust the point.
-				relPoint.translate(-getX(), -getY());
+				relPoint.translate(-child.getX(), -child.getY());
 				
 				// Now tell the child its been clicked
 				child.elementClicked(relPoint);

@@ -16,11 +16,35 @@ public class KeyConstants {
 
 	/** The Shift+Tab combination, treated as a character of its own. */
 	public static final char SHIFT_TAB = 0xFF00;
-
+	
+	/** Left arrow key */
+	public static final char LEFT_ARROW = 0xFF01;
+	
+	/** Up arrow key */
+	public static final char UP_ARROW = 0xFF02;
+	
+	/** Right arrow key */
+	public static final char RIGHT_ARROW = 0xFF03;
+	
+	/** Down arrow key */
+	public static final char DOWN_ARROW = 0xFF04;
+	
 	/** Where the re-purposed characters end. The highest possible value for them. */
 	public static final char LAST_CUSTOM_CHAR = 0xFFEE;
 
 	// END CUSTOM CHARACTERS //
+	
+	/** Constant for backspace because clarity */
+	public static final char BACKSPACE = '\b';
+	
+	/** Delete has an odd character */
+	public static final char DELETE = 0x007F;
+	
+	/** Constant for enter because clarity */
+	public static final char ENTER = '\n';
+	
+	/** CTRL+U (because why is it NACK?) */
+	public static final char CTRL_U = 0x0015;
 	
 	/** Global hotkey - show stat overlay */
 	public static final char STAT_OVERLAY = 'o';
@@ -33,5 +57,8 @@ public class KeyConstants {
 	
 	/** Constant for the character which will traverse to the previous Focusable in line */
 	public static final char CHANGE_FOCUS_PREVIOUS = SHIFT_TAB;
-
+	
+	/** The "kill text" command - which removes a segment of text */
+	public static final char KILL_TEXT = CTRL_U;
+	
 }

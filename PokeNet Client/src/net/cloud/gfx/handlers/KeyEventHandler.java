@@ -23,6 +23,31 @@ public class KeyEventHandler extends KeyAdapter {
 	}
 	
 	/**
+	 * A KeyPressed event is fire for all keys, unlike key typed which is only fired for keys which 
+	 * correspond to a character. Since some of these events are interesting, we'll check them and see 
+	 * if they correspond to some artificial character constant we want to fire events for as well. 
+	 * Ultimately calls <code>handleChar()</code> when a key typed event would not. 
+	 * @param event The KeyEvent
+	 */
+	@Override
+	public void keyPressed(KeyEvent event)
+	{
+		// Key presses are mapped to integers - even for keys with normally no character representation
+		int keyCode = event.getKeyCode();
+		
+		System.out.println("Key pressed: " + keyCode);
+		
+		// So we give the key a character that is otherwise useless for us
+		char artificialChar = mutatePressedKey(event, keyCode);
+		
+		// And handle that artificial character. (null character means no artificial character)
+		if(artificialChar != '\0')
+		{
+			handleChar(artificialChar);
+		}
+	}
+	
+	/**
 	 * A KeyTyped event is what we're really after (key pressed and released are unlikely.) 
 	 * If the character is the NUL character or an undefined character was typed, this event will do nothing. 
 	 * Otherwise, the character will be passed to the Focusable that currently has focus. 
@@ -33,7 +58,7 @@ public class KeyEventHandler extends KeyAdapter {
 		// Key typed events have a character. Pressed and released do not necessarily. 
 		char c = event.getKeyChar();
 		
-		System.out.println("key typed: " + c);
+		System.out.println("key typed: " + c + ", " + (int) c);
 		
 		// A few characters are simply ignored from the get-go
 		if(isIgnored(c))
@@ -87,11 +112,41 @@ public class KeyEventHandler extends KeyAdapter {
 		// Shift tab is well.. shift and tab. 
 		if(c == '\t' && event.isShiftDown())
 		{
+			System.err.println("shift tab");
 			return KeyConstants.SHIFT_TAB;
 		}
 		
 		// No mutation. Just the same character. 
 		return c;
+	}
+	
+	/**
+	 * Takes a key event from a KeyPressed event. For events that do not trigger a key typed event as well, 
+	 * but we are still interested in handling. Takes the key code and maps it to a character constant.
+	 * @param event The key event (for obtaining modifiers)
+	 * @param keyCode The key code from the event
+	 * @return A character to handle if interested, null character if not
+	 */
+	private char mutatePressedKey(KeyEvent event, int keyCode)
+	{
+		// Various keys. I guess sort of arrange them with most common at top?
+		switch(keyCode)
+		{
+		
+		// Arrow keys
+		case KeyEvent.VK_LEFT:
+			return KeyConstants.LEFT_ARROW;
+		case KeyEvent.VK_UP:
+			return KeyConstants.UP_ARROW;
+		case KeyEvent.VK_RIGHT:
+			return KeyConstants.RIGHT_ARROW;
+		case KeyEvent.VK_DOWN:
+			return KeyConstants.DOWN_ARROW;
+			
+		// Not a key press to worry about
+		default:
+			return '\0';
+		}
 	}
 	
 	/**

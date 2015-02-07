@@ -50,7 +50,7 @@ public abstract class Element implements Focusable {
 	 */
 	public Element()
 	{
-		this(null, 0, 0, 0, 0, 0, false);
+		this(null, 0, 0, 0, 0, 0);
 	}
 	
 	/**
@@ -62,21 +62,7 @@ public abstract class Element implements Focusable {
 	 * @param y The Y coordinate of this element relative to its parent
 	 */
 	public Element(Container parent, int priority, int x, int y) {
-		this(parent, priority, x, y, 0, 0, false);
-	}
-	
-	/**
-	 * Initialize an AbstractElement so each of its fields are set to the given values. 
-	 * The element will by default not have focus. 
-	 * @param parent The element containing this one, or null
-	 * @param priority Essentially the Z coordinate. Higher is on top.
-	 * @param x The X coordinate of this element relative to its parent
-	 * @param y The Y coordinate of this element relative to its parent
-	 * @param width The width of this element. May be 0.
-	 * @param height The height of this element. May be 0.
-	 */
-	public Element(Container parent, int priority, int x, int y, int width, int height) {
-		this(parent, priority, x, y, width, height, false);
+		this(parent, priority, x, y, 0, 0);
 	}
 	
 	/**
@@ -87,7 +73,6 @@ public abstract class Element implements Focusable {
 	 * @param y The Y coordinate of this element relative to its parent
 	 * @param width The width of this element. May be 0.
 	 * @param height The height of this element. May be 0.
-	 * @param hasFocus Whether or not the element already has key focus
 	 */
 	public Element(
 			Container parent,
@@ -95,8 +80,7 @@ public abstract class Element implements Focusable {
 			int x, 
 			int y, 
 			int width, 
-			int height, 
-			boolean hasFocus) {
+			int height) {
 		this.parent = Optional.ofNullable(parent);
 		this.priority = priority;
 		this.rectangle = new Rectangle(x, y, width, height);
@@ -152,6 +136,26 @@ public abstract class Element implements Focusable {
 		
 		// Pass the event to the parent, if we aren't an orphan :(
 		parent.ifPresent((p) -> p.keyTyped(key));
+	}
+	
+	/**
+	 * Informs this element and its focus handler that focus was gained. 
+	 * Elements overriding this for custom behavior should call <code>super.focusGained()</code>
+	 */
+	@Override
+	public void focusGained()
+	{
+		focusHandler.focusGained();
+	}
+	
+	/**
+	 * Informs this element and its focus handler that focus was lost
+	 * Elements overriding this for custom behavior should call <code>super.focusGained()</code>
+	 */
+	@Override
+	public void focusLost()
+	{
+		focusHandler.focusLost();
 	}
 
 	/** @return The X coordinate of this element relative to its parent */

@@ -99,14 +99,14 @@ public class FocusController {
 		// Tell the current handler that it's lost focus (it's sure about to)
 		if(currentFocus != null)
 		{
-			currentFocus.getFocusHandler().focusLost();
+			currentFocus.focusLost();
 		}
 		
 		// Switch over the objects
 		currentFocus = newFocus;
 		
 		// Tell the new handler it's got focus now
-		currentFocus.getFocusHandler().focusGained();
+		currentFocus.focusGained();
 	}
 	
 	/**

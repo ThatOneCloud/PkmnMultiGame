@@ -18,6 +18,20 @@ public interface Focusable {
 	public FocusHandler getFocusHandler();
 	
 	/**
+	 * Called when this Focusable has gained focus. 
+	 * Should inform the focus handler that focus was gained, as well. 
+	 * The FocusHandler is still used to check if the Focusable currently has focus. 
+	 */
+	public void focusGained();
+	
+	/**
+	 * Called when this FocusHandler no longer has focus. (And previously did)
+	 * Should inform the focus handler that focus was lost, as well.
+	 * The FocusHandler is still used to check if the Focusable currently has focus. 
+	 */
+	public void focusLost();
+	
+	/**
 	 * Tell this focusable object that it has received a key event. This is defined here since an 
 	 * object with focus is the object that key events are sent to. However, nothing needs to be done 
 	 * with this event from here. It can simply be discarded if desired. 
