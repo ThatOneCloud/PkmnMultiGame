@@ -35,7 +35,7 @@ public class KeyEventHandler extends KeyAdapter {
 		// Key presses are mapped to integers - even for keys with normally no character representation
 		int keyCode = event.getKeyCode();
 		
-		System.out.println("Key pressed: " + keyCode);
+//		System.out.println("Key pressed: " + keyCode);
 		
 		// So we give the key a character that is otherwise useless for us
 		char artificialChar = mutatePressedKey(event, keyCode);

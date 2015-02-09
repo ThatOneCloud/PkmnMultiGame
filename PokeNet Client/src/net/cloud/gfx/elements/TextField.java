@@ -45,7 +45,7 @@ public class TextField extends Element {
 	private String text;
 	
 	/** Holds the text that should really be drawn. Maybe all of the text doesn't fit. */
-	private DisplayableText displayText;
+	protected DisplayableText displayText;
 	
 	/** The font currently being used by the field */
 	private Font font;
@@ -245,14 +245,7 @@ public class TextField extends Element {
 		g2d.setFont(font);
 		
 		// Check if we need to recreate a glyph vector
-		if(glyphVector == null)
-		{
-			// Figure out what text should be displayed now
-			displayText.updateDisplay(g2d);
-			
-			// The font, current graphics, and text determine the glyphs
-			glyphVector = font.createGlyphVector(g2d.getFontRenderContext(), displayText.displayed);
-		}
+		updateGlyphVector(g2d);
 		
 		// Check if we need to move the cursor as per a click request
 		if(clickX != -1)
@@ -375,6 +368,23 @@ public class TextField extends Element {
 		// Cancel and remove reference to the task
 		blinkTask.cancel();
 		blinkTask = null;
+	}
+	
+	/**
+	 * Check to see if the glyph vector is invalid, and if so, update it. 
+	 * The display text is updated as well so that the most current text is shown
+	 * @param g2d Graphics object currently being used to draw with
+	 */
+	private void updateGlyphVector(Graphics2D g2d)
+	{
+		if(glyphVector == null)
+		{
+			// Figure out what text should be displayed now
+			displayText.updateDisplay(g2d);
+			
+			// The font, current graphics, and text determine the glyphs
+			glyphVector = font.createGlyphVector(g2d.getFontRenderContext(), displayText.displayed);
+		}
 	}
 
 	/**
@@ -552,6 +562,16 @@ public class TextField extends Element {
 	public void setLeftSprite(int id)
 	{
 		this.leftBorder = SpriteManager.instance().getScaledSprite(SpriteSet.TEXT_FIELD, 5, -1, getHeight() + topBorder.getHeight() + bottomBorder.getHeight());
+	}
+	
+	/**
+	 * Check to see if the field is currently showing hint text
+	 * @return True if the hint text is up
+	 */
+	public boolean showingHint()
+	{
+		// Roughly, when removed it is nullified
+		return hintText != null;
 	}
 	
 	/**
@@ -742,7 +762,7 @@ public class TextField extends Element {
 	 * such as tracking its location and drawing it. Not static - maintaining a reference 
 	 * to the parent TextField is just fine if not ideal. 
 	 */
-	private class Cursor {
+	class Cursor {
 		
 		/** Index of the cursor in the text. Starts at 0, for behind the first character. Max = text length */
 		private int cursorIdx;
@@ -773,7 +793,7 @@ public class TextField extends Element {
 			}
 			
 			// Figure out how far in the cursor needs to be drawn
-			String visibleTextBeforeCursor = displayText.displayed.substring(0, cursorIdx - displayText.leftIdx);
+			String visibleTextBeforeCursor = displayText.getDisplayed().substring(0, cursorIdx - displayText.leftIdx);
 			int widthBeforeCursor = g2d.getFontMetrics().stringWidth(visibleTextBeforeCursor);
 			
 			// Draw the sprite. Vertically centered. 
@@ -840,19 +860,19 @@ public class TextField extends Element {
 	 * String wrapper with the added functionality of keeping track of which substring indices 
 	 * are bounding the displayable text. For keeping track of how much and what to show. 
 	 */
-	private class DisplayableText {
+	class DisplayableText {
 		
 		/** The String containing text that should be in view */
-		private String displayed;
+		protected String displayed;
 		
 		/** The left inclusive bound */
-		private int leftIdx;
+		protected int leftIdx;
 		
 		/** The right exclusive bound */
-		private int rightIdx;
+		protected int rightIdx;
 		
 		/** True if the text should be sized left to right (false for right-to-left) */
-		private boolean hintLeft;
+		protected boolean hintLeft;
 		
 		/** Create new displayable text on the premise the text field starts blank */
 		public DisplayableText()
@@ -867,7 +887,7 @@ public class TextField extends Element {
 		 * should currently be drawn into the field. 
 		 * @param g2d The graphics object currently being used for drawing
 		 */
-		private void updateDisplay(Graphics2D g2d) 
+		protected void updateDisplay(Graphics2D g2d) 
 		{
 			FontMetrics metrics = g2d.getFontMetrics();
 			
@@ -896,7 +916,7 @@ public class TextField extends Element {
 		 * moving right to left. The display field members are changed, the glyph vector is not invalidated.
 		 * @param metrics A FontMetrics object to measure text with
 		 */
-		private void determineRightwise(FontMetrics metrics) 
+		protected void determineRightwise(FontMetrics metrics) 
 		{
 			// Since right - start at the end
 			int startIdx = rightIdx;
@@ -918,9 +938,7 @@ public class TextField extends Element {
 			}
 			
 			// And update the display similarly
-			leftIdx = endIdx;
-			rightIdx = startIdx;
-			displayed = text.substring(leftIdx, rightIdx);
+			setFields(text.substring(endIdx, startIdx), endIdx, startIdx);
 		}
 
 		/**
@@ -928,7 +946,7 @@ public class TextField extends Element {
 		 * moving left to right. The display field members are changed, the glyph vector is not invalidated.
 		 * @param metrics A FontMetrics object to measure text with
 		 */
-		private void determineLeftwise(FontMetrics metrics) 
+		protected void determineLeftwise(FontMetrics metrics) 
 		{
 			// Since left - start at the left end
 			int startIdx = leftIdx;
@@ -951,34 +969,47 @@ public class TextField extends Element {
 			}
 			
 			// Now we know how much to show. Update the display appropriately. 
-			leftIdx = startIdx;
-			rightIdx = endIdx;
-			displayed = text.substring(leftIdx, rightIdx);
+			setFields(text.substring(startIdx, endIdx), startIdx, endIdx);
 		}
 
 		/**
 		 * Set the field members to display all of the text currently in the field
 		 */
-		private void displayAll() 
+		protected void displayAll() 
 		{
 			// Display all of the text, from start to end. 
-			displayed = text;
-			leftIdx = 0;
-			rightIdx = text.length();
+			setFields(text, 0, text.length());
 		}
 		
 		/**
 		 * Reset all field members back to default, as if there is no text to display. 
 		 */
-		private void reset()
+		protected void reset()
 		{
 			// By default, no text showing and both indices are 0
-			displayed = "";
-			this.leftIdx = 0;
-			this.rightIdx = 0;
+			setFields("", 0, 0);
 			
 			// Drawing is also from the left by default
 			this.hintLeft = true;
+		}
+		
+		/** @return The text currently in view */
+		protected String getDisplayed()
+		{
+			return displayed;
+		}
+		
+		/**
+		 * Set all of the fields for displayed text. 
+		 * @param text The text being shown
+		 * @param leftIdx The left index, inclusive
+		 * @param rightIdx The right index, exclusive
+		 */
+		protected void setFields(String text, int leftIdx, int rightIdx)
+		{
+			this.displayed = text;
+			this.leftIdx = leftIdx;
+			this.rightIdx = rightIdx;
 		}
 		
 	}
@@ -986,7 +1017,7 @@ public class TextField extends Element {
 	/**
 	 * A task to take care of making the cursor blink, rather than always being drawn.
 	 */
-	private class CursorBlinkTask extends CancellableVoidTask {
+	class CursorBlinkTask extends CancellableVoidTask {
 
 		/** This task will make the cursor toggle between showing and not showing */
 		@Override
