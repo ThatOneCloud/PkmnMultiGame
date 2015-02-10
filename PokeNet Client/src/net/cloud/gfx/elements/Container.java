@@ -40,7 +40,8 @@ public abstract class Container extends Element {
 	 * @param x The X coordinate of this element relative to its parent
 	 * @param y The Y coordinate of this element relative to its parent
 	 */
-	public Container(Container parent, int priority, int x, int y) {
+	public Container(Container parent, int priority, int x, int y) 
+	{
 		super(parent, priority, x, y, 0, 0);
 		
 		// Use a different kind of FocusHandler, rather than the default one Element provides
@@ -59,7 +60,8 @@ public abstract class Container extends Element {
 	 * @param width The width of this element. May be 0.
 	 * @param height The height of this element. May be 0.
 	 */
-	public Container(Container parent, int priority, int x, int y, int width, int height) {
+	public Container(Container parent, int priority, int x, int y, int width, int height) 
+	{
 		super(parent, priority, x, y, width, height);
 		
 		// Use a different kind of FocusHandler, rather than the default one Element provides
@@ -68,38 +70,34 @@ public abstract class Container extends Element {
 		children = new ElementList();
 	}
 	
-	/** 
-	 * Propagates the click to the top contained element that intersects the location 
-	 * of the click. The coordinates passed to the contained element become relative to 
-	 * that element, not this container.  If there is no such element, then the focus 
-	 * will be set to this container element.
-	 * @throws IteratorException If while looking for an intersecting child, iteration fails
+	/**
+	 * Finds the top child element at the point. The point is still translated to the child's 
+	 * relative coordinate space. 
+	 * @return The top child, or this container itself
 	 */
 	@Override
-	public void elementClicked(Point relPoint) throws IteratorException {
+	public Element topElementAtPoint(Point point) throws IteratorException
+	{
 		// Look through the children (in a read-only way!)
 		StrongIterator<Element> it = children.reverseIterator();
 		while(it.hasNext())
 		{
 			// Pull the child out. If it fails, exception will be re-thrown
 			Element child = it.next();
-			
-			// Check if it and the click intersect
-			if(child.rectangle.contains(relPoint))
+
+			// Check if it and the point intersect
+			if(child.rectangle.contains(point))
 			{
 				// It does. First one is on top, because reverse order. Adjust the point.
-				relPoint.translate(-child.getX(), -child.getY());
-				
-				// Now tell the child its been clicked
-				child.elementClicked(relPoint);
-				
-				// Return so that focus doesn't end up given to this container
-				return;
+				point.translate(-child.getX(), -child.getY());
+
+				// Now continue the search to the bottom
+				return child.topElementAtPoint(point);
 			}
 		}
 		
-		// No child was found, so this will give this Container key focus
-		super.elementClicked(relPoint);
+		// No child was found, so it must be this container
+		return this;
 	}
 	
 	/**

@@ -45,6 +45,9 @@ public abstract class Element implements Focusable {
 	/** The element which contains this one, if any */
 	private Optional<Container> parent;
 	
+	/** Flag for whether or not the element is pressed down by the mouse */
+	private boolean isPressedDown;
+	
 	/**
 	 * Default initialization for an AbstractElement
 	 */
@@ -61,7 +64,8 @@ public abstract class Element implements Focusable {
 	 * @param x The X coordinate of this element relative to its parent
 	 * @param y The Y coordinate of this element relative to its parent
 	 */
-	public Element(Container parent, int priority, int x, int y) {
+	public Element(Container parent, int priority, int x, int y) 
+	{
 		this(parent, priority, x, y, 0, 0);
 	}
 	
@@ -85,6 +89,7 @@ public abstract class Element implements Focusable {
 		this.priority = priority;
 		this.rectangle = new Rectangle(x, y, width, height);
 		this.focusHandler = new SingleFocusHandler();
+		this.isPressedDown = false;
 	}
 	
 	/**
@@ -105,13 +110,52 @@ public abstract class Element implements Focusable {
 	 * no special action is taken. If a subclass does override this method, 
 	 * it should certainly call <code>super.elementClicked(...)</code> or 
 	 * perform the focus 'attenuation' itself. 
-	 * @throws IteratorException If searching for the clicked element fails
+	 * @param relPoint The point of click, relative to this element
+	 * @param isRightClick True if the right mouse button was clicked
 	 */
-	public void elementClicked(Point relPoint) throws IteratorException {
+	public void clicked(Point relPoint, boolean isRightClick) 
+	{
 		// Register focus with controller
 		FocusController.instance().register(this);
 	}
-
+	
+	/**
+	 * The element had a mouse press happen on it. This will set a flag, so subclasses 
+	 * may override this method but should call either <code>super.pressed(...)</code> or 
+	 * <code>super.setPressed(true)</code>
+	 * @param relPoint The point of click, relative to this element
+	 */
+	public void pressed(Point relPoint)
+	{
+		this.isPressedDown = true;
+	}
+	
+	/**
+	 * This is called when either of two things happens: The mouse button is released over the 
+	 * element, or the element was the element that was currently pressed down and is being 
+	 * notified that it should no longer be down. In the case that both are true, the method is only 
+	 * called once - for the release on top of the element. <br>
+	 * May be overridden, but should call <code>super.released</code> or <code>super.setPressed(false)</code>
+	 * @param relPoint The point of release, relative to this element. Invalid and null if the release is not on the element.
+	 * @param onElement True when the mouse release is over this element
+	 */
+	public void released(Point relPoint, boolean onElement)
+	{
+		// All we do is clear the flag, regardless of where the release happened
+		this.isPressedDown = false;
+	}
+	
+	/**
+	 * Called when this element is being dragged. (The mouse is pressed down on the element and moving) 
+	 * The provided points are relative to the space the element is in, unlike the other mouse event methods, 
+	 * which are relative to <i>within</i> the element. <br>
+	 * The default behavior is that an Element discards the event.
+	 * @param start Where the dragging started. I.e. where the mouse was first pressed down
+	 * @param withinStart The point within the element dragging started. Like with the other mouse events.
+	 * @param current Where the mouse is currently at. Can be used to find a movement delta or used directly.
+	 */
+	public void dragged(Point start, Point withinStart, Point current) {}
+	
 	/** 
 	 * Does two things. First, will check to see if the event is telling us 
 	 * that we should change focus over to the next thing in line. This behavior can 
@@ -122,7 +166,8 @@ public abstract class Element implements Focusable {
 	 * other keys to propagate. (Chain of responsibility)
 	 */
 	@Override
-	public void keyTyped(char key) {
+	public void keyTyped(char key) 
+	{
 		// Take care of tab'ing over to the next focusable here
 		if(key == KeyConstants.CHANGE_FOCUS_NEXT)
 		{
@@ -156,6 +201,21 @@ public abstract class Element implements Focusable {
 	public void focusLost()
 	{
 		focusHandler.focusLost();
+	}
+	
+	/**
+	 * Finds the element which is showing on the point. Mostly useful for containers, which 
+	 * will traverse down the child hierarchy. However, elements in general may still be composed 
+	 * of multiple elements and may want to preserve their behavior independently. <br>
+	 * The point is translated to the relative space for the found element, so it may be passed 
+	 * to event methods that require a relative point
+	 * @param point The point relative to this element
+	 * @return The element showing on top. By default, returns this instance
+	 * @throws IteratorException If there was an issue iterating child elements
+	 */
+	public Element topElementAtPoint(Point point) throws IteratorException
+	{
+		return this;
 	}
 
 	/** @return The X coordinate of this element relative to its parent */
@@ -228,6 +288,18 @@ public abstract class Element implements Focusable {
 	public void setParent(Container parent)
 	{
 		this.parent = Optional.ofNullable(parent);
+	}
+	
+	/** @return True if the element is currently pressed down */
+	public boolean isPressedDown()
+	{
+		return isPressedDown;
+	}
+	
+	/** @param isPressedDown Whether or not the element is now pressed down */
+	public void isPressedDown(boolean isPressedDown)
+	{
+		this.isPressedDown = isPressedDown;
 	}
 	
 }

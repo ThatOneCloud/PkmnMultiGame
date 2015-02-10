@@ -277,10 +277,10 @@ public class TextField extends Element {
 	}
 	
 	@Override
-	public void elementClicked(Point relPoint) throws IteratorException 
+	public void clicked(Point relPoint, boolean isRightClick)
 	{
 		// Superclass takes care of focus handling
-		super.elementClicked(relPoint);
+		super.clicked(relPoint, isRightClick);
 		
 		// A click happened so we'll update the variable to indicate interest in moving the cursor. Happens on re-draw.
 		clickX = relPoint.x;
