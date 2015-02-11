@@ -58,6 +58,9 @@ public class KeyConstants {
 	/** Constant for the character which will traverse to the previous Focusable in line */
 	public static final char CHANGE_FOCUS_PREVIOUS = SHIFT_TAB;
 	
+	/** The key that in general means an action should be performed */
+	public static final char ACTION_KEY = ENTER;
+	
 	/** The "kill text" command - which removes a segment of text */
 	public static final char KILL_TEXT = CTRL_U;
 	

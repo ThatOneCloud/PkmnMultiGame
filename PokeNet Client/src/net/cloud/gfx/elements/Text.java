@@ -3,6 +3,8 @@ package net.cloud.gfx.elements;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.font.GlyphVector;
 
 import net.cloud.client.util.IteratorException;
 import net.cloud.gfx.constants.Colors;
@@ -28,10 +30,13 @@ public class Text extends Element {
 	private Color color;
 	
 	/** The height of the text - to determine the correct drawing position */
-	private int height;
+	protected int height;
+	
+	/** A GlyphVector which will actually be used to draw the text */
+	protected GlyphVector glyphVector;
 	
 	/** Flag indicating if the height variable needs to be updated */
-	private volatile boolean updateHeight;
+	protected volatile boolean updateHeight;
 	
 	/**
 	 * Create a new text label. It will use the default font and color. 
@@ -72,6 +77,8 @@ public class Text extends Element {
 		this.font = font;
 		this.color = color;
 		
+		this.glyphVector = null;
+		
 		updateHeight = true;
 	}
 
@@ -82,15 +89,20 @@ public class Text extends Element {
 	@Override
 	public void drawElement(Graphics g, int offsetX, int offsetY) throws IteratorException 
 	{
-		// Make sure the height we have on record is good
-		updateHeight(g);
+		Graphics2D g2d = (Graphics2D) g;
 		
-		// Now we need to make drawing happen in our font and color
+		// Set font and color before obtaining any metrics
 		g.setFont(font);
 		g.setColor(color);
+				
+		// Make sure the drawing vector is up to date
+		updateGlyphVector(g2d);
+		
+		// Make sure the height we have on record is good
+		updateHeight(g2d);
 		
 		// Ready to draw the text
-		g.drawString(text, offsetX, offsetY + height);
+		g2d.drawGlyphVector(glyphVector, offsetX, offsetY + height);
 	}
 	
 	/**
@@ -109,7 +121,8 @@ public class Text extends Element {
 	{
 		this.text = text;
 		
-		// We'll need to update the height, it may have changed
+		// We'll need to update some things that have maybe now changed
+		glyphVector = null;
 		updateHeight = true;
 	}
 	
@@ -129,7 +142,8 @@ public class Text extends Element {
 	{
 		this.font = font;
 		
-		// We'll need to update the height, it may have changed
+		// We'll need to update the height and vector. They've likely both changed.
+		glyphVector = null;
 		updateHeight = true;
 	}
 	
@@ -141,7 +155,8 @@ public class Text extends Element {
 	{
 		this.font = font.deriveFont((float) size);
 		
-		// We'll need to update the height, it may have changed
+		// We'll need to update the height and vector. They've likely both changed.
+		glyphVector = null;
 		updateHeight = true;
 	}
 	
@@ -153,7 +168,8 @@ public class Text extends Element {
 	{
 		this.font = font.deriveFont(style);
 		
-		// We'll need to update the height, it may have changed
+		// We'll need to update the height and vector. They've likely both changed.
+		glyphVector = null;
 		updateHeight = true;
 	}
 	
@@ -175,12 +191,25 @@ public class Text extends Element {
 	}
 	
 	/**
+	 * Update the glyph vector if need be, so the text is updated. 
+	 * @param g2d The graphics object currently being used to draw with
+	 */
+	protected void updateGlyphVector(Graphics2D g2d)
+	{
+		if(glyphVector == null)
+		{
+			// The font, current graphics, and text determine the glyphs
+			glyphVector = font.createGlyphVector(g2d.getFontRenderContext(), text);
+		}
+	}
+	
+	/**
 	 * Calculate and assign the height of this text label. 
 	 * This is necessary to draw in the right position, and must be done if the font or text changes. 
 	 * When this is called, action will only be taken if the update flag is set. The flag will be cleared.
 	 * @param g The graphics object this text is being drawn to
 	 */
-	private void updateHeight(Graphics g)
+	protected void updateHeight(Graphics g)
 	{
 		if(updateHeight)
 		{

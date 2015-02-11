@@ -1,5 +1,6 @@
 package net.cloud.gfx.interfaces;
 
+import net.cloud.gfx.elements.Button;
 import net.cloud.gfx.elements.Interface;
 import net.cloud.gfx.elements.PasswordField;
 import net.cloud.gfx.elements.Sprite;
@@ -28,6 +29,8 @@ public class SpriteTestInterface extends Interface {
 		add(new Sprite(SpriteSet.TEST, 3, width-50, height-50));
 		add(new Sprite(SpriteSet.TEST, 4, (width / 2) - 25, (height / 2) - 25));
 		
+		
+		
 		TextField textField = new TextField(50, 50, 150, 22, "hint");
 		add(textField);
 		
@@ -39,6 +42,11 @@ public class SpriteTestInterface extends Interface {
 		
 		textField.linkNextFocusable(pwField);
 		pwField.linkNextFocusable(textField);
+		
+		
+		
+		Button button = new Button("Button", 50, 150, 75, 25);
+		add(button);
 	}
 
 }

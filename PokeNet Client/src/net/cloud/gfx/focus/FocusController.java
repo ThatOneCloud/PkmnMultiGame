@@ -110,6 +110,21 @@ public class FocusController {
 	}
 	
 	/**
+	 * Tell the focus controller that no element should have focus. As per usual, if an element already 
+	 * has focus, it will be informed of its loss.
+	 */
+	public void deregister()
+	{
+		// Tell the current handler that it's lost focus (it's sure about to)
+		if(currentFocus != null)
+		{
+			currentFocus.focusLost();
+		}
+		
+		currentFocus = null;
+	}
+	
+	/**
 	 * Obtain the Focusable object that currently has focus in the system. 
 	 * This will be null if there is no such object at the moment.
 	 * @return The object that currently holds focus

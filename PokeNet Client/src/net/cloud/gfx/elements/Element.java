@@ -297,7 +297,7 @@ public abstract class Element implements Focusable {
 	}
 	
 	/** @param isPressedDown Whether or not the element is now pressed down */
-	public void isPressedDown(boolean isPressedDown)
+	public void setPressedDown(boolean isPressedDown)
 	{
 		this.isPressedDown = isPressedDown;
 	}

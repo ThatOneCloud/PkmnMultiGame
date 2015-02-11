@@ -314,7 +314,7 @@ public class TextField extends Element {
 			clearBeforeCursor();
 			return;
 			
-		case KeyConstants.ENTER:
+		case KeyConstants.ACTION_KEY:
 			// Call the "action handler" with the text field instance and current text
 			actionMethod.ifPresent((m) -> m.accept(this, text));
 			return;
@@ -392,6 +392,7 @@ public class TextField extends Element {
 	 * Suggested to set this at construction time and not change it. 
 	 * @param width The new width of the text area itself
 	 */
+	@Override
 	public void setWidth(int width)
 	{
 		super.setWidth(width);
@@ -407,6 +408,7 @@ public class TextField extends Element {
 	 * Suggested to set this at construction time and not change it. 
 	 * @param height The new height of the text area itself
 	 */
+	@Override
 	public void setHeight(int height)
 	{
 		super.setHeight(height);
