@@ -172,11 +172,13 @@ public abstract class Element implements Focusable {
 		if(key == KeyConstants.CHANGE_FOCUS_NEXT)
 		{
 			focusHandler.traverseNext();
+			return;
 		}
 		// And then there's a special character for tabbing backwards
 		else if(key == KeyConstants.CHANGE_FOCUS_PREVIOUS)
 		{
 			focusHandler.traversePrevious();
+			return;
 		}
 		
 		// Pass the event to the parent, if we aren't an orphan :(

@@ -1,8 +1,12 @@
 package net.cloud.gfx.interfaces;
 
+import net.cloud.gfx.constants.Colors;
 import net.cloud.gfx.elements.Button;
+import net.cloud.gfx.elements.Checkbox;
 import net.cloud.gfx.elements.Interface;
 import net.cloud.gfx.elements.PasswordField;
+import net.cloud.gfx.elements.RadioButton;
+import net.cloud.gfx.elements.RadioButton.RadioButtonGroup;
 import net.cloud.gfx.elements.Sprite;
 import net.cloud.gfx.elements.TextField;
 import net.cloud.gfx.sprites.SpriteSet;
@@ -47,6 +51,23 @@ public class SpriteTestInterface extends Interface {
 		
 		Button button = new Button("Button", 50, 150, 75, 25);
 		add(button);
+		
+		Checkbox checkbox = new Checkbox("Checkbox", 60, 200);
+		checkbox.setActionHandler((b) -> System.out.println("Button selected? " + b.isSelected()));
+		add(checkbox);
+		
+		RadioButtonGroup radioGroup = new RadioButtonGroup();
+		radioGroup.setActionHandler((evt) -> System.out.println("Selected " + evt.getSelected().getLabelText()));
+		RadioButton radio1 = new RadioButton(radioGroup, "Red", 200, 200);
+		RadioButton radio2 = new RadioButton(radioGroup, "Green", 200, 220);
+		RadioButton radio3 = new RadioButton(radioGroup, "Blue", 200, 240);
+		radio1.setLabelColor(Colors.RED.get());
+		radio2.setLabelColor(Colors.GREEN.get());
+		radio3.setLabelColor(Colors.BLUE.get());
+		add(radio1);
+		add(radio2);
+		add(radio3);
+		radio3.linkNextFocusable(radio1);
 	}
 
 }

@@ -94,11 +94,11 @@ public class Button extends AbstractButton {
 	}
 	
 	/**
-	 * Initialize the background sprites using the default set of button sprite assets
+	 * Initialize the background sprites using the given set of button sprite assets
 	 */
 	private void spriteInit(int firstID)
 	{
-		// All of the default sprites. May be set individually or as a group later. 
+		// All of the default sprites. May be reset as a group later. 
 		this.normalBackground = SpriteManager.instance().getScaledSprite(SpriteSet.BUTTON, firstID, getWidth(), getHeight());
 		this.focusBackground = SpriteManager.instance().getScaledSprite(SpriteSet.BUTTON, firstID+1, getWidth(), getHeight());
 		this.pressedBackground = SpriteManager.instance().getScaledSprite(SpriteSet.BUTTON, firstID+2, getWidth(), getHeight());

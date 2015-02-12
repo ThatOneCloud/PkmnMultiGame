@@ -214,7 +214,7 @@ public class Text extends Element {
 		if(updateHeight)
 		{
 			// Easiest way is using the graphic's object to obtain a FontMetrics
-			this.height = g.getFontMetrics(font).getHeight();
+			this.height = g.getFontMetrics(font).getAscent();
 			
 			updateHeight = false;
 		}

@@ -3,6 +3,7 @@ package net.cloud.gfx.elements;
 import java.awt.Point;
 
 import net.cloud.gfx.constants.KeyConstants;
+import net.cloud.gfx.focus.FocusController;
 
 /**
  * A generic base class for buttons elements. It has the code to take care of being clicked on, 
@@ -33,7 +34,19 @@ public abstract class AbstractButton extends Element {
 	public void clicked(Point relPoint, boolean isRightClick) {}
 	
 	/**
-	 * pressed isn't overridden, isn't that odd? Well, anyways... <br>
+	 * When a button is pressed, it will request focus - even if only momentarily. (Rather than via a click)
+	 * This is so that focus can be kept on a button that was pressed, conditionally, depending on the release. 
+	 */
+	@Override
+	public void pressed(Point relPoint)
+	{
+		super.pressed(relPoint);
+		
+		// Register focus. May be relinquished upon release
+		FocusController.instance().register(this);
+	}
+	
+	/**
 	 * When the mouse is released, for sure the button will no longer be pressed down. Regardless of release point. 
 	 * Also, if the button was already pressed down and the release is over the button, then that is what constitutes 
 	 * clicking the button. (Not the actual click event - which is more specific)
@@ -46,6 +59,14 @@ public abstract class AbstractButton extends Element {
 		
 		// Release now, so drawing will appear back to normal
 		super.released(relPoint, onElement);
+		
+		// When the release is over a button that is pressed down and has focus, it's similar to a click. 
+		// We'll give up focus, so the button does not stay focused. To keep focus by pressing, the mouse can be 
+		// moved off the button and then released.
+		if(isPressedDown && onElement && super.getFocusHandler().hasFocus())
+		{
+			FocusController.instance().deregister();
+		}
 		
 		// Take action if the release is over the button and we were pressed down, as well
 		if(isPressedDown && onElement)
@@ -67,7 +88,10 @@ public abstract class AbstractButton extends Element {
 		{
 			// Call action performed so custom things happen
 			actionPerformed();
+			return;
 		}
+		
+		super.keyTyped(key);
 	}
 	
 	/**
