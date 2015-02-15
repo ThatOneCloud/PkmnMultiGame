@@ -49,18 +49,20 @@ public interface Element extends Focusable {
 	 * no special action is taken. If a subclass does override this method, 
 	 * it should certainly call <code>super.elementClicked(...)</code> or 
 	 * perform the focus 'attenuation' itself. 
+	 * @param clicked The element that was clicked. It may not be this element!
 	 * @param relPoint The point of click, relative to this element
 	 * @param isRightClick True if the right mouse button was clicked
 	 */
-	public void clicked(Point relPoint, boolean isRightClick);
+	public void clicked(Element clicked, Point relPoint, boolean isRightClick);
 
 	/**
 	 * The element had a mouse press happen on it. This will set a flag, so subclasses 
 	 * may override this method but should call either <code>super.pressed(...)</code> or 
 	 * <code>super.setPressed(true)</code>
+	 * @param pressed The element that was pressed. It may not be this element!
 	 * @param relPoint The point of click, relative to this element
 	 */
-	public void pressed(Point relPoint);
+	public void pressed(Element pressed, Point relPoint);
 
 	/**
 	 * This is called when either of two things happens: The mouse button is released over the 
@@ -68,21 +70,23 @@ public interface Element extends Focusable {
 	 * notified that it should no longer be down. In the case that both are true, the method is only 
 	 * called once - for the release on top of the element. <br>
 	 * May be overridden, but should call <code>super.released</code> or <code>super.setPressed(false)</code>
+	 * @param released The element that was released. It may not be this element!
 	 * @param relPoint The point of release, relative to this element. Invalid and null if the release is not on the element.
 	 * @param onElement True when the mouse release is over this element
 	 */
-	public void released(Point relPoint, boolean onElement);
+	public void released(Element released, Point relPoint, boolean onElement);
 
 	/**
 	 * Called when this element is being dragged. (The mouse is pressed down on the element and moving) 
 	 * The provided points are relative to the space the element is in, unlike the other mouse event methods, 
 	 * which are relative to <i>within</i> the element. <br>
 	 * The default behavior is that an Element discards the event.
+	 * @param dragged The element that was dragged. It may not be this element!
 	 * @param start Where the dragging started. I.e. where the mouse was first pressed down
 	 * @param withinStart The point within the element dragging started. Like with the other mouse events.
 	 * @param current Where the mouse is currently at. Can be used to find a movement delta or used directly.
 	 */
-	public void dragged(Point start, Point withinStart, Point current);
+	public void dragged(Element dragged, Point start, Point withinStart, Point current);
 
 	/** 
 	 * Does two things. First, will check to see if the event is telling us 

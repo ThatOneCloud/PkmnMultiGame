@@ -6,8 +6,6 @@ package net.cloud.gfx.elements;
  * functionality similar to if the element was not wrapped. There may be slight changes, to make behavior appropriate. 
  * The interface defines a method, getDecoratedElement(). This is so that it remains possible to 
  * unwrap the element and modify it without having each and every reference along the way. 
- *
- * @param <T> The type of the wrapped element, so type casts are not always necessary
  */
 public interface DecoratorElement extends Element {
 	

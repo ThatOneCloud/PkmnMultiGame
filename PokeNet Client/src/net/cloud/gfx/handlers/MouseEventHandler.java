@@ -83,7 +83,7 @@ public class MouseEventHandler extends MouseAdapter {
 		Mainframe.instance().gfx().rootPanel().addMouseMotionListener(dragHandler);
 		
 		// Finally ship the event off to the element, where it can do whatever with it
-		pressedElement.pressed(relPoint);
+		pressedElement.pressed(pressedElement, relPoint);
 	}
 	
 	public void mouseReleased(MouseEvent event)
@@ -108,11 +108,11 @@ public class MouseEventHandler extends MouseAdapter {
 		Element releasedElement = topElement(relPoint);
 		
 		// Tell both released element and currently pressed element about the event
-		releasedElement.released(relPoint, true);
+		releasedElement.released(releasedElement, relPoint, true);
 		if(releasedElement != pressedElement)
 		{
 			// Avoid duplicate events. This is only sent when the release isn't over the pressed element
-			pressedElement.released(null, false);
+			pressedElement.released(pressedElement, null, false);
 		}
 		
 		// Nullify the fields so things go back to reset, and garbage collection can come in
@@ -142,7 +142,7 @@ public class MouseEventHandler extends MouseAdapter {
 		Element element = topElement(point);
 		
 		// ... and send it there!
-		element.clicked(point, isRightClick);
+		element.clicked(element, point, isRightClick);
 	}
 	
 	/**

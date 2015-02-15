@@ -91,14 +91,10 @@ public class FileServer implements ShutdownService {
 	}
 	
 	/**
-	 * A convenience method. It will submit the request to the FileServer, 
-	 * wait for the request to be ready, and then return the file descriptor 
-	 * from the completed request.  This is equivalent to 3 method calls:<br>
-	 * <code>
-	 * FileServer.instance().submit(request);<br>
-	 * request.waitForRequest();<br>
-	 * request.getFileDescriptor();<br>
-	 * </code>
+	 * Slightly different that submitting a request and waiting for it, this convenience 
+	 * method will actually use the calling thread to fulfill the request rather than 
+	 * relying on the file server thread. This should only be faster, since the calling thread 
+	 * would just be waiting anyways and the file server thread may be busy.
 	 * @param request The request to submit and wait on
 	 * @param <T> The type of the file descriptor object. Should be inferred from the request.
 	 * @return The file descriptor that is being requested
@@ -106,8 +102,10 @@ public class FileServer implements ShutdownService {
 	 */
 	public <T> T submitAndWaitForDescriptor(FileRequest<T> request) throws FileRequestException
 	{
-		submit(request);
+		// Throw it straight to the handler
+		request.handle(requestHandler);
 		
+		// Wait just in case. Most likely will be no wait.
 		request.waitForRequest();
 		
 		return request.getFileDescriptor();

@@ -31,19 +31,19 @@ public abstract class AbstractButton extends AbstractElement {
 	 * because then it just looks silly and feels a bit unintuitive. Could still key over to it, though.
 	 */
 	@Override
-	public void clicked(Point relPoint, boolean isRightClick) {}
+	public void clicked(Element clicked, Point relPoint, boolean isRightClick) {}
 	
 	/**
 	 * When a button is pressed, it will request focus - even if only momentarily. (Rather than via a click)
 	 * This is so that focus can be kept on a button that was pressed, conditionally, depending on the release. 
 	 */
 	@Override
-	public void pressed(Point relPoint)
+	public void pressed(Element pressed, Point relPoint)
 	{
-		super.pressed(relPoint);
+		super.pressed(pressed, relPoint);
 		
 		// Register focus. May be relinquished upon release
-		FocusController.instance().register(this);
+		FocusController.instance().register(pressed);
 	}
 	
 	/**
@@ -52,13 +52,13 @@ public abstract class AbstractButton extends AbstractElement {
 	 * clicking the button. (Not the actual click event - which is more specific)
 	 */
 	@Override
-	public void released(Point relPoint, boolean onElement)
+	public void released(Element released, Point relPoint, boolean onElement)
 	{
 		// Keep a local copy of if we are pressed down, so we can release the button sooner. For reasons. Just in case.
 		boolean isPressedDown = super.isPressedDown();
 		
 		// Release now, so drawing will appear back to normal
-		super.released(relPoint, onElement);
+		super.released(released, relPoint, onElement);
 		
 		// When the release is over a button that is pressed down and has focus, it's similar to a click. 
 		// We'll give up focus, so the button does not stay focused. To keep focus by pressing, the mouse can be 

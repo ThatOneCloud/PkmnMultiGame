@@ -168,7 +168,7 @@ public abstract class Container extends AbstractElement {
 	 * to the provided Focusable to preserve the traversal chain. 
 	 */
 	@Override
-	public void linkNextFocusable(Focusable next)
+	public void linkNextFocusable(Focusable current, Focusable next)
 	{
 		ContainerFocusHandler handler = (ContainerFocusHandler) super.getFocusHandler();
 		
@@ -182,7 +182,7 @@ public abstract class Container extends AbstractElement {
 		}
 		// There's no last child, so link the container and next instead to preserve chain
 		else {
-			FocusController.link(this, next);
+			FocusController.link(current, next);
 		}
 	}
 	
@@ -194,7 +194,7 @@ public abstract class Container extends AbstractElement {
 	 * and the traversal will just be one step. 
 	 */
 	@Override
-	public void linkPreviousFocusable(Focusable previous)
+	public void linkPreviousFocusable(Focusable current, Focusable previous)
 	{
 		ContainerFocusHandler handler = (ContainerFocusHandler) super.getFocusHandler();
 		
@@ -202,7 +202,7 @@ public abstract class Container extends AbstractElement {
 		handler.setPrevious(previous);
 		
 		// We link from the container previous Focusable to the container 
-		FocusController.link(previous, this);
+		FocusController.link(previous, current);
 		
 		// and then from the container to the first child
 		if(handler.getFirst() != null)

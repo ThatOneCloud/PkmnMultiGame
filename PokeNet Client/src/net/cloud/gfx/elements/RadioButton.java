@@ -241,7 +241,7 @@ public class RadioButton extends SelectableButton {
 			// Establish link with previous button, if there is one
 			if(!buttons.isEmpty())
 			{
-				button.linkPreviousFocusable(buttons.getLast());
+				button.linkPreviousFocusable(button, buttons.getLast());
 			}
 			
 			// Add to the end of the list (doing this after link so accessing the previous button is easier)

@@ -83,27 +83,27 @@ public abstract class AbstractElement implements Element {
 	}
 
 	@Override
-	public void clicked(Point relPoint, boolean isRightClick) 
+	public void clicked(Element clicked, Point relPoint, boolean isRightClick) 
 	{
 		// Register focus with controller
-		FocusController.instance().register(this);
+		FocusController.instance().register(clicked);
 	}
 	
 	@Override
-	public void pressed(Point relPoint)
+	public void pressed(Element pressed, Point relPoint)
 	{
 		this.isPressedDown = true;
 	}
 	
 	@Override
-	public void released(Point relPoint, boolean onElement)
+	public void released(Element released, Point relPoint, boolean onElement)
 	{
 		// All we do is clear the flag, regardless of where the release happened
 		this.isPressedDown = false;
 	}
 	
 	@Override
-	public void dragged(Point start, Point withinStart, Point current) {}
+	public void dragged(Element dragged, Point start, Point withinStart, Point current) {}
 	
 	@Override
 	public void keyTyped(char key) 

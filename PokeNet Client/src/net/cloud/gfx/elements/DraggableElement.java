@@ -13,8 +13,6 @@ import java.util.Optional;
  * The ability to move the element may be toggled, as well as where on the element will allow the dragging and 
  * within what bounds the element can be moved.  By default these are toggled on, from anywhere, and within the 
  * parent, respectively.
- *
- * @param <T> The type of the wrapped element, so type casts are not always necessary
  */
 public class DraggableElement extends AbstractDecoratorElement {
 	
@@ -67,27 +65,42 @@ public class DraggableElement extends AbstractDecoratorElement {
 		}
 	}
 
+	/**
+	 * Moves the element when it is dragged. No matter the result, the wrapped element 
+	 * will have its dragged method called as well. 
+	 * Dragging must be enabled, and the withinStart point must be within one of the starting 
+	 * rectangles. Further, the element cannot be moved beyond its bounds. It will instead snug 
+	 * up against them.
+	 */
 	@Override
-	public void dragged(Point start, Point withinStart, Point current)
+	public void dragged(Element dragged, Point start, Point withinStart, Point current)
 	{
 		// Check if dragging is even enabled
 		if(!enabled)
 		{
-			getDecoratedElement().dragged(start, withinStart, current);
+			getDecoratedElement().dragged(dragged, start, withinStart, current);
 			return;
 		}
 		
 		// Check if the press started in an okay place
+		boolean okayStart = false;
 		if(startBounds.isPresent())
 		{
 			for(Rectangle r : startBounds.get())
 			{
-				if(!r.contains(withinStart))
+				if(r.contains(withinStart))
 				{
-					getDecoratedElement().dragged(start, withinStart, current);
-					return;
+					// Only need to go until we find one that works
+					okayStart = true;
+					break;
 				}
 			}
+		}
+		// Is there any bounding? Was the click in an okay spot?
+		if(startBounds.isPresent() && !okayStart)
+		{
+			getDecoratedElement().dragged(dragged, start, withinStart, current);
+			return;
 		}
 		
 		// Find where it's going
@@ -99,9 +112,15 @@ public class DraggableElement extends AbstractDecoratorElement {
 		getDecoratedElement().setY(destY);
 		
 		// Move the call down to the wrapped element in case it does something of its own
-		getDecoratedElement().dragged(start, withinStart, current);
+		getDecoratedElement().dragged(dragged, start, withinStart, current);
 	}
 	
+	/**
+	 * Get an x coordinate which is within bounds. If the coordinate would otherwise be out 
+	 * of bounds, an edge is returned. Otherwise, the same coordinate is given back.
+	 * @param destX The unbounded destination coordinate
+	 * @return A bounded and valid destination coordinate
+	 */
 	private int getBoundedX(int destX)
 	{
 		if(dragBounds.isPresent())
@@ -138,6 +157,12 @@ public class DraggableElement extends AbstractDecoratorElement {
 		return destX;
 	}
 	
+	/**
+	 * Get an x coordinate which is within bounds. If the coordinate would otherwise be out 
+	 * of bounds, an edge is returned. Otherwise, the same coordinate is given back.
+	 * @param destX The unbounded destination coordinate
+	 * @return A bounded and valid destination coordinate
+	 */
 	private int getBoundedY(int destY)
 	{
 		// Custom bounds

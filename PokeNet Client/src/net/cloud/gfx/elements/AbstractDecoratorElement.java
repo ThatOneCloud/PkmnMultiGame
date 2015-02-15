@@ -9,15 +9,31 @@ import net.cloud.client.util.IteratorException;
 import net.cloud.gfx.focus.FocusHandler;
 import net.cloud.gfx.focus.Focusable;
 
+/**
+ * A base class that DecoratorElements may use, that already has all of the basic 
+ * functionality implemented. This is so that subclasses only need to override 
+ * the methods they are interested in. <br>
+ * This class contains the wrapped element. All of the Element methods are implemented 
+ * so that they delegate through to the wrapped element. Subclasses may override them to 
+ * add functionality, still utilizing the wrapped element within them.  
+ */
 public abstract class AbstractDecoratorElement implements DecoratorElement {
 
 	/** The element we're adding drag functionality to */
 	private final Element wrapped;
 
+	/**
+	 * Constructor which will set the wrapped element. It may not be changed.
+	 * @param wrapped The element to decorate
+	 */
 	public AbstractDecoratorElement(Element wrapped) {
 		this.wrapped = wrapped;
 	}
 
+	/**
+	 * Obtain the element which this decorator is adding functionality to. 
+	 * @return The element which this decorator is adding functionality to
+	 */
 	@Override
 	public Element getDecoratedElement() {
 		return wrapped;
@@ -32,33 +48,76 @@ public abstract class AbstractDecoratorElement implements DecoratorElement {
 		wrapped.drawElement(g, offsetX, offsetY);
 	}
 
-	public void clicked(Point relPoint, boolean isRightClick) {
-		wrapped.clicked(relPoint, isRightClick);
+	/**
+	 * Delegate to the wrapped element. 
+	 * Note: This is not called when a child element is clicked
+	 */
+	@Override
+	public void clicked(Element clicked, Point relPoint, boolean isRightClick) {
+		wrapped.clicked(clicked, relPoint, isRightClick);
 	}
 
-	public void pressed(Point relPoint) {
-		wrapped.pressed(relPoint);
+	/**
+	 * Delegate to the wrapped element
+	 * Note: This is not called when a child element is pressed
+	 */
+	@Override
+	public void pressed(Element pressed, Point relPoint) {
+		wrapped.pressed(pressed, relPoint);
 	}
 
-	public void released(Point relPoint, boolean onElement) {
-		wrapped.released(relPoint, onElement);
+	/**
+	 * Delegate to the wrapped element
+	 * Note: This is not called when a child element is released
+	 */
+	@Override
+	public void released(Element released, Point relPoint, boolean onElement) {
+		wrapped.released(released, relPoint, onElement);
+	}
+	
+	/**
+	 * Delegate to the wrapped element
+	 * Note: This is not called when a child element is dragged
+	 */
+	@Override
+	public void dragged(Element dragged, Point start, Point withinStart, Point current) {
+		wrapped.dragged(dragged, start, withinStart, current);
 	}
 
+	/**
+	 * Delegate to the wrapped element
+	 * Note: This is not called when a child element transfers responsibility
+	 */
 	@Override
 	public void keyTyped(char key) {
+		System.err.println("dec key");
 		wrapped.keyTyped(key);
 	}
 
+	/**
+	 * Delegate to the wrapped element
+	 */
 	@Override
 	public void focusGained() {
+		System.err.println("focus gained");
 		wrapped.focusGained();
 	}
 
+	/**
+	 * Delegate to the wrapped element
+	 */
 	@Override
 	public void focusLost() {
 		wrapped.focusLost();
 	}
 
+	/**
+	 * The element is still essentially the top. If the top element is not the one 
+	 * that this decorator is wrapped around, then that element instance is returned. 
+	 * If the top element is the one this element is wrapped around, then a reference 
+	 * to this decorator is returned instead.
+	 */
+	@Override
 	public Element topElementAtPoint(Point point) throws IteratorException {
 		// Let the wrapped element keep going
 		Element top = wrapped.topElementAtPoint(point);
@@ -67,95 +126,172 @@ public abstract class AbstractDecoratorElement implements DecoratorElement {
 		return (top == wrapped) ? this : top;
 	}
 
+	/**
+	 * Delegate to the wrapped element
+	 */
+	@Override
 	public Rectangle getRectangle() {
 		return wrapped.getRectangle();
 	}
 
+	/**
+	 * Delegate to the wrapped element
+	 */
+	@Override
 	public void setRectangle(Rectangle r) {
 		wrapped.setRectangle(r);
 	}
 
+	/**
+	 * Delegate to the wrapped element
+	 */
+	@Override
 	public int getX() {
 		return wrapped.getX();
 	}
 
+	/**
+	 * Delegate to the wrapped element
+	 */
+	@Override
 	public void setX(int x) {
 		wrapped.setX(x);
 	}
 
+	/**
+	 * Delegate to the wrapped element
+	 */
+	@Override
 	public int getY() {
 		return wrapped.getY();
 	}
 
-	/** @param y The Y coordinate of this element relative to its parent */
+	/**
+	 * Delegate to the wrapped element
+	 */
+	@Override
 	public void setY(int y) {
 		wrapped.setY(y);
 	}
 
-	/** @return Essentially the Z coordinate. Higher is on top. */
+	/**
+	 * Delegate to the wrapped element
+	 */
+	@Override
 	public int getPriority() {
 		return wrapped.getPriority();
 	}
 
-	/** @param priority The new priority of the element. This will not have an effect unless re-added to the container. */
+	/**
+	 * Delegate to the wrapped element
+	 */
+	@Override
 	public void setPriority(int priority) {
 		wrapped.setPriority(priority);
 	}
 
-	/** @return The width of this element. May be 0. */
+	/**
+	 * Delegate to the wrapped element
+	 */
+	@Override
 	public int getWidth() {
 		return wrapped.getWidth();
 	}
 
-	/** @param width The width of this element. May be 0. */
+	/**
+	 * Delegate to the wrapped element
+	 */
+	@Override
 	public void setWidth(int width) {
 		wrapped.setWidth(width);
 	}
 
-	/** @return The height of this element. May be 0. */
+	/**
+	 * Delegate to the wrapped element
+	 */
+	@Override
 	public int getHeight() {
 		return wrapped.getHeight();
 	}
 
-	/** @param height The height of this element. May be 0. */
+	/**
+	 * Delegate to the wrapped element
+	 */
+	@Override
 	public void setHeight(int height) {
 		wrapped.setHeight(height);
 	}
 
+	/**
+	 * Delegate to the wrapped element
+	 */
+	@Override
 	public FocusHandler getFocusHandler() {
 		return wrapped.getFocusHandler();
 	}
 
+	/**
+	 * Delegate to the wrapped element
+	 */
+	@Override
 	public void setFocusHandler(FocusHandler focusHandler) {
 		wrapped.setFocusHandler(focusHandler);
 	}
 
+	/**
+	 * Delegate to the wrapped element
+	 */
+	@Override
 	public boolean isPressedDown() {
 		return wrapped.isPressedDown();
 	}
 
+	/**
+	 * Delegate to the wrapped element
+	 */
+	@Override
 	public void setPressedDown(boolean isPressedDown) {
 		wrapped.setPressedDown(isPressedDown);
 	}
 
+	/**
+	 * Delegate to the wrapped element
+	 */
+	@Override
 	public Optional<Container> getParent() {
 		return wrapped.getParent();
 	}
 
+	/**
+	 * Delegate to the wrapped element
+	 */
+	@Override
 	public void setParent(Container parent) {
 		wrapped.setParent(parent);
 	}
 
-	public void linkNextFocusable(Focusable next) {
-		wrapped.linkNextFocusable(next);
+	/**
+	 * Delegate to the wrapped element
+	 */
+	@Override
+	public void linkNextFocusable(Focusable current, Focusable next) {
+		wrapped.linkNextFocusable(current, next);
 	}
 
-	public void linkPreviousFocusable(Focusable previous) {
-		wrapped.linkPreviousFocusable(previous);
+	/**
+	 * Delegate to the wrapped element
+	 */
+	@Override
+	public void linkPreviousFocusable(Focusable current, Focusable previous) {
+		wrapped.linkPreviousFocusable(current, previous);
 	}
 
-	public void unlink() {
-		wrapped.unlink();
+	/**
+	 * Delegate to the wrapped element
+	 */
+	@Override
+	public void unlink(Focusable current) {
+		wrapped.unlink(current);
 	}
 
 }

@@ -53,7 +53,7 @@ public class MouseDragHandler implements MouseMotionListener {
 		int curRelY = relativeStart.y + e.getY() - absoluteStart.y;
 		
 		// Tell the element about the event, providing it both relative points
-		element.dragged(relativeStart, withinStart, new Point(curRelX, curRelY));
+		element.dragged(element, relativeStart, withinStart, new Point(curRelX, curRelY));
 	}
 
 	/** 

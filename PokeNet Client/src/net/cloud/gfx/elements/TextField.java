@@ -277,10 +277,10 @@ public class TextField extends AbstractElement {
 	}
 	
 	@Override
-	public void clicked(Point relPoint, boolean isRightClick)
+	public void clicked(Element clicked, Point relPoint, boolean isRightClick)
 	{
 		// Superclass takes care of focus handling
-		super.clicked(relPoint, isRightClick);
+		super.clicked(clicked, relPoint, isRightClick);
 		
 		// A click happened so we'll update the variable to indicate interest in moving the cursor. Happens on re-draw.
 		clickX = relPoint.x;

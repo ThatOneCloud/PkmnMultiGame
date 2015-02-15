@@ -45,8 +45,8 @@ public class SpriteTestInterface extends Interface {
 		textField.setActionHandler((field, text) -> System.out.println(textField.getText() + ", " + pwField.getText()));
 		pwField.setActionHandler((field, text) -> System.out.println(textField.getText() + ", " + pwField.getText()));
 		
-		textField.linkNextFocusable(pwField);
-		pwField.linkNextFocusable(textField);
+		textField.linkNextFocusable(textField, pwField);
+		pwField.linkNextFocusable(pwField, textField);
 		
 		
 		
@@ -68,7 +68,7 @@ public class SpriteTestInterface extends Interface {
 		add(radio1);
 		add(radio2);
 		add(radio3);
-		radio3.linkNextFocusable(radio1);
+		radio3.linkNextFocusable(radio3, radio1);
 		
 		
 		
