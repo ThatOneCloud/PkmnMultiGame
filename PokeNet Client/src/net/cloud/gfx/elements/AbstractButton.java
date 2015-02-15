@@ -11,7 +11,7 @@ import net.cloud.gfx.focus.FocusController;
  * down, or is just sitting there.) 
  * Subclasses must take care of drawing themselves, and can override various methods to grab events.
  */
-public abstract class AbstractButton extends Element {
+public abstract class AbstractButton extends AbstractElement {
 
 	/**
 	 * Create a button with the given fields. The parent will be left null. 

@@ -6,11 +6,8 @@ import java.awt.Rectangle;
 import java.util.Optional;
 
 import net.cloud.client.util.IteratorException;
-import net.cloud.gfx.constants.KeyConstants;
-import net.cloud.gfx.focus.FocusController;
 import net.cloud.gfx.focus.FocusHandler;
 import net.cloud.gfx.focus.Focusable;
-import net.cloud.gfx.focus.SingleFocusHandler;
 
 /**
  * A graphic element. This is the root of the graphic element hierarchy. 
@@ -31,67 +28,8 @@ import net.cloud.gfx.focus.SingleFocusHandler;
  * When the element is clicked, the only action taken is to 
  * register the new focus through the controlling class.
  */
-public abstract class Element implements Focusable {
-	
-	/** Consider it like a Z coordinate - i.e. how the element will stack. Higher is top. */
-	private int priority;
-	
-	/** A rectangle defining the location and size of this element */
-	protected Rectangle rectangle;
-	
-	/** Handles focus actions on this element */
-	private FocusHandler focusHandler;
-	
-	/** The element which contains this one, if any */
-	private Optional<Container> parent;
-	
-	/** Flag for whether or not the element is pressed down by the mouse */
-	private boolean isPressedDown;
-	
-	/**
-	 * Default initialization for an AbstractElement
-	 */
-	public Element()
-	{
-		this(null, 0, 0, 0, 0, 0);
-	}
-	
-	/**
-	 * Initialize an AbstractElement so each of its fields are set to the given values. 
-	 * The element will by default not have focus. The width and height will be 0. 
-	 * @param parent The element containing this one, or null
-	 * @param priority Essentially the Z coordinate. Higher is on top.
-	 * @param x The X coordinate of this element relative to its parent
-	 * @param y The Y coordinate of this element relative to its parent
-	 */
-	public Element(Container parent, int priority, int x, int y) 
-	{
-		this(parent, priority, x, y, 0, 0);
-	}
-	
-	/**
-	 * Initialize an AbstractElement so each of its fields are set to the given values.
-	 * @param parent The element containing this one, or null
-	 * @param priority Essentially the Z coordinate. Higher is on top.
-	 * @param x The X coordinate of this element relative to its parent
-	 * @param y The Y coordinate of this element relative to its parent
-	 * @param width The width of this element. May be 0.
-	 * @param height The height of this element. May be 0.
-	 */
-	public Element(
-			Container parent,
-			int priority,
-			int x, 
-			int y, 
-			int width, 
-			int height) {
-		this.parent = Optional.ofNullable(parent);
-		this.priority = priority;
-		this.rectangle = new Rectangle(x, y, width, height);
-		this.focusHandler = new SingleFocusHandler();
-		this.isPressedDown = false;
-	}
-	
+public interface Element extends Focusable {
+
 	/**
 	 * Draw this element to the provided graphics object. The drawing is done 
 	 * using the provided offsets, to account for the container hierarchy. Drawing coordinates 
@@ -102,7 +40,8 @@ public abstract class Element implements Focusable {
 	 * @param offsetY How far off on the Y axis this element is from the Graphic's origin
 	 * @throws IteratorException If there was an issue iterating child elements
 	 */
-	public abstract void drawElement(Graphics g, int offsetX, int offsetY) throws IteratorException;
+	public void drawElement(Graphics g, int offsetX, int offsetY)
+			throws IteratorException;
 
 	/** 
 	 * Register that this element has focus, both with the 
@@ -113,23 +52,16 @@ public abstract class Element implements Focusable {
 	 * @param relPoint The point of click, relative to this element
 	 * @param isRightClick True if the right mouse button was clicked
 	 */
-	public void clicked(Point relPoint, boolean isRightClick) 
-	{
-		// Register focus with controller
-		FocusController.instance().register(this);
-	}
-	
+	public void clicked(Point relPoint, boolean isRightClick);
+
 	/**
 	 * The element had a mouse press happen on it. This will set a flag, so subclasses 
 	 * may override this method but should call either <code>super.pressed(...)</code> or 
 	 * <code>super.setPressed(true)</code>
 	 * @param relPoint The point of click, relative to this element
 	 */
-	public void pressed(Point relPoint)
-	{
-		this.isPressedDown = true;
-	}
-	
+	public void pressed(Point relPoint);
+
 	/**
 	 * This is called when either of two things happens: The mouse button is released over the 
 	 * element, or the element was the element that was currently pressed down and is being 
@@ -139,12 +71,8 @@ public abstract class Element implements Focusable {
 	 * @param relPoint The point of release, relative to this element. Invalid and null if the release is not on the element.
 	 * @param onElement True when the mouse release is over this element
 	 */
-	public void released(Point relPoint, boolean onElement)
-	{
-		// All we do is clear the flag, regardless of where the release happened
-		this.isPressedDown = false;
-	}
-	
+	public void released(Point relPoint, boolean onElement);
+
 	/**
 	 * Called when this element is being dragged. (The mouse is pressed down on the element and moving) 
 	 * The provided points are relative to the space the element is in, unlike the other mouse event methods, 
@@ -154,8 +82,8 @@ public abstract class Element implements Focusable {
 	 * @param withinStart The point within the element dragging started. Like with the other mouse events.
 	 * @param current Where the mouse is currently at. Can be used to find a movement delta or used directly.
 	 */
-	public void dragged(Point start, Point withinStart, Point current) {}
-	
+	public void dragged(Point start, Point withinStart, Point current);
+
 	/** 
 	 * Does two things. First, will check to see if the event is telling us 
 	 * that we should change focus over to the next thing in line. This behavior can 
@@ -165,46 +93,20 @@ public abstract class Element implements Focusable {
 	 * it should certainly call <code>super.keyTyped(key)</code> to allow the 
 	 * other keys to propagate. (Chain of responsibility)
 	 */
-	@Override
-	public void keyTyped(char key) 
-	{
-		// Take care of tab'ing over to the next focusable here
-		if(key == KeyConstants.CHANGE_FOCUS_NEXT)
-		{
-			focusHandler.traverseNext();
-			return;
-		}
-		// And then there's a special character for tabbing backwards
-		else if(key == KeyConstants.CHANGE_FOCUS_PREVIOUS)
-		{
-			focusHandler.traversePrevious();
-			return;
-		}
-		
-		// Pass the event to the parent, if we aren't an orphan :(
-		parent.ifPresent((p) -> p.keyTyped(key));
-	}
-	
+	public void keyTyped(char key);
+
 	/**
 	 * Informs this element and its focus handler that focus was gained. 
 	 * Elements overriding this for custom behavior should call <code>super.focusGained()</code>
 	 */
-	@Override
-	public void focusGained()
-	{
-		focusHandler.focusGained();
-	}
-	
+	public void focusGained();
+
 	/**
 	 * Informs this element and its focus handler that focus was lost
 	 * Elements overriding this for custom behavior should call <code>super.focusGained()</code>
 	 */
-	@Override
-	public void focusLost()
-	{
-		focusHandler.focusLost();
-	}
-	
+	public void focusLost();
+
 	/**
 	 * Finds the element which is showing on the point. Mostly useful for containers, which 
 	 * will traverse down the child hierarchy. However, elements in general may still be composed 
@@ -215,93 +117,60 @@ public abstract class Element implements Focusable {
 	 * @return The element showing on top. By default, returns this instance
 	 * @throws IteratorException If there was an issue iterating child elements
 	 */
-	public Element topElementAtPoint(Point point) throws IteratorException
-	{
-		return this;
-	}
+	public Element topElementAtPoint(Point point) throws IteratorException;
+
+	/** @return The bounding rectangle, contains all of the coordinate information */
+	public Rectangle getRectangle();
+
+	/** @param r The entire location rectangle, all in one */
+	public void setRectangle(Rectangle r);
 
 	/** @return The X coordinate of this element relative to its parent */
-	public int getX() {
-		return rectangle.x;
-	}
+	public int getX();
 
 	/** @param x The X coordinate of this element relative to its parent */
-	public void setX(int x) {
-		rectangle.x = x;
-	}
+	public void setX(int x);
 
 	/** @return The Y coordinate of this element relative to its parent */
-	public int getY() {
-		return rectangle.y;
-	}
+	public int getY();
 
 	/** @param y The Y coordinate of this element relative to its parent */
-	public void setY(int y) {
-		rectangle.y = y;
-	}
-	
+	public void setY(int y);
+
 	/** @return Essentially the Z coordinate. Higher is on top. */
-	public int getPriority() {
-		return priority;
-	}
-	
+	public int getPriority();
+
 	/** @param priority The new priority of the element. This will not have an effect unless re-added to the container. */
-	public void setPriority(int priority) {
-		this.priority = priority;
-	}
+	public void setPriority(int priority);
 
 	/** @return The width of this element. May be 0. */
-	public int getWidth() {
-		return rectangle.width;
-	}
+	public int getWidth();
 
 	/** @param width The width of this element. May be 0. */
-	public void setWidth(int width) {
-		rectangle.width = width;
-	}
+	public void setWidth(int width);
 
 	/** @return The height of this element. May be 0. */
-	public int getHeight() {
-		return rectangle.height;
-	}
+	public int getHeight();
 
 	/** @param height The height of this element. May be 0. */
-	public void setHeight(int height) {
-		rectangle.height = height;
-	}
+	public void setHeight(int height);
 
 	/** @return The handler taking care of focus actions for this element */
-	public FocusHandler getFocusHandler() {
-		return focusHandler;
-	}
-	
+	public FocusHandler getFocusHandler();
+
 	/** @param focusHandler The handler that will take care of focus actions for this elements */
-	public void setFocusHandler(FocusHandler focusHandler) {
-		this.focusHandler = focusHandler;
-	}
-	
+	public void setFocusHandler(FocusHandler focusHandler);
+
 	/** @return An Optional which may contain the element containing this one */
-	public Optional<Container> getParent()
-	{
-		return parent;
-	}
-	
+	public Optional<Container> getParent();
+
 	/** @param parent The element which contains this one */
-	public void setParent(Container parent)
-	{
-		this.parent = Optional.ofNullable(parent);
-	}
-	
+	public void setParent(Container parent);
+
 	/** @return True if the element is currently pressed down */
-	public boolean isPressedDown()
-	{
-		return isPressedDown;
-	}
-	
+	public boolean isPressedDown();
+
 	/** @param isPressedDown Whether or not the element is now pressed down */
-	public void setPressedDown(boolean isPressedDown)
-	{
-		this.isPressedDown = isPressedDown;
-	}
-	
+	public void setPressedDown(boolean isPressedDown);
+
 }

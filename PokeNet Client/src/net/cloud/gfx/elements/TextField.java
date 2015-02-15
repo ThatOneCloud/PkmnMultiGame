@@ -27,7 +27,7 @@ import net.cloud.gfx.sprites.SpriteSet;
  * in the field, and if it is clicked the cursor location will change. Pressing Enter will cause a defined 
  * action to be taken. 
  */
-public class TextField extends Element {
+public class TextField extends AbstractElement {
 	
 	/** Default priority of a TextField. Moderate. */
 	public static final int PRIORITY = Priority.MED;

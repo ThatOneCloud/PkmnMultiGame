@@ -13,7 +13,7 @@ import net.cloud.gfx.sprites.SpriteSet;
  * are defined by the image itself, such as transparency. But of course, a sprite 
  * can be moved around and changed. This is not for animations, however. 
  */
-public class Sprite extends Element {
+public class Sprite extends AbstractElement {
 	
 	/** Default priority of Sprite. Sorta low. */
 	public static final int PRIORITY = Priority.MED_LOW;

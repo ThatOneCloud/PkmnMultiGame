@@ -15,7 +15,7 @@ import net.cloud.gfx.constants.Priority;
  * Analogous to the JLabel. Used to display some text string on the screen. 
  * Supports changing the font and color. The position is the top left, like everything else. 
  */
-public class Text extends Element {
+public class Text extends AbstractElement {
 	
 	/** Default priority of Text. Moderate. */
 	public static final int PRIORITY = Priority.MED;

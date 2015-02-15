@@ -3,6 +3,7 @@ package net.cloud.gfx.interfaces;
 import net.cloud.gfx.constants.Colors;
 import net.cloud.gfx.elements.Button;
 import net.cloud.gfx.elements.Checkbox;
+import net.cloud.gfx.elements.DraggableElement;
 import net.cloud.gfx.elements.Interface;
 import net.cloud.gfx.elements.PasswordField;
 import net.cloud.gfx.elements.RadioButton;
@@ -68,6 +69,12 @@ public class SpriteTestInterface extends Interface {
 		add(radio2);
 		add(radio3);
 		radio3.linkNextFocusable(radio1);
+		
+		
+		
+		Button b2 = new Button("B2", 300, 150, 50, 25);
+		DraggableElement d = new DraggableElement(b2);
+		add(d);
 	}
 
 }

@@ -16,7 +16,7 @@ import net.cloud.gfx.focus.Focusable;
  * no other element, the call will instead propagate up the class hierarchy. 
  * (Primarily through container, secondarily through the class hierarchy)
  */
-public abstract class Container extends Element {
+public abstract class Container extends AbstractElement {
 	
 	/** A list of elements contained in this element */
 	protected ElementList children;
@@ -86,7 +86,7 @@ public abstract class Container extends Element {
 			Element child = it.next();
 
 			// Check if it and the point intersect
-			if(child.rectangle.contains(point))
+			if(child.getRectangle().contains(point))
 			{
 				// It does. First one is on top, because reverse order. Adjust the point.
 				point.translate(-child.getX(), -child.getY());

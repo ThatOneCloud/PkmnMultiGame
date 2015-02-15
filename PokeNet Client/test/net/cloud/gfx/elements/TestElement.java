@@ -6,7 +6,7 @@ import java.awt.Graphics;
  * Element useful for testing. Provide initialization information, 
  * but beyond that it does not draw anything or override anything.
  */
-public class TestElement extends Element {
+public class TestElement extends AbstractElement {
 	
 	/**
 	 * Initialize an Element so each of its fields are set to the given values.
