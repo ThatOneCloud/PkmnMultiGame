@@ -30,13 +30,22 @@ public abstract class AbstractDecoratorElement implements DecoratorElement {
 		this.wrapped = wrapped;
 	}
 
-	/**
-	 * Obtain the element which this decorator is adding functionality to. 
-	 * @return The element which this decorator is adding functionality to
-	 */
 	@Override
 	public Element getDecoratedElement() {
 		return wrapped;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		// We're comparing to another decorator. Our goal is to strip it down (the obj parameter) to the bottom element
+		if(obj instanceof DecoratorElement)
+		{
+			return this.equals(((DecoratorElement) obj).getDecoratedElement());
+		}
+		// We're comparing ourselves to... not another decorator. So we strip ourself down
+		else {
+			return wrapped.equals(obj);
+		}
 	}
 
 	/**
@@ -90,7 +99,6 @@ public abstract class AbstractDecoratorElement implements DecoratorElement {
 	 */
 	@Override
 	public void keyTyped(char key) {
-		System.err.println("dec key");
 		wrapped.keyTyped(key);
 	}
 
@@ -99,7 +107,6 @@ public abstract class AbstractDecoratorElement implements DecoratorElement {
 	 */
 	@Override
 	public void focusGained() {
-		System.err.println("focus gained");
 		wrapped.focusGained();
 	}
 

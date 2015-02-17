@@ -4,11 +4,14 @@ import net.cloud.gfx.constants.Colors;
 import net.cloud.gfx.elements.Button;
 import net.cloud.gfx.elements.Checkbox;
 import net.cloud.gfx.elements.DraggableElement;
+import net.cloud.gfx.elements.FrameButton;
+import net.cloud.gfx.elements.FramedElement;
 import net.cloud.gfx.elements.Interface;
 import net.cloud.gfx.elements.PasswordField;
 import net.cloud.gfx.elements.RadioButton;
 import net.cloud.gfx.elements.RadioButton.RadioButtonGroup;
 import net.cloud.gfx.elements.Sprite;
+import net.cloud.gfx.elements.Text;
 import net.cloud.gfx.elements.TextField;
 import net.cloud.gfx.sprites.SpriteSet;
 
@@ -32,7 +35,7 @@ public class SpriteTestInterface extends Interface {
 		add(new Sprite(SpriteSet.TEST, 1, width-50, 0));
 		add(new Sprite(SpriteSet.TEST, 2, 0, height-50));
 		add(new Sprite(SpriteSet.TEST, 3, width-50, height-50));
-		add(new Sprite(SpriteSet.TEST, 4, (width / 2) - 25, (height / 2) - 25));
+//		add(new Sprite(SpriteSet.TEST, 4, (width / 2) - 25, (height / 2) - 25));
 		
 		
 		
@@ -75,6 +78,19 @@ public class SpriteTestInterface extends Interface {
 		Button b2 = new Button("B2", 300, 150, 50, 25);
 		DraggableElement d = new DraggableElement(b2);
 		add(d);
+		
+		
+		
+		Interface frInt = new Interface(300, 200, 100, 100);
+		Text frTxt = new Text("Framed", 10, 10);
+		Button frBut = new Button("Interface", 10, 40, 75, 25);
+		frInt.add(frTxt);
+		frInt.add(frBut);
+		FramedElement frame = new FramedElement("drag me", frInt, FrameButton.CLOSE);
+		frame.setWidth(250);
+		DraggableElement drag = new DraggableElement(frame);
+		drag.addStartBound(frame.getTitleBounds());
+		add(drag);
 	}
 
 }

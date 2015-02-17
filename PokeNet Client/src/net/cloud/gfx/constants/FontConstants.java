@@ -8,8 +8,11 @@ package net.cloud.gfx.constants;
  */
 public class FontConstants {
 	
-	/** Small font size. Smaller than medium. */
-	public static final int SIZE_SMALL = 10;
+	/** Very Small font size. About as small as it gets while still being readable. */
+	public static final int SIZE_VERY_SMALL = 10;
+	
+	/** Standard issue is actually kind of small here */
+	public static final int SIZE_SMALL = 12;
 	
 	/** Medium font size. Could be considered absolute default. */
 	public static final int SIZE_MEDIUM = 16;

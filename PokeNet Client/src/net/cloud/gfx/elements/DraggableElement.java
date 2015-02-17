@@ -2,6 +2,7 @@ package net.cloud.gfx.elements;
 
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Optional;
 
@@ -64,7 +65,7 @@ public class DraggableElement extends AbstractDecoratorElement {
 			startBounds = Optional.of(boundList);
 		}
 	}
-
+	
 	/**
 	 * Moves the element when it is dragged. No matter the result, the wrapped element 
 	 * will have its dragged method called as well. 
@@ -113,6 +114,81 @@ public class DraggableElement extends AbstractDecoratorElement {
 		
 		// Move the call down to the wrapped element in case it does something of its own
 		getDecoratedElement().dragged(dragged, start, withinStart, current);
+	}
+	
+	/**
+	 * Set whether or not dragging is enabled on this element
+	 * @param enabled True if dragging is okay, false if it should not happen
+	 */
+	public void setEnabled(boolean enabled)
+	{
+		this.enabled = enabled;
+	}
+	
+	/**
+	 * Set the bounds that define where the element may be moved to. This is essentially relative to the parent element. 
+	 * Can be set to null to restrict to the parent in a dynamic manner, or to a very large range to allow movement essentially anywhere. 
+	 * @param dragBounds The bounding box the element must stay in. May be null for within parent.
+	 */
+	public void setDragBounds(Rectangle dragBounds)
+	{
+		this.dragBounds = Optional.ofNullable(dragBounds);
+	}
+	
+	/**
+	 * Add a bounding rectangle defining where dragging may originate from. For example, in a framed element, it is useful 
+	 * to add the top border of the frame as a start bound. Multiple bounds may be set, and if the start point is within 
+	 * any of them, dragging will be allowed. They can be removed, via the rectangle or a point.
+	 * @param startBound A bounding on where dragging may be started from
+	 */
+	public void addStartBound(Rectangle startBound)
+	{
+		// If the list doesn't exist, it should now
+		if(!startBounds.isPresent())
+		{
+			startBounds = Optional.of(new LinkedList<Rectangle>());
+		}
+		
+		// Add the new rectangle to the list
+		startBounds.get().add(startBound);
+	}
+	
+	/**
+	 * Remove a starting bound, by providing an equivalent rectangle. The provided rectangle must be an equals(Object obj) match. 
+	 * Only the first match will be removed. This will do nothing if there are no start bounds
+	 * @param startBound The bounding rectangle to remove
+	 */
+	public void removeStartBound(Rectangle startBound)
+	{
+		// Only bother if the list exists
+		if(startBounds.isPresent())
+		{
+			startBounds.get().remove(startBound);
+		}
+	}
+	
+	/**
+	 * Remove all starting bounds which contain the given point. This will remove all such bounds, not just the first occurrence.
+	 * This will do nothing if there are no start bounds
+	 * @param startPoint A point whose matching start bounds will be removed
+	 */
+	public void removeStartBound(Point startPoint)
+	{
+		// Only bother if the list exists
+		if(startBounds.isPresent())
+		{
+			// Iterate to remove
+			Iterator<Rectangle> it = startBounds.get().iterator();
+			while(it.hasNext())
+			{
+				// The bounding rectangle contains the point
+				if(it.next().contains(startPoint))
+				{
+					// So remove it
+					it.remove();
+				}
+			}
+		}
 	}
 	
 	/**

@@ -16,5 +16,13 @@ public interface DecoratorElement extends Element {
 	 * @return The wrapped element
 	 */
 	public Element getDecoratedElement();
+	
+	/**
+	 * Yes all objects have this so it's sort of a moot-point. Well, decorators treat themselves as the wrapped 
+	 * element, so they're equal to an object if their underlying element is equal to it.
+	 * @param obj The object to compare to
+	 * @return True if the decorator's underlying element is equal to the object
+	 */
+	public boolean equals(Object obj);
 
 }
