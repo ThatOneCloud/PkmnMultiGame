@@ -46,10 +46,11 @@ public class PasswordField extends TextField {
 	 * @param width The width of the text area itself
 	 * @param height The height of the text area itself
 	 * @param firstSpriteID The ID of the first sprite in the set of text field sprites
+	 * @param bgSpriteID The ID of the background, from the BACKGROUND set
 	 */
-	public PasswordField(int x, int y, int width, int height, int firstSpriteID) {
+	public PasswordField(int x, int y, int width, int height, int firstSpriteID, int bgSpriteID) {
 		// Password is the hint text we go with
-		super(x, y, width, height, "Password", firstSpriteID);
+		super(x, y, width, height, "Password", firstSpriteID, bgSpriteID);
 		
 		// Use our own displayable text which swaps in the asterisks
 		super.displayText = new DisplayablePasswordText();
@@ -63,9 +64,10 @@ public class PasswordField extends TextField {
 	 * @param height The height of the text area itself
 	 * @param hintText Your own hints to the user
 	 * @param firstSpriteID The ID of the first sprite in the set of text field sprites
+	 * @param bgSpriteID The ID of the background, from the BACKGROUND set
 	 */
-	public PasswordField(int x, int y, int width, int height, String hintText, int firstSpriteID) {
-		super(x, y, width, height, hintText, firstSpriteID);
+	public PasswordField(int x, int y, int width, int height, String hintText, int firstSpriteID, int bgSpriteID) {
+		super(x, y, width, height, hintText, firstSpriteID, bgSpriteID);
 		
 		// Use our own displayable text which swaps in the asterisks
 		super.displayText = new DisplayablePasswordText();

@@ -2,6 +2,7 @@ package net.cloud.gfx.interfaces;
 
 import net.cloud.gfx.constants.Colors;
 import net.cloud.gfx.elements.Button;
+import net.cloud.gfx.elements.CenteredText;
 import net.cloud.gfx.elements.Checkbox;
 import net.cloud.gfx.elements.DraggableElement;
 import net.cloud.gfx.elements.FrameButton;
@@ -9,6 +10,7 @@ import net.cloud.gfx.elements.FramedElement;
 import net.cloud.gfx.elements.Interface;
 import net.cloud.gfx.elements.PasswordField;
 import net.cloud.gfx.elements.RadioButton;
+import net.cloud.gfx.elements.ReferenceText;
 import net.cloud.gfx.elements.RadioButton.RadioButtonGroup;
 import net.cloud.gfx.elements.Sprite;
 import net.cloud.gfx.elements.Text;
@@ -32,9 +34,9 @@ public class SpriteTestInterface extends Interface {
 		
 		// Add sprites to corners
 //		add(new Sprite(SpriteSet.TEST, 0, 0, 0));
-		add(new Sprite(SpriteSet.TEST, 1, width-50, 0));
-		add(new Sprite(SpriteSet.TEST, 2, 0, height-50));
-		add(new Sprite(SpriteSet.TEST, 3, width-50, height-50));
+//		add(new Sprite(SpriteSet.TEST, 1, width-50, 0));
+//		add(new Sprite(SpriteSet.TEST, 2, 0, height-50));
+		add(new Sprite(SpriteSet.TEST, 3, width-250, height-250));
 //		add(new Sprite(SpriteSet.TEST, 4, (width / 2) - 25, (height / 2) - 25));
 		
 		
@@ -55,6 +57,7 @@ public class SpriteTestInterface extends Interface {
 		
 		Button button = new Button("Button", 50, 150, 75, 25);
 		add(button);
+		button.setDeregisterTarget(this);
 		
 		Checkbox checkbox = new Checkbox("Checkbox", 60, 200);
 		checkbox.setActionHandler((b) -> System.out.println("Button selected? " + b.isSelected()));
@@ -91,6 +94,16 @@ public class SpriteTestInterface extends Interface {
 		DraggableElement drag = new DraggableElement(frame);
 		drag.addStartBound(frame.getTitleBounds());
 		add(drag);
+		
+		
+		
+		Text text = new Text("Plain text", 500, 20);
+		add(text);
+		CenteredText cText = new CenteredText("Centered Text", 500, 50, 200, 30);
+		add(cText);
+		ReferenceText rText = new ReferenceText("Reference Text", 500, 90, (c) -> {return c;});
+		add(rText);
+		
 	}
 
 }

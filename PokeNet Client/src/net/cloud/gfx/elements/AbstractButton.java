@@ -1,6 +1,7 @@
 package net.cloud.gfx.elements;
 
 import java.awt.Point;
+import java.util.Optional;
 
 import net.cloud.gfx.constants.KeyConstants;
 import net.cloud.gfx.focus.FocusController;
@@ -13,6 +14,9 @@ import net.cloud.gfx.focus.FocusController;
  */
 public abstract class AbstractButton extends AbstractElement {
 	
+	/** An element that will receive focus after the button is pressed, rather than deregistering to nothing */
+	private Optional<Element> deregisterTarget;
+	
 	/**
 	 * Create a button with the given fields. The parent will be left null. 
 	 * @param priority Z-priority
@@ -22,6 +26,8 @@ public abstract class AbstractButton extends AbstractElement {
 	public AbstractButton(int priority, int x, int y)
 	{
 		super(null, priority, x, y);
+		
+		deregisterTarget = Optional.empty();
 	}
 
 	/**
@@ -35,6 +41,8 @@ public abstract class AbstractButton extends AbstractElement {
 	public AbstractButton(int priority, int x, int y, int width, int height)
 	{
 		super(null, priority, x, y, width, height);
+		
+		deregisterTarget = Optional.empty();
 	}
 	
 	/**
@@ -76,7 +84,7 @@ public abstract class AbstractButton extends AbstractElement {
 		// moved off the button and then released.
 		if(isPressedDown && onElement && super.getFocusHandler().hasFocus())
 		{
-			FocusController.instance().deregister();
+			FocusController.instance().register(deregisterTarget.orElse(null));
 		}
 		
 		// Take action if the release is over the button and we were pressed down, as well
@@ -110,5 +118,16 @@ public abstract class AbstractButton extends AbstractElement {
 	 * Essentially this means the button was pushed, selected, or acted on in some way. 
 	 */
 	protected abstract void actionPerformed();
+	
+	/**
+	 * Set an Element to receive focus when this button would otherwise normally deregister focus. 
+	 * That is, when the button is pressed by the mouse, the focus will be registered to the target element. 
+	 * This can be provided <code>null</code> to remove the target. 
+	 * @param target The element to gain focus after the button is pressed
+	 */
+	public void setDeregisterTarget(Element target)
+	{
+		this.deregisterTarget = Optional.ofNullable(target);
+	}
 
 }

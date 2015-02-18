@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.font.GlyphVector;
 
 import net.cloud.client.util.IteratorException;
@@ -30,13 +31,13 @@ public class Text extends AbstractElement {
 	private Color color;
 	
 	/** The height of the text - to determine the correct drawing position */
-	protected int height;
+	protected int textHeight;
 	
 	/** A GlyphVector which will actually be used to draw the text */
 	protected GlyphVector glyphVector;
 	
-	/** Flag indicating if the height variable needs to be updated */
-	protected volatile boolean updateHeight;
+	/** Flag indicating if the metrics variables needs to be updated */
+	protected volatile boolean updateMetrics;
 	
 	/**
 	 * Create a new text label. It will use the default font and color. 
@@ -79,7 +80,7 @@ public class Text extends AbstractElement {
 		
 		this.glyphVector = null;
 		
-		updateHeight = true;
+		updateMetrics = true;
 	}
 
 	/**
@@ -99,10 +100,15 @@ public class Text extends AbstractElement {
 		updateGlyphVector(g2d);
 		
 		// Make sure the height we have on record is good
-		updateHeight(g2d);
+		updateTextMetrics(g2d);
 		
 		// Ready to draw the text
-		g2d.drawGlyphVector(glyphVector, offsetX, offsetY + height);
+		g2d.drawGlyphVector(glyphVector, offsetX, offsetY + textHeight);
+	}
+	
+	public void clicked(Element clicked, Point relPoint, boolean isRightClick)
+	{
+		System.err.println("text " + getText() + " clicked");
 	}
 	
 	/**
@@ -123,7 +129,7 @@ public class Text extends AbstractElement {
 		
 		// We'll need to update some things that have maybe now changed
 		glyphVector = null;
-		updateHeight = true;
+		updateMetrics = true;
 	}
 	
 	/**
@@ -144,7 +150,7 @@ public class Text extends AbstractElement {
 		
 		// We'll need to update the height and vector. They've likely both changed.
 		glyphVector = null;
-		updateHeight = true;
+		updateMetrics = true;
 	}
 	
 	/**
@@ -157,7 +163,7 @@ public class Text extends AbstractElement {
 		
 		// We'll need to update the height and vector. They've likely both changed.
 		glyphVector = null;
-		updateHeight = true;
+		updateMetrics = true;
 	}
 	
 	/**
@@ -170,7 +176,7 @@ public class Text extends AbstractElement {
 		
 		// We'll need to update the height and vector. They've likely both changed.
 		glyphVector = null;
-		updateHeight = true;
+		updateMetrics = true;
 	}
 	
 	/**
@@ -204,19 +210,26 @@ public class Text extends AbstractElement {
 	}
 	
 	/**
-	 * Calculate and assign the height of this text label. 
+	 * Calculate and assign the text height and element height of this text label. 
+	 * The element's width is also determined. 
 	 * This is necessary to draw in the right position, and must be done if the font or text changes. 
 	 * When this is called, action will only be taken if the update flag is set. The flag will be cleared.
 	 * @param g The graphics object this text is being drawn to
 	 */
-	protected void updateHeight(Graphics g)
+	protected void updateTextMetrics(Graphics g)
 	{
-		if(updateHeight)
+		if(updateMetrics)
 		{
 			// Easiest way is using the graphic's object to obtain a FontMetrics
-			this.height = g.getFontMetrics(font).getAscent();
+			this.textHeight = g.getFontMetrics(font).getAscent();
 			
-			updateHeight = false;
+			// Set the height of the element as well, but to a different more maximum height
+			setHeight(g.getFontMetrics(font).getMaxAscent() + g.getFontMetrics(font).getMaxDescent());
+			
+			// Set the width of the element
+			setWidth((int) glyphVector.getLogicalBounds().getWidth());
+			
+			updateMetrics = false;
 		}
 	}
 

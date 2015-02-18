@@ -106,7 +106,11 @@ public class FocusController {
 		currentFocus = newFocus;
 		
 		// Tell the new handler it's got focus now
-		currentFocus.focusGained();
+		if(currentFocus != null)
+		{
+			currentFocus.focusGained();
+	
+		}
 	}
 	
 	/**
@@ -115,13 +119,8 @@ public class FocusController {
 	 */
 	public void deregister()
 	{
-		// Tell the current handler that it's lost focus (it's sure about to)
-		if(currentFocus != null)
-		{
-			currentFocus.focusLost();
-		}
-		
-		currentFocus = null;
+		// Heh heh. It does the same thing
+		register(null);
 	}
 	
 	/**

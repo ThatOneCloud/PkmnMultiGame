@@ -1,7 +1,7 @@
 package net.cloud.gfx.elements;
 
 import java.awt.Graphics;
-import java.awt.Image;
+import java.awt.image.BufferedImage;
 
 import net.cloud.client.util.IteratorException;
 import net.cloud.gfx.constants.Priority;
@@ -19,7 +19,7 @@ public class Sprite extends AbstractElement {
 	public static final int PRIORITY = Priority.MED_LOW;
 	
 	/** The image to draw */
-	private Image image;
+	protected BufferedImage image;
 	
 	/**
 	 * Create a new Sprite element for showing an image. The shown image will be from the default set 
@@ -47,19 +47,6 @@ public class Sprite extends AbstractElement {
 	}
 	
 	/**
-	 * Create a new Sprite element for showing an image. The shown image will be from the default set 
-	 * and have the given priority. 
-	 * @param id The sprite ID
-	 * @param x X position
-	 * @param y Y position
-	 * @param priority The z-priority
-	 */
-	public Sprite(int id, int x, int y, int priority)
-	{
-		this(SpriteSet.DEFAULT, id, x, y, priority);
-	}
-	
-	/**
 	 * Create a new Sprite element for showing an image. The shown image will be from the given set 
 	 * and have the given priority. 
 	 * @param set The set the sprite is in
@@ -84,12 +71,26 @@ public class Sprite extends AbstractElement {
 	 * @param y Y position
 	 * @param priority The z-priority
 	 */
-	public Sprite(Image img, int x, int y, int priority)
+	public Sprite(BufferedImage img, int x, int y, int priority)
 	{
 		super(null, priority, x, y);
 		
 		// Set the sprite, width, and height
 		changeImage(img);
+	}
+	
+	/**
+	 * A constructor for subclasses. Minimally responsible. Sets the given parameters, parent, and priority. 
+	 * Parent is left null and the priority is left as the constant default. 
+	 * Subclasses must set the image on their own.
+	 * @param x X-position
+	 * @param y Y-position 
+	 * @param width Width of the element
+	 * @param height Height of the element
+	 */
+	protected Sprite(int x, int y, int width, int height)
+	{
+		super(null, PRIORITY, x, y, width, height);
 	}
 
 	/**
@@ -117,16 +118,16 @@ public class Sprite extends AbstractElement {
 	
 	/**
 	 * Change the image being shown. This is done directly via a supplied image. 
-	 * This will also update the width and height to be the sae as the image's.
+	 * This will also update the width and height to be the same as the image's.
 	 * @param img The image that will be shown
 	 */
-	public void changeImage(Image img)
+	public void changeImage(BufferedImage img)
 	{
 		// Set the image and update dimensions
 		this.image = img;
 		
-		super.setWidth(image.getWidth(null));
-		super.setHeight(image.getHeight(null));
+		super.setWidth(image.getWidth());
+		super.setHeight(image.getHeight());
 	}
 
 }

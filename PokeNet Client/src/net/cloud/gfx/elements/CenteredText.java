@@ -82,7 +82,7 @@ public class CenteredText extends Text {
 		
 		// Still run through the vector and height checks
 		updateGlyphVector(g2d);
-		updateHeight(g2d);
+		updateTextMetrics(g2d);
 		
 		// Now draw the text smack in the middle
 		g2d.drawGlyphVector(glyphVector, 
@@ -105,6 +105,24 @@ public class CenteredText extends Text {
 			
 			// The logical bounds may now be different
 			textBounds = glyphVector.getLogicalBounds();
+		}
+	}
+	
+	/**
+	 * Calculate and assign the text height but not element height of this text label.
+	 * This is necessary to draw in the right position, and must be done if the font or text changes. 
+	 * When this is called, action will only be taken if the update flag is set. The flag will be cleared.
+	 * @param g The graphics object this text is being drawn to
+	 */
+	@Override
+	protected void updateTextMetrics(Graphics g)
+	{
+		if(updateMetrics)
+		{
+			// Easiest way is using the graphic's object to obtain a FontMetrics
+			this.textHeight = g.getFontMetrics(super.getFont()).getAscent();
+			
+			updateMetrics = false;
 		}
 	}
 

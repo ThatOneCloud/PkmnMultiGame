@@ -134,6 +134,18 @@ public class SpriteManager {
 		return getScaledSprite(original, width, height);
 	}
 	
+	/**
+	 * Obtain a scaled sprite in the form of a BufferedImage. This utilizes an existing image.
+	 * Then if the requested size already matches the original sprite, that original is returned. 
+	 * Otherwise, a scaled image is created (with some existing render hints) and returned. Leaving width 
+	 * or height -1 will maintain the width or height of the original. Leaving both -1 will result in 
+	 * an IllegalArgumentException. 
+	 * @param original The image to scale
+	 * @param width The desire width of the scaled image. -1 maintains ratio with height
+	 * @param height The desired height of the scaled image -1 maintains ratio with width
+	 * @return A BufferedImage that may be the original sprite, or a new image. Right size either way.
+	 * @throws IllegalArgumentException If both width and height are -1
+	 */
 	public BufferedImage getScaledSprite(BufferedImage original, int width, int height)
 	{
 		// If it's already the right size, don't even bother
@@ -173,6 +185,73 @@ public class SpriteManager {
 
 		// Return the scaled image, which has now been drawn to
 		return scaledImg;
+	}
+	
+	/**
+	 * Obtain an image which is tiled rather than scaled to the given size. If the size is smaller 
+	 * than the image normally would be, it will be cropped. If the desired size is larger, the returned 
+	 * image will be the sprite laid out end-to-end with cropping on the edges to fit the size.
+	 * @param set The set the desired sprite is in
+	 * @param spriteID The ID of the desired sprite
+	 * @param width The width of the tiled image
+	 * @param height The height of the tiled image
+	 * @return An image of the desired size with the sprite tiled and/or cropped
+	 */
+	public BufferedImage getTiledSprite(SpriteSet set, int spriteID, int width, int height)
+	{
+		// Get the original
+		BufferedImage original = getSprite(set, spriteID);
+
+		// Tile the original
+		return getTiledSprite(original, width, height);
+	}
+	
+	/**
+	 * Obtain an image which is tiled rather than scaled to the given size. If the size is smaller 
+	 * than the image already is, it will be cropped. If the desired size is larger, the returned 
+	 * image will be the original laid out end-to-end with cropping on the edges to fit the size.
+	 * @param original The image to tile
+	 * @param width The width of the tiled image
+	 * @param height The height of the tiled image
+	 * @return An image of the desired size with the orignal image tiled and/or cropped
+	 */
+	public BufferedImage getTiledSprite(BufferedImage original, int width, int height)
+	{
+		// If it's already the right size, don't even bother
+		if(original.getWidth() == width && original.getHeight() == height)
+		{
+			return original;
+		}
+		
+		// Create a new BufferedImage which we'll draw the tiled one into
+		BufferedImage tiledImg = new BufferedImage(width, height, original.getType());
+
+		// Utilize Graphics2D to draw the 'tiles'
+		Graphics2D g2d = tiledImg.createGraphics();
+		
+		// Well this is convenient for cropping
+		g2d.setClip(0, 0, width, height);
+		
+		// Figure out how many columns and rows there will end up being
+		int numCols = (int) Math.ceil(height / ((double) original.getHeight()));
+		int numRows = (int) Math.ceil(width / ((double) original.getWidth()));
+		
+		// Draw the original in rows then columns (left-to-right, then top-to-bottom)
+		try {
+			for(int i = 0; i < numCols; ++i)
+			{
+				for(int j = 0; j < numRows; j++)
+				{
+					g2d.drawImage(original, j * original.getWidth(), i * original.getHeight(), null);
+				}
+			}
+		}
+		// Get rid of the graphics object when we're done drawing to free up resources sooner rather than later
+		finally {
+			g2d.dispose();
+		}
+		
+		return tiledImg;
 	}
 	
 	/**

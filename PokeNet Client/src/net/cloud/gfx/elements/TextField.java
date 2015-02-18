@@ -152,8 +152,9 @@ public class TextField extends AbstractElement {
 	 * @param height The height of the field. 22 is the default. 
 	 * @param hintText Text to show in the field as an input hint. May be null for none. 
 	 * @param firstSpriteID The ID of the first sprite in the set of text field sprites
+	 * @param bgSpriteID The ID of the background, from the BACKGROUND set
 	 */
-	public TextField(int x, int y, int width, int height, String hintText, int firstSpriteID)
+	public TextField(int x, int y, int width, int height, String hintText, int firstSpriteID, int bgSpriteID)
 	{
 		super(null, PRIORITY, x, y, width, height);
 		
@@ -173,12 +174,12 @@ public class TextField extends AbstractElement {
 		commonInit();
 		
 		// ... Except sprite stuff.
-		this.bgImg = SpriteManager.instance().getScaledSprite(SpriteSet.TEXT_FIELD, firstSpriteID, getWidth(), getHeight());
-		this.topBorder = SpriteManager.instance().getScaledSprite(SpriteSet.TEXT_FIELD, firstSpriteID+1, getWidth(), -1);
-		this.bottomBorder = SpriteManager.instance().getScaledSprite(SpriteSet.TEXT_FIELD, firstSpriteID+3, getWidth(), -1);
-		this.rightBorder = SpriteManager.instance().getScaledSprite(SpriteSet.TEXT_FIELD, firstSpriteID+2, -1, 
+		this.bgImg = SpriteManager.instance().getTiledSprite(SpriteSet.BACKGROUND, bgSpriteID, getWidth(), getHeight());
+		this.topBorder = SpriteManager.instance().getScaledSprite(SpriteSet.TEXT_FIELD, firstSpriteID, getWidth(), -1);
+		this.bottomBorder = SpriteManager.instance().getScaledSprite(SpriteSet.TEXT_FIELD, firstSpriteID+2, getWidth(), -1);
+		this.rightBorder = SpriteManager.instance().getScaledSprite(SpriteSet.TEXT_FIELD, firstSpriteID+1, -1, 
 				getHeight() + topBorder.getHeight() + bottomBorder.getHeight());
-		this.leftBorder = SpriteManager.instance().getScaledSprite(SpriteSet.TEXT_FIELD, firstSpriteID+4, -1, 
+		this.leftBorder = SpriteManager.instance().getScaledSprite(SpriteSet.TEXT_FIELD, firstSpriteID+3, -1, 
 				getHeight() + topBorder.getHeight() + bottomBorder.getHeight());
 	}
 	
@@ -217,11 +218,11 @@ public class TextField extends AbstractElement {
 	private void defaultSpriteInit()
 	{
 		// All of the default sprites. May be set individually or as a group later. 
-		this.bgImg = SpriteManager.instance().getScaledSprite(SpriteSet.TEXT_FIELD, 1, getWidth(), getHeight());
-		this.topBorder = SpriteManager.instance().getScaledSprite(SpriteSet.TEXT_FIELD, 2, getWidth(), -1);
-		this.bottomBorder = SpriteManager.instance().getScaledSprite(SpriteSet.TEXT_FIELD, 4, getWidth(), -1);
-		this.rightBorder = SpriteManager.instance().getScaledSprite(SpriteSet.TEXT_FIELD, 3, -1, getHeight() + topBorder.getHeight() + bottomBorder.getHeight());
-		this.leftBorder = SpriteManager.instance().getScaledSprite(SpriteSet.TEXT_FIELD, 5, -1, getHeight() + topBorder.getHeight() + bottomBorder.getHeight());
+		this.bgImg = SpriteManager.instance().getTiledSprite(SpriteSet.BACKGROUND, 1, getWidth(), getHeight());
+		this.topBorder = SpriteManager.instance().getScaledSprite(SpriteSet.TEXT_FIELD, 1, getWidth(), -1);
+		this.bottomBorder = SpriteManager.instance().getScaledSprite(SpriteSet.TEXT_FIELD, 3, getWidth(), -1);
+		this.rightBorder = SpriteManager.instance().getScaledSprite(SpriteSet.TEXT_FIELD, 2, -1, getHeight() + topBorder.getHeight() + bottomBorder.getHeight());
+		this.leftBorder = SpriteManager.instance().getScaledSprite(SpriteSet.TEXT_FIELD, 4, -1, getHeight() + topBorder.getHeight() + bottomBorder.getHeight());
 	}
 	
 	/**
@@ -230,7 +231,7 @@ public class TextField extends AbstractElement {
 	private void reInitSprites()
 	{
 		// Use the existing sprite instead of getting from a sprite set
-		this.bgImg = SpriteManager.instance().getScaledSprite(bgImg, getWidth(), getHeight());
+		this.bgImg = SpriteManager.instance().getTiledSprite(bgImg, getWidth(), getHeight());
 		this.topBorder = SpriteManager.instance().getScaledSprite(topBorder, getWidth(), -1);
 		this.bottomBorder = SpriteManager.instance().getScaledSprite(bottomBorder, getWidth(), -1);
 		this.rightBorder = SpriteManager.instance().getScaledSprite(rightBorder, -1, getHeight() + topBorder.getHeight() + bottomBorder.getHeight());
@@ -508,24 +509,26 @@ public class TextField extends AbstractElement {
 	 * in their own folder. Sprite 0 is the cursor. After that, the sprites will repeat background, top, right, bottom, left border. 
 	 * The provided ID should correspond to the background image. 
 	 * @param firstId The ID of the background image in the text field set
+	 * @param bgID The ID of the background, from the BACKGROUND set
 	 */
-	public void setSpriteGroup(int firstId)
+	public void setSpriteGroup(int firstId, int bgId)
 	{
 		// Set each of the sprites anew
-		this.bgImg = SpriteManager.instance().getScaledSprite(SpriteSet.TEXT_FIELD, firstId, getWidth(), getHeight());
-		this.topBorder = SpriteManager.instance().getScaledSprite(SpriteSet.TEXT_FIELD, firstId+1, getWidth(), -1);
-		this.bottomBorder = SpriteManager.instance().getScaledSprite(SpriteSet.TEXT_FIELD, firstId+3, getWidth(), -1);
-		this.rightBorder = SpriteManager.instance().getScaledSprite(SpriteSet.TEXT_FIELD, firstId+2, -1, getHeight() + topBorder.getHeight() + bottomBorder.getHeight());
-		this.leftBorder = SpriteManager.instance().getScaledSprite(SpriteSet.TEXT_FIELD, firstId+4, -1, getHeight() + topBorder.getHeight() + bottomBorder.getHeight());
+		this.bgImg = SpriteManager.instance().getTiledSprite(SpriteSet.BACKGROUND, bgId, getWidth(), getHeight());
+		this.topBorder = SpriteManager.instance().getScaledSprite(SpriteSet.TEXT_FIELD, firstId, getWidth(), -1);
+		this.bottomBorder = SpriteManager.instance().getScaledSprite(SpriteSet.TEXT_FIELD, firstId+2, getWidth(), -1);
+		this.rightBorder = SpriteManager.instance().getScaledSprite(SpriteSet.TEXT_FIELD, firstId+1, -1, getHeight() + topBorder.getHeight() + bottomBorder.getHeight());
+		this.leftBorder = SpriteManager.instance().getScaledSprite(SpriteSet.TEXT_FIELD, firstId+3, -1, getHeight() + topBorder.getHeight() + bottomBorder.getHeight());
 	}
 	
 	/**
 	 * Set the background image used for the text field. It is scaled to the correct size. 
+	 * Note that the ID is from the BACKGROUND set
 	 * @param id The sprite ID of the background, in the text field set
 	 */
 	public void setBgSprite(int id)
 	{
-		this.bgImg = SpriteManager.instance().getScaledSprite(SpriteSet.TEXT_FIELD, 1, getWidth(), getHeight());
+		this.bgImg = SpriteManager.instance().getScaledSprite(SpriteSet.BACKGROUND, id, getWidth(), getHeight());
 	}
 	
 	/**
@@ -534,7 +537,7 @@ public class TextField extends AbstractElement {
 	 */
 	public void setTopSprite(int id)
 	{
-		this.topBorder = SpriteManager.instance().getScaledSprite(SpriteSet.TEXT_FIELD, 2, getWidth(), -1);
+		this.topBorder = SpriteManager.instance().getScaledSprite(SpriteSet.TEXT_FIELD, id, getWidth(), -1);
 	}
 	
 	/**
@@ -543,7 +546,7 @@ public class TextField extends AbstractElement {
 	 */
 	public void setBottomSprite(int id)
 	{
-		this.bottomBorder = SpriteManager.instance().getScaledSprite(SpriteSet.TEXT_FIELD, 4, getWidth(), -1);
+		this.bottomBorder = SpriteManager.instance().getScaledSprite(SpriteSet.TEXT_FIELD, id, getWidth(), -1);
 	}
 	
 	/**
@@ -553,7 +556,7 @@ public class TextField extends AbstractElement {
 	 */
 	public void setRightSprite(int id)
 	{
-		this.rightBorder = SpriteManager.instance().getScaledSprite(SpriteSet.TEXT_FIELD, 3, -1, getHeight() + topBorder.getHeight() + bottomBorder.getHeight());
+		this.rightBorder = SpriteManager.instance().getScaledSprite(SpriteSet.TEXT_FIELD, id, -1, getHeight() + topBorder.getHeight() + bottomBorder.getHeight());
 	}
 	
 	/**
@@ -563,7 +566,7 @@ public class TextField extends AbstractElement {
 	 */
 	public void setLeftSprite(int id)
 	{
-		this.leftBorder = SpriteManager.instance().getScaledSprite(SpriteSet.TEXT_FIELD, 5, -1, getHeight() + topBorder.getHeight() + bottomBorder.getHeight());
+		this.leftBorder = SpriteManager.instance().getScaledSprite(SpriteSet.TEXT_FIELD, id, -1, getHeight() + topBorder.getHeight() + bottomBorder.getHeight());
 	}
 	
 	/**

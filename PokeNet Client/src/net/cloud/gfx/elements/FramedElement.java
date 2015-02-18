@@ -67,10 +67,10 @@ public class FramedElement extends AbstractDecoratorElement {
 		this.buttonMap = new EnumMap<>(FrameButton.class);
 		
 		// Get scaled images for all of the border sprites
-		frameSpriteInit(1);
+		frameSpriteInit(0);
 		
 		// Get a scaled image for the background sprite. Must be done after frames.
-		bgSpriteInit(SpriteSet.FRAME, 0);
+		bgSpriteInit(SpriteSet.BACKGROUND, 0);
 		
 		// The default frame isn't very big, and the text needs to fit
 		this.title = new Text(title, leftBorder.getWidth() + 2, 3);
@@ -90,7 +90,7 @@ public class FramedElement extends AbstractDecoratorElement {
 	private void bgSpriteInit(SpriteSet set, int ID)
 	{
 		// Same size as the top border
-		this.bgImage = SpriteManager.instance().getScaledSprite(set, ID, topBorder.getWidth(), topBorder.getHeight());
+		this.bgImage = SpriteManager.instance().getTiledSprite(set, ID, topBorder.getWidth(), topBorder.getHeight());
 	}
 	
 	/**
@@ -112,7 +112,7 @@ public class FramedElement extends AbstractDecoratorElement {
 	 */
 	private void reInitBgSprite()
 	{
-		this.bgImage = SpriteManager.instance().getScaledSprite(bgImage, topBorder.getWidth(), topBorder.getHeight());
+		this.bgImage = SpriteManager.instance().getTiledSprite(bgImage, topBorder.getWidth(), topBorder.getHeight());
 	}
 	
 	/**
@@ -266,7 +266,6 @@ public class FramedElement extends AbstractDecoratorElement {
 		
 		// Create a Button element. No label, it's an icon button
 		ImageButton b = new ImageButton(bPosX, 3, buttonSprite);
-		
 		
 		// Attach an action to the button, so when it is performed, it calls our action
 		b.setActionHandler((actionB) -> action.accept(this, actionB));

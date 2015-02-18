@@ -3,6 +3,7 @@ package net.cloud.gfx.interfaces;
 import net.cloud.client.tracking.StatTracker;
 import net.cloud.gfx.constants.KeyConstants;
 import net.cloud.gfx.elements.Interface;
+import net.cloud.gfx.focus.FocusController;
 
 public class QuasiRoot extends Interface {
 
@@ -98,9 +99,15 @@ public class QuasiRoot extends Interface {
 			// Change the constructor for different test interfaces
 			testInterface = new SpriteTestInterface(getWidth(), getHeight());
 			
+			// Add the interface and transfer focus over to it
 			add(testInterface);
+			FocusController.instance().register(testInterface);
 		} else {
+			// Remove the interface and transfer focus back to us
 			super.remove(testInterface);
+			FocusController.instance().register(this);
+			
+			// Null it out for the next go-round
 			testInterface = null;
 		}
 	}

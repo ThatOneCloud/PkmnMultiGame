@@ -15,11 +15,13 @@ public enum SpriteSet {
 	/** Set for images dedicated to the user interface */
 	UI(			"ui",				false,	SpriteCollectionType.SIMPLE,	null),
 	
+	BACKGROUND(	"ui/background",	false,	SpriteCollectionType.SIMPLE,	null),
+	
 	/** All of the various button assets. Blocks of 3, since there are 3 per button typically */
 	BUTTON(		"ui/button",		false,	SpriteCollectionType.BLOCK,		new Object[] {new Integer(3)}),
 	
 	/** All of the various frame assets. Blocks of 4, for each side of the frame */
-	FRAME(		"ui/frame",	false,	SpriteCollectionType.BLOCK,		new Object[] {new Integer(4)}),
+	FRAME(		"ui/frame",			false,	SpriteCollectionType.BLOCK,		new Object[] {new Integer(4)}),
 	
 	/** All of the various text field assets. Blocks of 5, since there are 5 per field */
 	TEXT_FIELD(	"ui/text_field",	false,	SpriteCollectionType.BLOCK,		new Object[] {new Integer(5)}),
