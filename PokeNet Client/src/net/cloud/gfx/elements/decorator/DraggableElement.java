@@ -1,10 +1,12 @@
-package net.cloud.gfx.elements;
+package net.cloud.gfx.elements.decorator;
 
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Optional;
+
+import net.cloud.gfx.elements.Element;
 
 /**
  * An element which when dragged, will move around the screen. 
@@ -216,7 +218,7 @@ public class DraggableElement extends AbstractDecoratorElement {
 		// No bounds means within parent
 		else if(getParent().isPresent())
 		{
-			Element p = getParent().get();
+			Element p = getParent().get().getParent();
 			
 			// Checking the x bounds
 			if(destX < 0)
@@ -260,7 +262,7 @@ public class DraggableElement extends AbstractDecoratorElement {
 		// No bounds means within parent
 		else if(getParent().isPresent())
 		{
-			Element p = getParent().get();
+			Element p = getParent().get().getParent();
 			
 			// Upper y bounds
 			if(destY < 0)

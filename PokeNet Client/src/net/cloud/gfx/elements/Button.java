@@ -85,6 +85,7 @@ public class Button extends AbstractButton {
 		super(PRIORITY, x, y, width, height);
 
 		this.labelText = new CenteredText(label, width, height);
+		this.labelText.setParent(new ParentElement(this));
 
 		// Of course it does not start with an action handler
 		actionHandler = Optional.empty();

@@ -1,4 +1,6 @@
-package net.cloud.gfx.elements;
+package net.cloud.gfx.elements.decorator;
+
+import net.cloud.gfx.elements.Element;
 
 /**
  * An interface for elements that add functionality to another element via the decorator pattern. 

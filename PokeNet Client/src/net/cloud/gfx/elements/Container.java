@@ -40,7 +40,7 @@ public abstract class Container extends AbstractElement {
 	 * @param x The X coordinate of this element relative to its parent
 	 * @param y The Y coordinate of this element relative to its parent
 	 */
-	public Container(Container parent, int priority, int x, int y) 
+	public Container(ParentElement parent, int priority, int x, int y) 
 	{
 		super(parent, priority, x, y, 0, 0);
 		
@@ -60,7 +60,7 @@ public abstract class Container extends AbstractElement {
 	 * @param width The width of this element. May be 0.
 	 * @param height The height of this element. May be 0.
 	 */
-	public Container(Container parent, int priority, int x, int y, int width, int height) 
+	public Container(ParentElement parent, int priority, int x, int y, int width, int height) 
 	{
 		super(parent, priority, x, y, width, height);
 		
@@ -109,8 +109,8 @@ public abstract class Container extends AbstractElement {
 	{
 		children.add(newChild);
 		
-		// Establish the parent-child relationship. ElementList itself will not take care of this.
-		newChild.setParent(this);
+		// Establish the parent-child relationship. ElementList itself will not take care of this.		
+		newChild.setParent(new ParentElement(this, (c) -> add(c), (c) -> remove(c)));
 	}
 	
 	/**

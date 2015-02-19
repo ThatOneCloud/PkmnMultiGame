@@ -1,4 +1,4 @@
-package net.cloud.gfx.elements;
+package net.cloud.gfx.elements.decorator;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -13,6 +13,11 @@ import java.util.function.BiConsumer;
 import net.cloud.client.util.IteratorException;
 import net.cloud.client.util.Pair;
 import net.cloud.gfx.constants.FontConstants;
+import net.cloud.gfx.elements.AbstractButton;
+import net.cloud.gfx.elements.Element;
+import net.cloud.gfx.elements.ImageButton;
+import net.cloud.gfx.elements.ParentElement;
+import net.cloud.gfx.elements.Text;
 import net.cloud.gfx.sprites.SpriteManager;
 import net.cloud.gfx.sprites.SpriteSet;
 
@@ -75,6 +80,7 @@ public class FramedElement extends AbstractDecoratorElement {
 		// The default frame isn't very big, and the text needs to fit
 		this.title = new Text(title, leftBorder.getWidth() + 2, 3);
 		this.title.setFontSize(FontConstants.SIZE_SMALL);
+		this.title.setParent(new ParentElement(this));
 		
 		// Add any of the buttons specified
 		for(FrameButton bType : buttons)
@@ -266,6 +272,7 @@ public class FramedElement extends AbstractDecoratorElement {
 		
 		// Create a Button element. No label, it's an icon button
 		ImageButton b = new ImageButton(bPosX, 3, buttonSprite);
+		b.setParent(new ParentElement(this));
 		
 		// Attach an action to the button, so when it is performed, it calls our action
 		b.setActionHandler((actionB) -> action.accept(this, actionB));

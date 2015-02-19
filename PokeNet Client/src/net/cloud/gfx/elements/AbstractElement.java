@@ -33,7 +33,7 @@ public abstract class AbstractElement implements Element {
 	private FocusHandler focusHandler;
 	
 	/** The element which contains this one, if any */
-	private Optional<Container> parent;
+	private Optional<ParentElement> parent;
 	
 	/** Flag for whether or not the element is pressed down by the mouse */
 	private boolean isPressedDown;
@@ -54,7 +54,7 @@ public abstract class AbstractElement implements Element {
 	 * @param x The X coordinate of this element relative to its parent
 	 * @param y The Y coordinate of this element relative to its parent
 	 */
-	public AbstractElement(Container parent, int priority, int x, int y) 
+	public AbstractElement(ParentElement parent, int priority, int x, int y) 
 	{
 		this(parent, priority, x, y, 0, 0);
 	}
@@ -69,7 +69,7 @@ public abstract class AbstractElement implements Element {
 	 * @param height The height of this element. May be 0.
 	 */
 	public AbstractElement(
-			Container parent,
+			ParentElement parent,
 			int priority,
 			int x, 
 			int y, 
@@ -122,7 +122,7 @@ public abstract class AbstractElement implements Element {
 		}
 		
 		// Pass the event to the parent, if we aren't an orphan :(
-		parent.ifPresent((p) -> p.keyTyped(key));
+		parent.ifPresent((p) -> p.getParent().keyTyped(key));
 	}
 	
 	@Override
@@ -214,13 +214,13 @@ public abstract class AbstractElement implements Element {
 	}
 	
 	@Override
-	public Optional<Container> getParent()
+	public Optional<ParentElement> getParent()
 	{
 		return parent;
 	}
 	
 	@Override
-	public void setParent(Container parent)
+	public void setParent(ParentElement parent)
 	{
 		this.parent = Optional.ofNullable(parent);
 	}

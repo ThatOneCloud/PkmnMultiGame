@@ -1,4 +1,4 @@
-package net.cloud.gfx.elements;
+package net.cloud.gfx.elements.decorator;
 
 /**
  * An enumerable type that defines the various types of buttons that may be added to a frame. 

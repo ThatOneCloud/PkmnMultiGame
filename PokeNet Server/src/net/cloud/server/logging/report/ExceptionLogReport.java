@@ -11,7 +11,7 @@ public class ExceptionLogReport extends LogReport {
 	private String message;
 	
 	/** The exception we're going to tattle on */
-	private Exception exception;
+	private Throwable exception;
 	
 	/**
 	 * Create a LogReport which will detail an exception that occurred 
@@ -20,7 +20,7 @@ public class ExceptionLogReport extends LogReport {
 	 * @param message A brief message about the problem
 	 * @param exception The exception this report is all about
 	 */
-	public ExceptionLogReport(String message, Exception exception) {
+	public ExceptionLogReport(String message, Throwable exception) {
 		super();
 		this.message = message;
 		this.exception = exception;
@@ -34,7 +34,7 @@ public class ExceptionLogReport extends LogReport {
 	 * @param exception The exception this report is all about
 	 * @param section Where to file this report
 	 */
-	public ExceptionLogReport(String msg, Exception ex, LogSection section) {
+	public ExceptionLogReport(String msg, Throwable ex, LogSection section) {
 		super(section);
 		this.message = msg;
 		this.exception = ex;

@@ -1,5 +1,8 @@
 package net.cloud.gfx.focus;
 
+import net.cloud.gfx.elements.Element;
+import net.cloud.gfx.elements.modal.ModalManager;
+
 /**
  * Deals with FocusHandlers and maintaining who has focus. Also has methods useful for 
  * creating links between handlers and other such utility functions. 
@@ -91,11 +94,23 @@ public class FocusController {
 	
 	/**
 	 * Register that the given Focusable object now has focus. If there is already an object that has focus, 
-	 * it will lose focus. 
+	 * it will lose focus. The return value is most of the time not needed, as the results are irrelevant or will be 
+	 * picked up by a callback such as focusGained(). 
 	 * @param newFocus The object which is gaining focus
+	 * @return False only if registration was not allowed
 	 */
-	public void register(Focusable newFocus)
+	public boolean register(Focusable newFocus)
 	{
+		// Modal dialogs demand focus. If one exists, and currently has focus, ignore other focus registration requests
+		if(currentFocus != null
+				&& ModalManager.instance().getCurrentModal().isPresent()
+				&& (newFocus instanceof Element)
+				&& !ModalManager.elementWithinModal((Element) newFocus))
+		{
+			// The modal has focus. Disallow the registration attempt
+			return false;
+		}
+		
 		// Tell the current handler that it's lost focus (it's sure about to)
 		if(currentFocus != null)
 		{
@@ -109,18 +124,21 @@ public class FocusController {
 		if(currentFocus != null)
 		{
 			currentFocus.focusGained();
-	
 		}
+		
+		// Regardless of what the new focusable is, the result is true
+		return true;
 	}
 	
 	/**
 	 * Tell the focus controller that no element should have focus. As per usual, if an element already 
 	 * has focus, it will be informed of its loss.
+	 * @return False only if de-registration was not allowed
 	 */
-	public void deregister()
+	public boolean deregister()
 	{
 		// Heh heh. It does the same thing
-		register(null);
+		return register(null);
 	}
 	
 	/**

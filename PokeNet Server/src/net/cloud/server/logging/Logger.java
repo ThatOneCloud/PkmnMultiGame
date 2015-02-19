@@ -94,7 +94,7 @@ public class Logger implements ShutdownService {
 	 * @param msg A brief message detailing what happened
 	 * @param ex The exception that occurred
 	 */
-	public void logException(String msg, Exception ex)
+	public void logException(String msg, Throwable ex)
 	{
 		// For exceptions, throw out a notice in the console as well
 		this.logWriter().println("[EXCEPTION]" + msg);
@@ -109,7 +109,7 @@ public class Logger implements ShutdownService {
 	 * @param ex The exception that occurred
 	 * @param section Which log file this report should be placed in
 	 */
-	public void logException(String msg, Exception ex, LogSection section)
+	public void logException(String msg, Throwable ex, LogSection section)
 	{
 		// For exceptions, throw out a notice in the console as well
 		this.logWriter().println("[EXCEPTION]" + msg);

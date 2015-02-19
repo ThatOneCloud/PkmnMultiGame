@@ -3,7 +3,10 @@ package net.cloud.gfx.handlers;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
+import net.cloud.client.logging.Logger;
 import net.cloud.gfx.constants.KeyConstants;
+import net.cloud.gfx.elements.Element;
+import net.cloud.gfx.elements.modal.ModalManager;
 import net.cloud.gfx.focus.FocusController;
 import net.cloud.gfx.focus.Focusable;
 
@@ -112,7 +115,6 @@ public class KeyEventHandler extends KeyAdapter {
 		// Shift tab is well.. shift and tab. 
 		if(c == '\t' && event.isShiftDown())
 		{
-			System.err.println("shift tab");
 			return KeyConstants.SHIFT_TAB;
 		}
 		
@@ -157,10 +159,41 @@ public class KeyEventHandler extends KeyAdapter {
 	private void handleChar(char c)
 	{
 		Focusable current = FocusController.instance().currentFocusable();
+		
+		// Make sure we're sending the event somewhere
 		if(current != null)
 		{
+			// Separately check that where we're sending it is the modal dialog, given one is present
+			if(ModalManager.instance().getCurrentModal().isPresent() && !currentIsModal())
+			{
+				// There's a modal dialog and its lost focus. Can't allow key events to go elsewhere
+				Logger.instance().logException("Key event - modal not currently focused", new AssertionError());
+				return;
+			}
+
 			current.keyTyped(c);
 		}
+	}
+	
+	/**
+	 * Assumes a check has been made and a modal dialog is present. 
+	 * Check to see if the current focused object is the modal dialog, or a child of the modal dialog. 
+	 * If the current focused object is not an Element, then this will simply return false. 
+	 * @return True if the currently focused object is within scope of the modal dialog
+	 */
+	private boolean currentIsModal()
+	{
+		// Check to see if the current focusable is not an element. If it isn't, well, it sure isn't a modal dialog
+		if(!(FocusController.instance().currentFocusable() instanceof Element))
+		{
+			return false;
+		}
+
+		// Safe cast. Above make sure the current focused object is an Element type
+		Element current = (Element) FocusController.instance().currentFocusable();
+
+		// Modal manager can take it from here
+		return ModalManager.elementWithinModal(current);
 	}
 
 }

@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.font.GlyphVector;
 
 import net.cloud.client.util.IteratorException;
@@ -104,11 +103,6 @@ public class Text extends AbstractElement {
 		
 		// Ready to draw the text
 		g2d.drawGlyphVector(glyphVector, offsetX, offsetY + textHeight);
-	}
-	
-	public void clicked(Element clicked, Point relPoint, boolean isRightClick)
-	{
-		System.err.println("text " + getText() + " clicked");
 	}
 	
 	/**

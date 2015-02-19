@@ -65,6 +65,7 @@ public abstract class SelectableButton extends AbstractButton {
 		
 		// Create a label which is positioned to the right of the button
 		this.label = new Text(label, width + 3, 0);
+		this.label.setParent(new ParentElement(this));
 	}
 	
 	/**

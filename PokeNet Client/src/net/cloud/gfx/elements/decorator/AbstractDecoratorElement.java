@@ -1,4 +1,4 @@
-package net.cloud.gfx.elements;
+package net.cloud.gfx.elements.decorator;
 
 import java.awt.Graphics;
 import java.awt.Point;
@@ -6,6 +6,8 @@ import java.awt.Rectangle;
 import java.util.Optional;
 
 import net.cloud.client.util.IteratorException;
+import net.cloud.gfx.elements.Element;
+import net.cloud.gfx.elements.ParentElement;
 import net.cloud.gfx.focus.FocusHandler;
 import net.cloud.gfx.focus.Focusable;
 
@@ -265,7 +267,7 @@ public abstract class AbstractDecoratorElement implements DecoratorElement {
 	 * Delegate to the wrapped element
 	 */
 	@Override
-	public Optional<Container> getParent() {
+	public Optional<ParentElement> getParent() {
 		return wrapped.getParent();
 	}
 
@@ -273,7 +275,7 @@ public abstract class AbstractDecoratorElement implements DecoratorElement {
 	 * Delegate to the wrapped element
 	 */
 	@Override
-	public void setParent(Container parent) {
+	public void setParent(ParentElement parent) {
 		wrapped.setParent(parent);
 	}
 

@@ -11,6 +11,7 @@ import net.cloud.gfx.Mainframe;
 import net.cloud.gfx.RootPanel;
 import net.cloud.gfx.elements.Element;
 import net.cloud.gfx.elements.Interface;
+import net.cloud.gfx.elements.modal.ModalManager;
 
 /**
  * This MouseAdapter will listen for mouse events in general and 
@@ -73,6 +74,14 @@ public class MouseEventHandler extends MouseAdapter {
 		Point relPoint = new Point(event.getPoint());
 		pressedElement = topElement(relPoint);
 		
+		// Modal dialogs absorb all mouse events. Any not originating on it are ignored
+		if(ModalManager.instance().getCurrentModal().isPresent() && !ModalManager.elementWithinModal(pressedElement))
+		{
+			// There's a modal interface and the top element is not within it. 
+			pressedElement = null;
+			return;
+		}
+		
 		// The point is now relative to within the element. Want it relative to the element itself for drag events
 		Point dragPoint = new Point(relPoint.x + pressedElement.getX(), relPoint.y + pressedElement.getY());
 		
@@ -94,7 +103,7 @@ public class MouseEventHandler extends MouseAdapter {
 			return;
 		}
 		
-		// Ignore if there is no pressed element
+		// Ignore if there is no pressed element (releases after a press off a modal dialog are ignored here, too)
 		if(pressedElement == null)
 		{
 			return;
@@ -140,6 +149,13 @@ public class MouseEventHandler extends MouseAdapter {
 		// Figure out where the event is going...
 		Point point = event.getPoint();
 		Element element = topElement(point);
+		
+		// ... make sure the modal dialog is where its going if need be...
+		if(ModalManager.instance().getCurrentModal().isPresent() && !ModalManager.elementWithinModal(element))
+		{
+			// There's a modal interface and the top element is not within it. 
+			return;
+		}
 		
 		// ... and send it there!
 		element.clicked(element, point, isRightClick);

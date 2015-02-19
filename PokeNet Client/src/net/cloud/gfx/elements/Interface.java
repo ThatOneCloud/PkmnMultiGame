@@ -90,14 +90,14 @@ public class Interface extends Container {
 	
 	/**
 	 * Set a background image via a request from the sprite manager. 
-	 * It will appear behind all of the child elements. 
+	 * It will appear behind all of the child elements, and be tiled to the width and height of the interface.
 	 * To remove a background, call <code>setBackground(null)</code>
 	 * @param set The set of sprites the background is from
 	 * @param spriteID The ID of the sprite
 	 */
 	public void setBackground(SpriteSet set, int spriteID)
 	{
-		setBackground(SpriteManager.instance().getSprite(set, spriteID));
+		setBackground(SpriteManager.instance().getTiledSprite(set, spriteID, getWidth(), getHeight()));
 	}
 	
 	/**

@@ -7,7 +7,6 @@ import javax.swing.JPanel;
 
 import net.cloud.client.logging.Logger;
 import net.cloud.client.util.IteratorException;
-import net.cloud.gfx.elements.Interface;
 import net.cloud.gfx.focus.FocusController;
 import net.cloud.gfx.handlers.KeyEventHandler;
 import net.cloud.gfx.handlers.MouseEventHandler;
@@ -26,7 +25,7 @@ public class RootPanel extends JPanel {
 	private static final long serialVersionUID = 2890046422728587799L;
 	
 	/** The quasi-root - i.e. the start of the Element hierarchy */
-	private Interface elementRoot;
+	private QuasiRoot elementRoot;
 	
 	/** Handler that will deal with clicks on elements */
 	private MouseEventHandler mouseEventHandler;
@@ -85,16 +84,26 @@ public class RootPanel extends JPanel {
 	}
 	
 	/**
+	 * @return The root of the CloudGfx element hierarchy
+	 */
+	public QuasiRoot getQuasiRoot()
+	{
+		return elementRoot;
+	}
+	
+	/**
 	 * @return The handler taking care of mouse events
 	 */
-	public MouseEventHandler getMouseEventHandler() {
+	public MouseEventHandler getMouseEventHandler()
+	{
 		return mouseEventHandler;
 	}
 
 	/**
 	 * @return The handler taking care of key events
 	 */
-	public KeyEventHandler getKeyEventHandler() {
+	public KeyEventHandler getKeyEventHandler()
+	{
 		return keyEventHandler;
 	}
 	

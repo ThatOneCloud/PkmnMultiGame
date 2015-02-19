@@ -1,20 +1,25 @@
 package net.cloud.gfx.interfaces;
 
+import net.cloud.gfx.Mainframe;
 import net.cloud.gfx.constants.Colors;
 import net.cloud.gfx.elements.Button;
 import net.cloud.gfx.elements.CenteredText;
 import net.cloud.gfx.elements.Checkbox;
-import net.cloud.gfx.elements.DraggableElement;
-import net.cloud.gfx.elements.FrameButton;
-import net.cloud.gfx.elements.FramedElement;
 import net.cloud.gfx.elements.Interface;
 import net.cloud.gfx.elements.PasswordField;
 import net.cloud.gfx.elements.RadioButton;
 import net.cloud.gfx.elements.ReferenceText;
 import net.cloud.gfx.elements.RadioButton.RadioButtonGroup;
+import net.cloud.gfx.elements.decorator.DraggableElement;
+import net.cloud.gfx.elements.decorator.FrameButton;
+import net.cloud.gfx.elements.decorator.FramedElement;
+import net.cloud.gfx.elements.modal.AbstractModalDialog;
+import net.cloud.gfx.elements.modal.ModalManager;
+import net.cloud.gfx.elements.modal.TestModalDialog;
 import net.cloud.gfx.elements.Sprite;
 import net.cloud.gfx.elements.Text;
 import net.cloud.gfx.elements.TextField;
+import net.cloud.gfx.focus.FocusController;
 import net.cloud.gfx.sprites.SpriteSet;
 
 /**
@@ -79,6 +84,7 @@ public class SpriteTestInterface extends Interface {
 		
 		
 		Button b2 = new Button("B2", 300, 150, 50, 25);
+		b2.setActionHandler((b) -> System.out.println("B2 Clicked"));
 		DraggableElement d = new DraggableElement(b2);
 		add(d);
 		
@@ -103,6 +109,14 @@ public class SpriteTestInterface extends Interface {
 		add(cText);
 		ReferenceText rText = new ReferenceText("Reference Text", 500, 90, (c) -> {return c;});
 		add(rText);
+		
+		
+		
+		// TODO: remove this bit. It's really un-needed
+		AbstractModalDialog modal = new TestModalDialog();
+		ModalManager.instance().register(modal);
+		Mainframe.instance().gfx().rootPanel().getQuasiRoot().add(new FramedElement("modal", modal));
+		FocusController.instance().register(modal);
 		
 	}
 

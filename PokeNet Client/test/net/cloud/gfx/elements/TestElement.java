@@ -29,7 +29,7 @@ public class TestElement extends AbstractElement {
 	 * @param width The width of this element. May be 0.
 	 * @param height The height of this element. May be 0.
 	 */
-	public TestElement(Container parent, int priority, int x, int y, int width,
+	public TestElement(ParentElement parent, int priority, int x, int y, int width,
 			int height) {
 		super(parent, priority, x, y, width, height);
 	}

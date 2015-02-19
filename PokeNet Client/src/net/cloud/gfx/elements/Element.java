@@ -166,10 +166,10 @@ public interface Element extends Focusable {
 	public void setFocusHandler(FocusHandler focusHandler);
 
 	/** @return An Optional which may contain the element containing this one */
-	public Optional<Container> getParent();
+	public Optional<ParentElement> getParent();
 
 	/** @param parent The element which contains this one */
-	public void setParent(Container parent);
+	public void setParent(ParentElement parent);
 
 	/** @return True if the element is currently pressed down */
 	public boolean isPressedDown();

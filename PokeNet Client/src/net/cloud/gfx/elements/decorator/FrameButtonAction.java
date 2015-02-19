@@ -1,6 +1,8 @@
-package net.cloud.gfx.elements;
+package net.cloud.gfx.elements.decorator;
 
 import java.util.function.BiConsumer;
+
+import net.cloud.gfx.elements.AbstractButton;
 
 /**
  * An encapsulated action for a FrameButton to take. A frame button may refer to one of these as a default, 
@@ -15,7 +17,7 @@ public enum FrameButtonAction {
 	DO_NOTHING((frame, button) -> {}),
 	
 	/** An action that will close the frame by removing the element from its parent */
-	REMOVE_ELEMENT((frame, button) -> frame.getParent().ifPresent((p) -> p.remove(frame)));
+	REMOVE_ELEMENT((frame, button) -> frame.getParent().ifPresent((p) -> p.removeChild(frame)));
 	
 	/** The action to take. Has the frame and button as parameters. */
 	private BiConsumer<FramedElement, AbstractButton> action;
