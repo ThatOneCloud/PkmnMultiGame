@@ -110,7 +110,7 @@ public abstract class Container extends AbstractElement {
 		children.add(newChild);
 		
 		// Establish the parent-child relationship. ElementList itself will not take care of this.		
-		newChild.setParent(new ParentElement(this, (c) -> add(c), (c) -> remove(c)));
+		newChild.setParent(new ParentElement(this, this::add, this::remove));
 	}
 	
 	/**
@@ -121,10 +121,15 @@ public abstract class Container extends AbstractElement {
 	 */
 	public boolean remove(Element child)
 	{
-		// Disown the child
-		child.setParent(null);
+		// Attempt to remove the child. If removal was successful, we were the parent - nullify that relationship
+		if(children.remove(child))
+		{
+			child.setParent(null);
+			return true;
+		}
 		
-		return children.remove(child);
+		// Was not successful, so return false.
+		return false;
 	}
 	
 	/**
@@ -133,10 +138,13 @@ public abstract class Container extends AbstractElement {
 	 */
 	public void removeAllChildren()
 	{
-		// Disown all of the children before going and removing them
-		children.forEach((child) -> child.setParent(null));
-		
-		children.removeAll();
+		// For each child, attempt to remove them. If removal was successful, nullify their parent.
+		children.forEach((child) -> {
+			if(children.remove(child))
+			{
+				child.setParent(null);
+			}
+		});
 	}
 	
 	/**

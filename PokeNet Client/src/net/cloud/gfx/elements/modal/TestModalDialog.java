@@ -1,9 +1,7 @@
 package net.cloud.gfx.elements.modal;
 
-import net.cloud.gfx.Mainframe;
 import net.cloud.gfx.elements.Button;
 import net.cloud.gfx.elements.Interface;
-import net.cloud.gfx.elements.ParentElement;
 import net.cloud.gfx.elements.TextField;
 
 /**
@@ -17,7 +15,7 @@ public class TestModalDialog extends AbstractModalDialog {
 	 */
 	public TestModalDialog()
 	{
-		super(new ParentElement(Mainframe.instance().gfx().rootPanel().getQuasiRoot()), 100, 250, 200, 200);
+		super(100, 250, 200, 200);
 		
 		Interface intf = new Interface(0, 0, 200, 200);
 		

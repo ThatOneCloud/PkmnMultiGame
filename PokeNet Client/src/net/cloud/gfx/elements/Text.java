@@ -136,7 +136,8 @@ public class Text extends AbstractElement {
 	
 	/**
 	 * Change the Font in order to change how the text appears. 
-	 * For some constants, see {@link Fonts}t The new Font object
+	 * For some constants, see {@link Fonts}
+	 * @param font The new Font object
 	 */
 	public void setFont(Font font)
 	{

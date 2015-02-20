@@ -135,10 +135,15 @@ public class FocusController {
 	 * has focus, it will be informed of its loss.
 	 * @return False only if de-registration was not allowed
 	 */
-	public boolean deregister()
+	public void deregister()
 	{
-		// Heh heh. It does the same thing
-		return register(null);
+		// Bypass modality, deregister will always happen
+		if(currentFocus != null)
+		{
+			currentFocus.focusLost();
+		}
+		
+		currentFocus = null;
 	}
 	
 	/**

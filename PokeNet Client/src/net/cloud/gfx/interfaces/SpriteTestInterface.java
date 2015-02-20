@@ -10,10 +10,12 @@ import net.cloud.gfx.elements.PasswordField;
 import net.cloud.gfx.elements.RadioButton;
 import net.cloud.gfx.elements.ReferenceText;
 import net.cloud.gfx.elements.RadioButton.RadioButtonGroup;
+import net.cloud.gfx.elements.TextArea;
 import net.cloud.gfx.elements.decorator.DraggableElement;
 import net.cloud.gfx.elements.decorator.FrameButton;
 import net.cloud.gfx.elements.decorator.FramedElement;
 import net.cloud.gfx.elements.modal.AbstractModalDialog;
+import net.cloud.gfx.elements.modal.MessageDialog;
 import net.cloud.gfx.elements.modal.ModalManager;
 import net.cloud.gfx.elements.modal.TestModalDialog;
 import net.cloud.gfx.elements.Sprite;
@@ -112,10 +114,23 @@ public class SpriteTestInterface extends Interface {
 		
 		
 		
+		TextArea textArea = new TextArea("A large block of text that is displayed on multiple "
+				+ "lines almost like a paragraph is placed within a text area", 500, 130, 120);
+		add(textArea);
+		
+		
+		
 		// TODO: remove this bit. It's really un-needed
-		AbstractModalDialog modal = new TestModalDialog();
+//		AbstractModalDialog modal = new TestModalDialog();
+//		ModalManager.instance().register(modal);
+//		Mainframe.instance().gfx().rootPanel().getQuasiRoot().add(new FramedElement("modal", modal));
+//		FocusController.instance().register(modal);
+		
+		
+		MessageDialog modal = new MessageDialog("A friendly message from your friendly neighborhood programmer!", 200, 150, 200, 300);
+		modal.setConfirmListener(() -> {System.out.println("Okay was clicked"); ModalManager.instance().deregister();});
 		ModalManager.instance().register(modal);
-		Mainframe.instance().gfx().rootPanel().getQuasiRoot().add(new FramedElement("modal", modal));
+		add(new FramedElement("modal", modal));
 		FocusController.instance().register(modal);
 		
 	}

@@ -81,6 +81,25 @@ public abstract class AbstractElement implements Element {
 		this.focusHandler = new SingleFocusHandler();
 		this.isPressedDown = false;
 	}
+	
+	/**
+	 * Uses strict memory equivalence when dealing with another abstract element. 
+	 * Otherwise, flips the responsibility and will check <code>obj.equals(this)</code> to have the 
+	 * other object check for equivalence, instead.
+	 */
+	@Override
+	public boolean equals(Object obj)
+	{
+		// When comparing to another abstract element, use strict equivalence
+		if(obj instanceof AbstractElement)
+		{
+			return this == obj;
+		}
+		// Otherwise we're not sure, and thinking we're the center of everything, we make the other type determine
+		else {
+			return obj.equals(this);
+		}
+	}
 
 	@Override
 	public void clicked(Element clicked, Point relPoint, boolean isRightClick) 

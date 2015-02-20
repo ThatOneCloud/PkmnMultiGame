@@ -1,7 +1,7 @@
 package net.cloud.gfx.elements.modal;
 
 import net.cloud.gfx.elements.Interface;
-import net.cloud.gfx.elements.ParentElement;
+import net.cloud.gfx.focus.FocusController;
 import net.cloud.gfx.focus.Focusable;
 import net.cloud.gfx.sprites.SpriteSet;
 
@@ -10,7 +10,8 @@ import net.cloud.gfx.sprites.SpriteSet;
  * other elements, and demands focus. (The attention whore!) While this element in itself does not enforce this 
  * behavior, that is the intended behavior and should be enforced by the outside system. (Enforce the assertion that 
  * only one modal dialog may be present at any time, and it will receive all input.) <br>
- * TODO: describe what subclasses should do
+ * Notable things this superclass does: Trap key events so they will not move up the parent hierarchy, prevent 
+ * linking to other focusable, and disallowing changes to the priority.
  */
 public abstract class AbstractModalDialog extends Interface {
 	
@@ -27,10 +28,10 @@ public abstract class AbstractModalDialog extends Interface {
 	 * @param width Width of the dialog
 	 * @param height Height of the dialog
 	 */
-	public AbstractModalDialog(ParentElement parent, int x, int y, int width, int height)
+	public AbstractModalDialog(int x, int y, int width, int height)
 	{
 		// The background is the default here
-		this(parent, x, y, width, height, 0);
+		this(x, y, width, height, 0);
 	}
 	
 	/**
@@ -44,11 +45,9 @@ public abstract class AbstractModalDialog extends Interface {
 	 * @param height Height of the dialog
 	 * @param bgID The ID of the background sprite. Comes from the BACKGROUND sprite set
 	 */
-	public AbstractModalDialog(ParentElement parent, int x, int y, int width, int height, int bgID)
+	public AbstractModalDialog(int x, int y, int width, int height, int bgID)
 	{
 		super(PRIORITY, x, y, width, height);
-		
-		super.setParent(parent);
 		
 		// We use a background for these dialogs mostly so that they all have them and it looks nicer
 		super.setBackground(SpriteSet.BACKGROUND, bgID);
@@ -94,6 +93,20 @@ public abstract class AbstractModalDialog extends Interface {
 	public void setPriority(int priority)
 	{
 		throw new UnsupportedOperationException("Modal dialogs are always on top. Cannot alter priority");
+	}
+	
+	/**
+	 * Attempt to close this dialog by removing itself from its parent. 
+	 * This will not take care of anything outside of the dialog that may be waiting for an input response, 
+	 * but it will at least deregister focus.
+	 */
+	protected void remove()
+	{
+		// Remove ourself from our parent
+		getParent().ifPresent((p) -> p.removeChild(this));
+		
+		// Deregister focus, we won't be around to need it anymore
+		FocusController.instance().deregister();
 	}
 
 }
