@@ -1,7 +1,6 @@
 package net.cloud.gfx.elements.modal;
 
 import net.cloud.gfx.elements.Interface;
-import net.cloud.gfx.focus.FocusController;
 import net.cloud.gfx.focus.Focusable;
 import net.cloud.gfx.sprites.SpriteSet;
 
@@ -93,20 +92,6 @@ public abstract class AbstractModalDialog extends Interface {
 	public void setPriority(int priority)
 	{
 		throw new UnsupportedOperationException("Modal dialogs are always on top. Cannot alter priority");
-	}
-	
-	/**
-	 * Attempt to close this dialog by removing itself from its parent. 
-	 * This will not take care of anything outside of the dialog that may be waiting for an input response, 
-	 * but it will at least deregister focus.
-	 */
-	protected void remove()
-	{
-		// Remove ourself from our parent
-		getParent().ifPresent((p) -> p.removeChild(this));
-		
-		// Deregister focus, we won't be around to need it anymore
-		FocusController.instance().deregister();
 	}
 
 }

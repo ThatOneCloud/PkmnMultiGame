@@ -1,6 +1,7 @@
 package net.cloud.gfx.interfaces;
 
-import net.cloud.gfx.Mainframe;
+import java.awt.EventQueue;
+
 import net.cloud.gfx.constants.Colors;
 import net.cloud.gfx.elements.Button;
 import net.cloud.gfx.elements.CenteredText;
@@ -14,14 +15,11 @@ import net.cloud.gfx.elements.TextArea;
 import net.cloud.gfx.elements.decorator.DraggableElement;
 import net.cloud.gfx.elements.decorator.FrameButton;
 import net.cloud.gfx.elements.decorator.FramedElement;
-import net.cloud.gfx.elements.modal.AbstractModalDialog;
-import net.cloud.gfx.elements.modal.MessageDialog;
+import net.cloud.gfx.elements.modal.ModalException;
 import net.cloud.gfx.elements.modal.ModalManager;
-import net.cloud.gfx.elements.modal.TestModalDialog;
 import net.cloud.gfx.elements.Sprite;
 import net.cloud.gfx.elements.Text;
 import net.cloud.gfx.elements.TextField;
-import net.cloud.gfx.focus.FocusController;
 import net.cloud.gfx.sprites.SpriteSet;
 
 /**
@@ -117,21 +115,26 @@ public class SpriteTestInterface extends Interface {
 		TextArea textArea = new TextArea("A large block of text that is displayed on multiple "
 				+ "lines almost like a paragraph is placed within a text area", 500, 130, 120);
 		add(textArea);
+
 		
 		
 		
-		// TODO: remove this bit. It's really un-needed
-//		AbstractModalDialog modal = new TestModalDialog();
-//		ModalManager.instance().register(modal);
-//		Mainframe.instance().gfx().rootPanel().getQuasiRoot().add(new FramedElement("modal", modal));
-//		FocusController.instance().register(modal);
-		
-		
-		MessageDialog modal = new MessageDialog("A friendly message from your friendly neighborhood programmer!", 200, 150, 200, 300);
-		modal.setConfirmListener(() -> {System.out.println("Okay was clicked"); ModalManager.instance().deregister();});
-		ModalManager.instance().register(modal);
-		add(new FramedElement("modal", modal));
-		FocusController.instance().register(modal);
+		EventQueue.invokeLater(new Runnable()
+		{
+
+			@Override
+			public void run() {
+				try {
+					System.out.println("showing dialog");
+					ModalManager.instance().showMessageDialog("modal", "A friendly message from your friendly neighborhood programmer!");
+					System.out.println("done showing dialog");
+				} catch (ModalException e) {
+					e.printStackTrace();
+				}
+			}
+			
+		});
+
 		
 	}
 

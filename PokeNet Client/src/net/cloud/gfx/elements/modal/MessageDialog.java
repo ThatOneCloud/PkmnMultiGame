@@ -33,6 +33,8 @@ public class MessageDialog extends AbstractModalDialog {
 	public MessageDialog(String message, int x, int y, int width, int height) {
 		// Start with a height of one. We don't really know yet, we'll adjust it soon
 		super(x, y, width, height);
+		
+		buttonCallback = Optional.empty();
 	
 		// Place a text area, inset a bit to give it a border
 		TextArea textArea = new TextArea(message, INSET, INSET, width - (2 * INSET));
@@ -62,15 +64,12 @@ public class MessageDialog extends AbstractModalDialog {
 	}
 	
 	/**
-	 * When the button is clicked, this is called. It'll close the dialog and then relay the action to 
+	 * When the button is clicked, this is called. It'll relay the action to 
 	 * whoever is listening outside of this dialog. Functional programming is so cool!
 	 * @param b The button that was clicked
 	 */
 	private void buttonAction(Button b)
 	{
-		// Button was clicked, so first off we'll go ahead and remove ourselves 
-		remove();
-		
 		// And now inform the action listener if there is one
 		buttonCallback.ifPresent((callback) -> callback.run());
 	}

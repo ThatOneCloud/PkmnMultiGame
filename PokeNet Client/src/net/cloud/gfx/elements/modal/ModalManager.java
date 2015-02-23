@@ -2,7 +2,13 @@ package net.cloud.gfx.elements.modal;
 
 import java.util.Optional;
 
+import net.cloud.gfx.Mainframe;
+import net.cloud.gfx.elements.Container;
 import net.cloud.gfx.elements.Element;
+import net.cloud.gfx.elements.Interface;
+import net.cloud.gfx.elements.decorator.DraggableElement;
+import net.cloud.gfx.elements.decorator.FramedElement;
+import net.cloud.gfx.focus.FocusController;
 
 /**
  * The front-end and work center for modal dialog creation. Offers quick and easy ways of creating 
@@ -18,6 +24,9 @@ public class ModalManager {
 	
 	/** The modal dialog that is currently up, if any */
 	private Optional<AbstractModalDialog> currentModal;
+	
+	/** The factory we're gonna use for dialog creation */
+	private ModalFactory factory = ModalFactory.newFactory();
 	
 	/** Private constructor for singleton pattern */
 	private ModalManager()
@@ -79,6 +88,30 @@ public class ModalManager {
 	}
 	
 	/**
+	 * Show a message dialog on the root interface. The dialog will be centered, and placed within a draggable 
+	 * frame. It will be reasonably sized. This method will take care of adding the dialog to the interface 
+	 * and other background work. This method will block until the 'okay' button is clicked on the dialog.
+	 * @param title The title to show on the frame
+	 * @param message The message to display
+	 * @throws ModalException If the dialog could not be shown. Results will not be available in this situation.
+	 */
+	public void showMessageDialog(String title, String message) throws ModalException
+	{
+		// Grab it, short name, we'll need the root interface often
+		Interface root = Mainframe.instance().gfx().rootPanel().getQuasiRoot();
+		
+		// Well, we need a dialog to work with
+		MessageDialog dialog = factory.createMessageDialog(root, message);
+		
+		// Set up a listener so that when the dialog is acted on, the method can return
+		MessageDialogListener dialogListener = new MessageDialogListener(dialog);
+		
+		// We don't care about return value. Normally we'd return this result.
+		// Anyways, this takes care of the rest of the generic process
+		genericDialogStuff(title, root, dialog, dialogListener);
+	}
+	
+	/**
 	 * Obtain a reference to the current modal dialog, if there is one. The value is in an optional. 
 	 * There will only ever be on modal dialog at a time, and another cannot be registered until it is removed.
 	 * @return The [possibly present] modal dialog currently registered
@@ -94,14 +127,14 @@ public class ModalManager {
 	 * not check any of the other assumptions, such as requiring a parent, and does not take other actions, 
 	 * such as adding the dialog to the parent.
 	 * @param modal The new modal dialog
+	 * @throws ModalException If the dialog could not be registered
 	 */
-	public void register(AbstractModalDialog modal)
+	public void register(AbstractModalDialog modal) throws ModalException
 	{
 		// Make sure there is not already one
 		if(currentModal.isPresent())
 		{
-			// TODO: Return exception or false or something?
-			return;
+			throw new ModalException("Could not register modal dialog - one is already present");
 		}
 		
 		currentModal = Optional.of(modal);
@@ -114,6 +147,98 @@ public class ModalManager {
 	public void deregister()
 	{
 		currentModal = Optional.empty();
+	}
+	
+	/**
+	 * I seriously could not think of a name for this one. It takes the various generic steps needed for showing a dialogue. 
+	 * It will wrap the dialog in a draggable frame, put the dialog on screen, block until results are available, 
+	 * remove the dialog from the screen, and then return the result from the dialog.
+	 * @param title The title that will be on the frame
+	 * @param parent The container that the dialog will be placed in
+	 * @param dialog The dialog itself
+	 * @param listener A listener that provides blocking and result obtaining functionality
+	 * @return The coalesced result from the dialog, obtained via the listener
+	 * @throws ModalException If results could not be reliably obtained
+	 */
+	private <T> T genericDialogStuff(String title, Container parent, AbstractModalDialog dialog, DialogListener<T> listener) throws ModalException
+	{
+		// Wrap it in a frame wrapped in a draggable element
+		DraggableElement dragFrame = decoratedDialog(title, dialog);
+		
+		// Show the dialog and register it
+		showDialog(parent, dialog, dragFrame);
+		
+		// The listener provides a coalesced result, and this will block until that result is available
+		T results = null;
+		try {
+			results = listener.waitForValue();
+		} catch (ModalException e) {
+			// The wait didn't happen, our value is invalid. We'll re-throw the exception but we have to rollback the dialog first
+			removeDialog(parent, dragFrame);
+			
+			throw e;
+		}
+		
+		// Remove the dialog from the parent and deregister it
+		removeDialog(parent, dragFrame);
+		
+		return results;
+	}
+	
+	/**
+	 * Wrap a dialog in a frame which is then wrapped in a draggable element. 
+	 * This can only be dragged from the title of the frame.
+	 * @param title The title that will be on the frame
+	 * @param dialog The dialog itself
+	 * @return A DraggableElement wrapped around the dialog
+	 */
+	private DraggableElement decoratedDialog(String title, AbstractModalDialog dialog)
+	{
+		// Decorator wrapping
+		FramedElement framedDialog = new FramedElement(title, dialog);
+		DraggableElement draggableDialog = new DraggableElement(framedDialog);
+		
+		// It can only be dragged from the title of the frame
+		draggableDialog.addStartBound(framedDialog.getTitleBounds());
+		
+		return draggableDialog;
+	}
+	
+	/**
+	 * First registers the dialog, and then adds it to the parent
+	 * @param parent The container that the dialog will be placed in
+	 * @param dialog The dialog itself
+	 * @param decorator The decorator wrapping the dialog
+	 * @throws ModalException Registration of the dialog failed
+	 */
+	private void showDialog(Container parent, AbstractModalDialog dialog, Element decorator) throws ModalException
+	{
+		// Register then add.
+		register(dialog);
+		
+		if(!FocusController.instance().register(decorator))
+		{
+			// Make sure we rollback changes thus far
+			deregister();
+			
+			throw new ModalException("Could not register focus on new modal dialog");
+		}
+		
+		// Add is last so if an exception comes up, it will never be added
+		parent.add(decorator);
+	}
+	
+	/**
+	 * First removes the dialog from the parent, then deregisters it
+	 * @param parent The container that the dialog will be placed in
+	 * @param decorator The decorator wrapping the dialog
+	 */
+	private void removeDialog(Container parent, Element decorator)
+	{
+		// Opposite order from showDialog
+		parent.remove(decorator);
+		FocusController.instance().deregister();
+		deregister();
 	}
 	
 }

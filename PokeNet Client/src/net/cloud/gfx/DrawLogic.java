@@ -54,6 +54,10 @@ public class DrawLogic implements Runnable {
 			// Keep track of when the loop has started, to better time the wait
 			long loopStart = System.currentTimeMillis();
 			
+			// TODO: Draw to an offscreen buffered image. When done, swap with a different 'onscreen' image. 
+			//		 Still call repaint, but the panel will draw just the onscreen image.
+			//		 Should take a load off the EDT and make our fps reading viable
+			
 			// Start the repaint. This may take a bit.
 			drawPanel.repaint();
 			

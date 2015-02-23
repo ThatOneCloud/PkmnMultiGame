@@ -133,7 +133,6 @@ public class FocusController {
 	/**
 	 * Tell the focus controller that no element should have focus. As per usual, if an element already 
 	 * has focus, it will be informed of its loss.
-	 * @return False only if de-registration was not allowed
 	 */
 	public void deregister()
 	{
