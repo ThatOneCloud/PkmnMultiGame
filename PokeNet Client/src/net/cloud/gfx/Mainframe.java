@@ -15,10 +15,10 @@ public class Mainframe extends JFrame {
 	private static final long serialVersionUID = -4278003640955365389L;
 	
 	/** The width of the game graphics */
-	private static final int WIDTH = 800;
+	public static final int WIDTH = 800;
 	
 	/** The height of the game graphics */
-	private static final int HEIGHT = 600;
+	public static final int HEIGHT = 600;
 	
 	/** Singleton instance of the class */
 	private static Mainframe instance;

@@ -42,7 +42,8 @@ public class CloudGfx implements ShutdownService {
 		rootPanel = new RootPanel(width, height);
 		
 		// Get a thread up and ready to draw
-		drawLogic = new DrawLogic(rootPanel);
+		drawLogic = new DrawLogic(rootPanel, rootPanel::getQuasiRoot);
+		rootPanel.setDrawFunction(drawLogic::drawOnScreen);
 		drawThread = new Thread(drawLogic);
 		
 		// Now we've got the necessary objects to create the hook
@@ -65,6 +66,11 @@ public class CloudGfx implements ShutdownService {
 	public RootPanel rootPanel()
 	{
 		return rootPanel;
+	}
+	
+	public DrawLogic getdrawlogic()
+	{
+		return drawLogic;
 	}
 	
 	/**

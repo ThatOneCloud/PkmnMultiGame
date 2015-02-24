@@ -110,8 +110,7 @@ public class SaveRequestHandler {
 		try {
 			Files.createDirectories(path.getParent());
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			req.notifyHandleException(new FileRequestException("Could not open or create XML file", e1));
 		}
 		
 		// Try-with-resources. Just a quick one-off usage of an output stream

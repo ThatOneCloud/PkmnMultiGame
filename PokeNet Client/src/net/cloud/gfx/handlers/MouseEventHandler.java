@@ -77,7 +77,7 @@ public class MouseEventHandler extends MouseAdapter {
 		// Modal dialogs absorb all mouse events. Any not originating on it are ignored
 		if(ModalManager.instance().getCurrentModal().isPresent() && !ModalManager.elementWithinModal(pressedElement))
 		{
-			// There's a modal interface and the top element is not within it. 
+			// There's a modal interface and the top element is not within it.
 			pressedElement = null;
 			return;
 		}
@@ -153,7 +153,8 @@ public class MouseEventHandler extends MouseAdapter {
 		// ... make sure the modal dialog is where its going if need be...
 		if(ModalManager.instance().getCurrentModal().isPresent() && !ModalManager.elementWithinModal(element))
 		{
-			// There's a modal interface and the top element is not within it. 
+			// There's a modal interface and the top element is not within it. Tell it about this outrage!
+			ModalManager.instance().getCurrentModal().get().offDialogClick();
 			return;
 		}
 		

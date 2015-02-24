@@ -2,11 +2,11 @@ package net.cloud.gfx;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.util.Optional;
+import java.util.function.Consumer;
 
 import javax.swing.JPanel;
 
-import net.cloud.client.logging.Logger;
-import net.cloud.client.util.IteratorException;
 import net.cloud.gfx.focus.FocusController;
 import net.cloud.gfx.handlers.KeyEventHandler;
 import net.cloud.gfx.handlers.MouseEventHandler;
@@ -33,6 +33,9 @@ public class RootPanel extends JPanel {
 	/** Handler that will deal with typing keys and sending the event to elements */
 	private KeyEventHandler keyEventHandler;
 	
+	/** A decoupled function to draw the game graphics to the screen */
+	private Optional<Consumer<Graphics>> drawFunction;
+	
 	/**
 	 * Create a new RootPanel so that a game's graphics can be contained in an application. 
 	 * @param width The height the panel will be (as well as the root interface)
@@ -41,6 +44,8 @@ public class RootPanel extends JPanel {
 	public RootPanel(int width, int height)
 	{
 		super();
+		
+		this.drawFunction = Optional.empty();
 		
 		Dimension size = new Dimension(width, height);
 		super.setPreferredSize(size);
@@ -71,16 +76,17 @@ public class RootPanel extends JPanel {
 		// Honor a call to the super method
 		super.paintComponent(g);
 		
-		// Try to paint the entire element hierarchy
-		try {
-			elementRoot.drawElement(g, 0, 0);
-		} catch (IteratorException e) {
-			// Darn, an unsafe change happened to the hierarchy during drawing. Try again. 
-			// Note that this may result in a lot of redrawings. May need to be fine-tuned.
-			Logger.writer().println("[NOTICE] Iteration exception while drawing");
-			Logger.writer().flush();
-			paintComponent(g);
-		}
+		// Have the game graphics drawn
+		drawFunction.ifPresent((func) -> func.accept(g));
+	}
+	
+	/**
+	 * Tell the root panel that the given consumer function will be responsible for drawing the game graphics
+	 * @param drawFunction The function that will draw game graphics
+	 */
+	public void setDrawFunction(Consumer<Graphics> drawFunction)
+	{
+		this.drawFunction = Optional.of(drawFunction);
 	}
 	
 	/**

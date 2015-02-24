@@ -30,7 +30,8 @@ public class MessageDialog extends AbstractModalDialog {
 	 * @param width Width of the interface. Text will wrap based on this width
 	 * @param height Height of the interface. 
 	 */
-	public MessageDialog(String message, int x, int y, int width, int height) {
+	public MessageDialog(String message, int x, int y, int width, int height)
+	{
 		// Start with a height of one. We don't really know yet, we'll adjust it soon
 		super(x, y, width, height);
 		

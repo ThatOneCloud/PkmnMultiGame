@@ -1,5 +1,9 @@
 package net.cloud.gfx.elements.modal;
 
+import java.awt.Color;
+import java.awt.Graphics;
+
+import net.cloud.client.util.IteratorException;
 import net.cloud.gfx.elements.Interface;
 import net.cloud.gfx.focus.Focusable;
 import net.cloud.gfx.sprites.SpriteSet;
@@ -16,6 +20,14 @@ public abstract class AbstractModalDialog extends Interface {
 	
 	/** Default priority of a modal dialog. Cannot be beat. */
 	public static final int PRIORITY = Integer.MAX_VALUE;
+	
+	private static final int START_ALPHA = 125;
+	
+	private static final int ALPHA_STEP = 10;
+	
+	private static final Color INITIAL_HIGHLIGHT_COLOR = new Color(50, 50, 200, START_ALPHA);
+	
+	private Color currentHighlightColor;
 	
 	/**
 	 * Constructor for a modal dialog. Unlike some elements, this must have a parent - it must have something 
@@ -50,6 +62,42 @@ public abstract class AbstractModalDialog extends Interface {
 		
 		// We use a background for these dialogs mostly so that they all have them and it looks nicer
 		super.setBackground(SpriteSet.BACKGROUND, bgID);
+		
+		// Start with no highlight. It'll only be turned on briefly when we lose focus.
+		this.currentHighlightColor = null;
+	}
+	
+	/**
+	 * Calls <code>super.drawElement()</code> first. 
+	 * Then, if the dialog has a highlight color (from a click happening off of it), that highlight color will be drawn over 
+	 * the dialog. The highlight fades somewhat quickly.
+	 */
+	@Override
+	public void drawElement(Graphics g, int offsetX, int offsetY) throws IteratorException
+	{
+		super.drawElement(g, offsetX, offsetY);
+
+		// Whilst it would be plenty possible to do this via the task engine, altering it in the loop works too. The timing may just be different.
+		// Anyways, there is a highlight, so we'll need to draw that
+		if(currentHighlightColor != null)
+		{
+			// Set the color and fill the whole dialog with it
+			g.setColor(currentHighlightColor);
+			g.fillRect(offsetX, offsetY, getWidth(), getHeight());
+			
+			// Figure out the new alpha. Generally step it down, to make the color fade
+			int newAlpha = currentHighlightColor.getAlpha() - ALPHA_STEP;
+			
+			// The alpha can't go below 0. If it has, we're done fading the highlight - it can disappear completely
+			if(newAlpha < 0)
+			{
+				currentHighlightColor = null;
+			}
+			// Otherwise, the highlight color will just fade for next time around
+			else {
+				currentHighlightColor = new Color(currentHighlightColor.getRed(), currentHighlightColor.getGreen(), currentHighlightColor.getBlue(), newAlpha);
+			}
+		}
 	}
 	
 	/**
@@ -92,6 +140,16 @@ public abstract class AbstractModalDialog extends Interface {
 	public void setPriority(int priority)
 	{
 		throw new UnsupportedOperationException("Modal dialogs are always on top. Cannot alter priority");
+	}
+	
+	/**
+	 * Notify the dialog that a click was made off of it. This will cause the dialog to show some kind of 
+	 * visual notice to the user that the dialog wants attention. FEED IT! (Bad humor?)
+	 */
+	public void offDialogClick()
+	{
+		// Even if the highlight color is currently fading, we'll change it back to the starting color
+		currentHighlightColor = INITIAL_HIGHLIGHT_COLOR;
 	}
 
 }

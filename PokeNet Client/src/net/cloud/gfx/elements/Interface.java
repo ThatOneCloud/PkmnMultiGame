@@ -73,7 +73,8 @@ public class Interface extends Container {
 	 * @throws IteratorException If the Container's list of children was modified during drawing
 	 */
 	@Override
-	public void drawElement(Graphics g, int offsetX, int offsetY) throws IteratorException {
+	public void drawElement(Graphics g, int offsetX, int offsetY) throws IteratorException
+	{
 		// Draw background sprite
 		background.ifPresent((img) -> g.drawImage(img, offsetX, offsetY, null));
 
