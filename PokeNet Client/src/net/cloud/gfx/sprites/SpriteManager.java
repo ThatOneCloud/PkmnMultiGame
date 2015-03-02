@@ -1,7 +1,10 @@
 package net.cloud.gfx.sprites;
 
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.Shape;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.EnumMap;
@@ -210,10 +213,12 @@ public class SpriteManager {
 	 * Obtain an image which is tiled rather than scaled to the given size. If the size is smaller 
 	 * than the image already is, it will be cropped. If the desired size is larger, the returned 
 	 * image will be the original laid out end-to-end with cropping on the edges to fit the size.
+	 * -1 May be used for a single dimension to maintain the original 
 	 * @param original The image to tile
 	 * @param width The width of the tiled image
 	 * @param height The height of the tiled image
-	 * @return An image of the desired size with the orignal image tiled and/or cropped
+	 * @return An image of the desired size with the original image tiled and/or cropped
+	 * @throws IllegalArgumentException If both width and height are -1
 	 */
 	public BufferedImage getTiledSprite(BufferedImage original, int width, int height)
 	{
@@ -221,6 +226,19 @@ public class SpriteManager {
 		if(original.getWidth() == width && original.getHeight() == height)
 		{
 			return original;
+		}
+		
+		if(width == -1 && height == -1)
+		{
+			throw new IllegalArgumentException("Width and height may not both be -1");
+		}
+		// Maintain same width
+		else if(width == -1) {
+			width = original.getWidth();
+		}
+		// Maintain same height
+		else if(height == -1) {
+			height = original.getHeight();
 		}
 		
 		// Create a new BufferedImage which we'll draw the tiled one into
@@ -252,6 +270,62 @@ public class SpriteManager {
 		}
 		
 		return tiledImg;
+	}
+	
+	/**
+	 * Obtain a rotated sprite. The rotation is in degrees. This will always give back a new image, 
+	 * rather than the original. The rotation is around the center point of the sprite. 
+	 * @param set The set the original sprite is in
+	 * @param spriteID The ID of the original sprite
+	 * @param rotation The amount of rotation, in degrees
+	 * @return A sprite rotated the given amount
+	 */
+	public BufferedImage getRotatedSprite(SpriteSet set, int spriteID, int rotation)
+	{
+		// Get the original
+		BufferedImage original = getSprite(set, spriteID);
+
+		// Rotate the original
+		return getRotatedSprite(original, rotation);
+	}
+	
+	/**
+	 * Obtain a rotated sprite. The rotation is in degrees. This will always give back a new image, 
+	 * rather than the original. The rotation is around the center point of the sprite. 
+	 * @param original The image to rotate
+	 * @param rotation The amount of rotation, in degrees
+	 * @return An image rotated the given amount
+	 */
+	public BufferedImage getRotatedSprite(BufferedImage original, int rotation)
+	{
+		// Bound the rotation within 0-359 inclusive
+		rotation = Math.abs(rotation) % 360;
+		
+		// Use a transformation for rotation. Will rotate around the center point.
+		AffineTransform rotTx = AffineTransform.getRotateInstance(Math.toRadians(rotation), original.getWidth() / 2.0, original.getHeight() / 2.0);
+		
+		// Need to figure out what the dimensions of the new image will need to be
+		Shape rotShape = rotTx.createTransformedShape(new Rectangle(original.getWidth(), original.getHeight()));
+		Rectangle rotRect = rotShape.getBounds();
+		
+		// Translate back from the origin
+		rotTx.translate(rotRect.x, -rotRect.y);
+		
+		// Create a new BufferedImage which we'll draw the rotated one into
+		BufferedImage rotImg = new BufferedImage(rotRect.width, rotRect.height, original.getType());
+
+		// Utilize Graphics2D to draw the 'tiles'
+		Graphics2D g2d = rotImg.createGraphics();
+		
+		// Make sure we dispose of the graphics, in case anything happens. 
+		try {
+			// Draw using the transformation
+			g2d.drawImage(original, rotTx, null);
+		} finally {
+			g2d.dispose();
+		}
+		
+		return rotImg;
 	}
 	
 	/**

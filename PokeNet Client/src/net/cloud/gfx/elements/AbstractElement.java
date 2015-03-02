@@ -43,25 +43,23 @@ public abstract class AbstractElement implements Element {
 	 */
 	public AbstractElement()
 	{
-		this(null, 0, 0, 0, 0, 0);
+		this(0, 0, 0, 0, 0);
 	}
 	
 	/**
 	 * Initialize an AbstractElement so each of its fields are set to the given values. 
 	 * The element will by default not have focus. The width and height will be 0. 
-	 * @param parent The element containing this one, or null
 	 * @param priority Essentially the Z coordinate. Higher is on top.
 	 * @param x The X coordinate of this element relative to its parent
 	 * @param y The Y coordinate of this element relative to its parent
 	 */
-	public AbstractElement(ParentElement parent, int priority, int x, int y) 
+	public AbstractElement(int priority, int x, int y) 
 	{
-		this(parent, priority, x, y, 0, 0);
+		this(priority, x, y, 0, 0);
 	}
 	
 	/**
 	 * Initialize an AbstractElement so each of its fields are set to the given values.
-	 * @param parent The element containing this one, or null
 	 * @param priority Essentially the Z coordinate. Higher is on top.
 	 * @param x The X coordinate of this element relative to its parent
 	 * @param y The Y coordinate of this element relative to its parent
@@ -69,13 +67,12 @@ public abstract class AbstractElement implements Element {
 	 * @param height The height of this element. May be 0.
 	 */
 	public AbstractElement(
-			ParentElement parent,
 			int priority,
 			int x, 
 			int y, 
 			int width, 
 			int height) {
-		this.parent = Optional.ofNullable(parent);
+		this.parent = Optional.empty();
 		this.priority = priority;
 		this.rectangle = new Rectangle(x, y, width, height);
 		this.focusHandler = new SingleFocusHandler();

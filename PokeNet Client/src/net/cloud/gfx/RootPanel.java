@@ -121,6 +121,7 @@ public class RootPanel extends JPanel {
 	{
 		mouseEventHandler = new MouseEventHandler(this, elementRoot);
 		this.addMouseListener(mouseEventHandler);
+		this.addMouseWheelListener(mouseEventHandler);
 		
 		keyEventHandler = new KeyEventHandler();
 		this.addKeyListener(keyEventHandler);

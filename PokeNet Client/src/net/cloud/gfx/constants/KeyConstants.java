@@ -29,6 +29,18 @@ public class KeyConstants {
 	/** Down arrow key */
 	public static final char DOWN_ARROW = 0xFF04;
 	
+	/** Scrolling left. Because it should be a thing. */
+	public static final char SCROLL_LEFT = 0xFF05;
+	
+	/** Mouse wheel scrolling up */
+	public static final char SCROLL_UP = 0xFF06;
+	
+	/** Scrolling right. Because it should also be a thing. */
+	public static final char SCROLL_RIGHT = 0xFF07;
+	
+	/** Mouse wheel scrolling down */
+	public static final char SCROLL_DOWN = 0xFF08;
+	
 	/** Where the re-purposed characters end. The highest possible value for them. */
 	public static final char LAST_CUSTOM_CHAR = 0xFFEE;
 

@@ -1,17 +1,24 @@
 
 package net.cloud.gfx.handlers;
 
+import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
+
+import javax.swing.SwingUtilities;
 
 import net.cloud.client.logging.Logger;
 import net.cloud.client.util.IteratorException;
 import net.cloud.gfx.Mainframe;
 import net.cloud.gfx.RootPanel;
+import net.cloud.gfx.constants.KeyConstants;
 import net.cloud.gfx.elements.Element;
 import net.cloud.gfx.elements.Interface;
 import net.cloud.gfx.elements.modal.ModalManager;
+import net.cloud.gfx.focus.FocusController;
+import net.cloud.gfx.focus.Focusable;
 
 /**
  * This MouseAdapter will listen for mouse events in general and 
@@ -138,11 +145,11 @@ public class MouseEventHandler extends MouseAdapter {
 	{
 		// Determine if right or left click. Others are ignored.
 		boolean isRightClick = false;
-		if(event.getButton() == MouseEvent.BUTTON2)
+		if(SwingUtilities.isRightMouseButton(event))
 		{
 			isRightClick = true;
 		}
-		else if(event.getButton() != MouseEvent.BUTTON1) {
+		else if(!SwingUtilities.isLeftMouseButton(event)) {
 			return;
 		}
 		
@@ -160,6 +167,37 @@ public class MouseEventHandler extends MouseAdapter {
 		
 		// ... and send it there!
 		element.clicked(element, point, isRightClick);
+	}
+	
+	/**
+	 * The mouse wheel was rotated. We'll actually treat this like a key press, to utilize the chain-of-responsibility 
+	 * that key events utilize. 
+	 */
+	@Override
+	public void mouseWheelMoved(MouseWheelEvent event)
+	{
+		// The rotation we're interested in is how many times the wheel clicked along. If you using a click-y wheel.
+		int rotation = event.getWheelRotation();
+		
+		// It may return 0 if its a high precision wheel. We'll only fire when a full click happens */
+		if(rotation == 0)
+		{
+			return;
+		}
+		
+		// Translate the event to a character. Shift being held down transforms it to horizontal scrolling
+		// A fun one: Everything below here could be combined in one go, in one line, one semicolon. But clarity is probably better, lol
+		char eventChar;
+		if(event.isShiftDown())
+		{
+			eventChar = rotation > 0 ? KeyConstants.SCROLL_RIGHT : KeyConstants.SCROLL_LEFT;
+		}
+		else {
+			eventChar = rotation > 0 ? KeyConstants.SCROLL_DOWN : KeyConstants.SCROLL_UP;
+		}
+		
+		// Yes, we have our own handle char method, just for this
+		handleChar(eventChar);
 	}
 	
 	/**
@@ -193,6 +231,50 @@ public class MouseEventHandler extends MouseAdapter {
 		}
 		
 		return topElement;
+	}
+	
+	/**
+	 * Our own handleChar implementation, for the mouse wheel events. Copied here rather than publicizing it in 
+	 * KeyEventHandler. 
+	 * @param c The character to fire an event for
+	 */
+	private void handleChar(char c)
+	{
+		Focusable current = FocusController.instance().currentFocusable();
+		
+		// Make sure we're sending the event somewhere
+		if(current != null)
+		{
+			// Separately check that where we're sending it is the modal dialog, given one is present
+			if(ModalManager.instance().getCurrentModal().isPresent() && !currentIsModal())
+			{
+				// There's a modal dialog and its lost focus. Can't allow key events to go elsewhere
+				return;
+			}
+
+			current.keyTyped(c);
+		}
+	}
+	
+	/**
+	 * Assumes a check has been made and a modal dialog is present. 
+	 * Check to see if the current focused object is the modal dialog, or a child of the modal dialog. 
+	 * If the current focused object is not an Element, then this will simply return false. 
+	 * @return True if the currently focused object is within scope of the modal dialog
+	 */
+	private boolean currentIsModal()
+	{
+		// Check to see if the current focusable is not an element. If it isn't, well, it sure isn't a modal dialog
+		if(!(FocusController.instance().currentFocusable() instanceof Element))
+		{
+			return false;
+		}
+
+		// Safe cast. Above make sure the current focused object is an Element type
+		Element current = (Element) FocusController.instance().currentFocusable();
+
+		// Modal manager can take it from here
+		return ModalManager.elementWithinModal(current);
 	}
 
 }

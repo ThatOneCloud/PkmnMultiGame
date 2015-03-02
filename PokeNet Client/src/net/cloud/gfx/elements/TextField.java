@@ -96,7 +96,7 @@ public class TextField extends AbstractElement {
 	 */
 	public TextField(int x, int y)
 	{
-		super(null, PRIORITY, x, y, 100, 22);
+		super(PRIORITY, x, y, 100, 22);
 		
 		// No hint text, so just create plain empty text
 		this.textBuilder = new StringBuilder("");
@@ -121,7 +121,7 @@ public class TextField extends AbstractElement {
 	 */
 	public TextField(int x, int y, int width, int height, String hintText)
 	{
-		super(null, PRIORITY, x, y, width, height);
+		super(PRIORITY, x, y, width, height);
 		
 		this.hintText = hintText;
 		
@@ -156,7 +156,7 @@ public class TextField extends AbstractElement {
 	 */
 	public TextField(int x, int y, int width, int height, String hintText, int firstSpriteID, int bgSpriteID)
 	{
-		super(null, PRIORITY, x, y, width, height);
+		super(PRIORITY, x, y, width, height);
 		
 		this.hintText = hintText;
 		

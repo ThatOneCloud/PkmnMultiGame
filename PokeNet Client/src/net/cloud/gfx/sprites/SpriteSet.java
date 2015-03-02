@@ -23,6 +23,9 @@ public enum SpriteSet {
 	/** All of the various frame assets. Blocks of 4, for each side of the frame */
 	FRAME(		"ui/frame",			false,	SpriteCollectionType.BLOCK,		new Object[] {new Integer(4)}),
 	
+	/** All of the various scroll view assets. Blocks of 10, for each set of scroll view assets */
+	SCROLL(		"ui/scroll",		false,	SpriteCollectionType.BLOCK,		new Object[] {new Integer(10)}),
+	
 	/** All of the various text field assets. Blocks of 5, since there are 5 per field */
 	TEXT_FIELD(	"ui/text_field",	false,	SpriteCollectionType.BLOCK,		new Object[] {new Integer(5)}),
 	

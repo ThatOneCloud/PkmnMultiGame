@@ -71,7 +71,7 @@ public class Text extends AbstractElement {
 	 */
 	public Text(String text, int priority, int x, int y, Font font, Color color)
 	{
-		super(null, priority, x, y);
+		super(priority, x, y);
 		
 		this.text = text;
 		this.font = font;

@@ -74,7 +74,7 @@ public class TextArea extends AbstractElement {
 	 */
 	public TextArea(String text, int x, int y, int width, Font font, Color color)
 	{
-		super(null, PRIORITY, x, y);
+		super(PRIORITY, x, y);
 		super.setWidth(width);
 		
 		this.text = text;

@@ -32,6 +32,13 @@ public class ImageButton extends AbstractButton {
 	/** Background for when the button is pressed down. */
 	private BufferedImage pressedImage;
 	
+	/**
+	 * Create a new image button with the given image. It will be from the Button sprite set. 
+	 * The width and height of the button will match the image.
+	 * @param x X location
+	 * @param y Y location
+	 * @param spriteID The first ID of the image sprites to use
+	 */
 	public ImageButton(int x, int y, int spriteID)
 	{
 		// Create with no with or height to start
@@ -48,6 +55,14 @@ public class ImageButton extends AbstractButton {
 		actionHandler = Optional.empty();
 	}
 	
+	/**
+	 * Create a new image button using the given image scaled to the given dimensions
+	 * @param x X location
+	 * @param y Y location
+	 * @param width Width of the button
+	 * @param height Height of the button
+	 * @param spriteID The first ID of the image sprites to use
+	 */
 	public ImageButton(int x, int y, int width, int height, int spriteID)
 	{
 		// Create with specified width and height
@@ -56,6 +71,31 @@ public class ImageButton extends AbstractButton {
 		// Normal sprite initialization, followed by scaling. Would have to load normal sprites anyways, so not inefficient.
 		spriteInit(spriteID);
 		scaleSprites();
+		
+		// No action handler to start
+		actionHandler = Optional.empty();
+	}
+	
+	/**
+	 * Create a new image button using the given images
+	 * @param x X location
+	 * @param y Y location
+	 * @param normal Image for when the button is just sitting there
+	 * @param focused Image for when the button has key focus
+	 * @param pressed Image for when the button is pressed down
+	 */
+	public ImageButton(int x, int y, BufferedImage normal, BufferedImage focused, BufferedImage pressed)
+	{
+		// Create with no with or height to start
+		super(PRIORITY, x, y);
+		
+		this.normalImage = normal;
+		this.focusImage = focused;
+		this.pressedImage = pressed;
+		
+		// Set the width & height to match the sprites
+		super.setWidth(normalImage.getWidth());
+		super.setHeight(normalImage.getHeight());
 		
 		// No action handler to start
 		actionHandler = Optional.empty();

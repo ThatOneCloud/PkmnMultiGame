@@ -57,7 +57,7 @@ public class Sprite extends AbstractElement {
 	 */
 	public Sprite(SpriteSet set, int id, int x, int y, int priority)
 	{
-		super(null, priority, x, y);
+		super(priority, x, y);
 		
 		// Set sprite, width, and height
 		changeImage(set, id);
@@ -73,7 +73,7 @@ public class Sprite extends AbstractElement {
 	 */
 	public Sprite(BufferedImage img, int x, int y, int priority)
 	{
-		super(null, priority, x, y);
+		super(priority, x, y);
 		
 		// Set the sprite, width, and height
 		changeImage(img);
@@ -90,7 +90,7 @@ public class Sprite extends AbstractElement {
 	 */
 	protected Sprite(int x, int y, int width, int height)
 	{
-		super(null, PRIORITY, x, y, width, height);
+		super(PRIORITY, x, y, width, height);
 	}
 
 	/**

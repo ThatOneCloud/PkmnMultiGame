@@ -25,7 +25,7 @@ public abstract class AbstractButton extends AbstractElement {
 	 */
 	public AbstractButton(int priority, int x, int y)
 	{
-		super(null, priority, x, y);
+		super(priority, x, y);
 		
 		deregisterTarget = Optional.empty();
 	}
@@ -40,7 +40,7 @@ public abstract class AbstractButton extends AbstractElement {
 	 */
 	public AbstractButton(int priority, int x, int y, int width, int height)
 	{
-		super(null, priority, x, y, width, height);
+		super(priority, x, y, width, height);
 		
 		deregisterTarget = Optional.empty();
 	}

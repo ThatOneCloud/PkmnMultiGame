@@ -29,6 +29,9 @@ public class Client {
 	 * @param args Runtime arguments. Accepts none.
 	 */
 	public static void main(String[] args) {
+		// Honestly this is here so that it kicks open the Eclipse console window
+		System.err.println("Starting PokeNet Client!");
+		
 		// Kick off the client on the main thread
 		Client.getInstance().init();
 	}

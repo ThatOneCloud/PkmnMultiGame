@@ -35,14 +35,13 @@ public abstract class Container extends AbstractElement {
 	/**
 	 * Initialize a Container so each of its fields are set to the given values. 
 	 * The element will by default not have focus. The width and height will be 0. 
-	 * @param parent The element containing this one, or null
 	 * @param priority Essentially the Z coordinate. Higher is on top.
 	 * @param x The X coordinate of this element relative to its parent
 	 * @param y The Y coordinate of this element relative to its parent
 	 */
-	public Container(ParentElement parent, int priority, int x, int y) 
+	public Container(int priority, int x, int y) 
 	{
-		super(parent, priority, x, y, 0, 0);
+		super(priority, x, y, 0, 0);
 		
 		// Use a different kind of FocusHandler, rather than the default one Element provides
 		super.setFocusHandler(new ContainerFocusHandler());
@@ -53,16 +52,15 @@ public abstract class Container extends AbstractElement {
 	/**
 	 * Initialize a Container so each of its fields are set to the given values. 
 	 * The element will by default not have focus. 
-	 * @param parent The element containing this one, or null
 	 * @param priority Essentially the Z coordinate. Higher is on top.
 	 * @param x The X coordinate of this element relative to its parent
 	 * @param y The Y coordinate of this element relative to its parent
 	 * @param width The width of this element. May be 0.
 	 * @param height The height of this element. May be 0.
 	 */
-	public Container(ParentElement parent, int priority, int x, int y, int width, int height) 
+	public Container(int priority, int x, int y, int width, int height) 
 	{
-		super(parent, priority, x, y, width, height);
+		super(priority, x, y, width, height);
 		
 		// Use a different kind of FocusHandler, rather than the default one Element provides
 		super.setFocusHandler(new ContainerFocusHandler());

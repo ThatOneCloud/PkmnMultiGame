@@ -45,7 +45,7 @@ public class Interface extends Container {
 	 */
 	public Interface(int x, int y, int width, int height)
 	{
-		super(null, PRIORITY, x, y, width, height);
+		super(PRIORITY, x, y, width, height);
 		
 		this.background = Optional.empty();
 	}
@@ -61,7 +61,7 @@ public class Interface extends Container {
 	 */
 	public Interface(int priority, int x, int y, int width, int height)
 	{
-		super(null, priority, x, y, width, height);
+		super(priority, x, y, width, height);
 		
 		this.background = Optional.empty();
 	}
