@@ -38,6 +38,7 @@ public class MessageDialog extends AbstractModalDialog {
 		buttonCallback = Optional.empty();
 	
 		// Place a text area, inset a bit to give it a border
+		// TODO: Use a ScrollView! (Then make some of the other dialogs)
 		TextArea textArea = new TextArea(message, INSET, INSET, width - (2 * INSET));
 		add(textArea);
 		

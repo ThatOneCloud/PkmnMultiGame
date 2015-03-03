@@ -28,7 +28,7 @@ public class ScrollView extends AbstractElement {
 	 * A simple enum, scroll bars may either always be showing or only show when they would be needed. 
 	 * Yes, an enum rather than booleans. It's... clearer.
 	 */
-	public static enum ScrollbarVisibility {ALWAYS, WHEN_NEEDED};
+	public static enum BarVisibility {ALWAYS, WHEN_NEEDED};
 	
 	/** Offset for the top border sprite */
 	private static final int TOP_BORDER = 0;
@@ -64,10 +64,10 @@ public class ScrollView extends AbstractElement {
 	private static final int SCROLL_AMOUNT = 5;
 	
 	/** The 'mode' the vertical scroll bar will be in */
-	private ScrollbarVisibility verticalVisibility;
+	private BarVisibility verticalVisibility;
 	
 	/** The 'mode' the horizontal scroll bar will be in */
-	private ScrollbarVisibility horizontalVisibility;
+	private BarVisibility horizontalVisibility;
 	
 	/** Whether or not to display the frame when neither of the scrollbars are showing */
 	private boolean hideFrame;
@@ -112,7 +112,7 @@ public class ScrollView extends AbstractElement {
 	 */
 	public ScrollView(Element view, int x, int y, int width, int height)
 	{
-		this(view, x, y, width, height, ScrollbarVisibility.ALWAYS, ScrollbarVisibility.ALWAYS);
+		this(view, x, y, width, height, BarVisibility.ALWAYS, BarVisibility.ALWAYS);
 	}
 	
 	/**
@@ -128,7 +128,30 @@ public class ScrollView extends AbstractElement {
 	 * @param verticalMode Visibility mode for the vertical scroll bar
 	 * @param horizontalMode Visibility mode for the horizontal scroll bar
 	 */
-	public ScrollView(Element view, int x, int y, int width, int height, ScrollbarVisibility verticalMode, ScrollbarVisibility horizontalMode)
+	public ScrollView(Element view, int x, int y, int width, int height, BarVisibility verticalMode, BarVisibility horizontalMode)
+	{
+		this(view, x, y, width, height, verticalMode, horizontalMode, 0, 18);
+	}
+	
+	/**
+	 * Full specification constructor. 
+	 * Create a new ScrollView which will have its top left at the given x, y location and have a final width and height as given. 
+	 * The scroll bars will use the given modes. 
+	 * Image assets will start with the given asset grouping, and hiding the frame is false.
+	 * @param view The element to show in the view
+	 * @param x The x location
+	 * @param y The y location
+	 * @param width Total width of the view and the scroll bar
+	 * @param height Total height of the view and the scroll bar
+	 * @param verticalMode Visibility mode for the vertical scroll bar
+	 * @param horizontalMode Visibility mode for the horizontal scroll bar
+	 * @param firstScrollSpriteID The ID of the first sprite in this scroll SpriteSet to use (the top border)
+	 * @param firstButtonSpriteID The ID of the first sprite in the button SpriteSet to use (the normal jump button)
+	 */
+	public ScrollView(Element view,
+			int x, int y, int width, int height,
+			BarVisibility verticalMode, BarVisibility horizontalMode,
+			int firstScrollSpriteID, int firstButtonSpriteID)
 	{
 		super(PRIORITY, x, y, width, height);
 		
@@ -139,9 +162,9 @@ public class ScrollView extends AbstractElement {
 		
 		this.hideFrame = false;
 		
-		this.firstSpriteID = 0;
-		initBorders(0);
-		initScrollButtons(18);
+		this.firstSpriteID = firstScrollSpriteID;
+		initBorders(firstScrollSpriteID);
+		initScrollButtons(firstButtonSpriteID);
 		assignButtonActions();
 		
 		// Scrollbars are created later, when they are needed, since at start they may not be and we do not know
@@ -301,6 +324,16 @@ public class ScrollView extends AbstractElement {
 		// Draw the view last - gives us the most recent scroll figures
 		drawElementView(g, offsetX, offsetY);
 	}
+	
+	/**
+	 * Set whether or not this scroll view will hide its frame when no scroll bars are visible. 
+	 * (Of course, for this to happen, both bars must be in WHEN_NEEDED mode)
+	 * @param hideFrame True if the frame should hide when possible
+	 */
+	public void setFrameHiding(boolean hideFrame)
+	{
+		this.hideFrame = hideFrame;
+	}
 
 	/**
 	 * Draw just the borders. These are the four borders that frame the scroll view.
@@ -328,14 +361,14 @@ public class ScrollView extends AbstractElement {
 	private void updateVerticalBarVisibility()
 	{
 		// Do we have a bar and no longer need it?
-		if(verticalBar.isPresent() && !vScrollbarNeeded() && verticalVisibility == ScrollbarVisibility.WHEN_NEEDED)
+		if(verticalBar.isPresent() && !vScrollbarNeeded() && verticalVisibility == BarVisibility.WHEN_NEEDED)
 		{
 			// Removing and setting it to empty is like saying it no longer exists
 			verticalBar.get().setParent(null);
 			verticalBar = Optional.empty();
 		}
 		// Or do we not have it and need it now?
-		else if(!verticalBar.isPresent() && vScrollbarNeeded())
+		else if(!verticalBar.isPresent() && (vScrollbarNeeded() || verticalVisibility == BarVisibility.ALWAYS))
 		{
 			// Create a scroll bar
 			int trackBegin = scrollButtons[VERTICAL][CLICK][BEGIN].getY() + scrollButtons[VERTICAL][CLICK][BEGIN].getHeight();
@@ -360,14 +393,14 @@ public class ScrollView extends AbstractElement {
 	private void updateHorizontalBarVisibility()
 	{
 		// Do we still need the horizontal bar?
-		if(horizontalBar.isPresent() && !hScrollbarNeeded() && horizontalVisibility == ScrollbarVisibility.WHEN_NEEDED)
+		if(horizontalBar.isPresent() && !hScrollbarNeeded() && horizontalVisibility == BarVisibility.WHEN_NEEDED)
 		{
 			// Removing and setting it to empty is like saying it no longer exists
 			horizontalBar.get().setParent(null);
 			horizontalBar = Optional.empty();
 		}
 		// Or do we not have the horizontal bar and need it now?
-		else if(!horizontalBar.isPresent() && hScrollbarNeeded())
+		else if(!horizontalBar.isPresent() && (hScrollbarNeeded() || horizontalVisibility == BarVisibility.ALWAYS))
 		{
 			// Create a scroll bar
 			int trackBegin = scrollButtons[HORIZONTAL][CLICK][BEGIN].getX() + scrollButtons[HORIZONTAL][CLICK][BEGIN].getWidth();
@@ -944,6 +977,15 @@ public class ScrollView extends AbstractElement {
 		/** Offset for the bottom border sprite ID */
 		private static final int BOTTOM_BORDER = 4;
 		
+		/** Offset for the pressed in top background sprite ID */
+		private static final int PRESSED_TOP_BACKGROUND = 5;
+		
+		/** Offset for the pressed in center sprite ID */
+		private static final int PRESSED_CENTER = 6;
+		
+		/** Offset for the pressed in bottom background sprite ID */
+		private static final int PRESSED_BOTTOM_BACKGROUND = 7;
+		
 		/** Whether the scrollbar is horizontal or vertical */
 		private final int orientation;
 		
@@ -967,6 +1009,15 @@ public class ScrollView extends AbstractElement {
 		
 		/** The very bottom scroll bar sprite. Not meant to be resized. */
 		private BufferedImage bottomBorder;
+		
+		/** Sprite for the pressed in stretch-able top portion of the scroll bar */
+		private BufferedImage pressedTopBg;
+		
+		/** Pressed in center image, not meant to be resized */
+		private BufferedImage pressedCenterImg;
+		
+		/** Sprite for the pressed in stretch-able bottom portion of the scroll bar */
+		private BufferedImage pressedBottomBg;
 		
 		/**
 		 * Create a scroll bar at the given location, using the given orientation (which is either VERTICAL or HORIZONTAL)
@@ -1022,6 +1073,10 @@ public class ScrollView extends AbstractElement {
 				centerImg = SpriteManager.instance().getSprite(SpriteSet.SCROLL, firstSpriteID + CENTER);
 				bottomBg = SpriteManager.instance().getSprite(SpriteSet.SCROLL, firstSpriteID + BOTTOM_BACKGROUND);
 				bottomBorder = SpriteManager.instance().getSprite(SpriteSet.SCROLL, firstSpriteID + BOTTOM_BORDER);
+				
+				pressedTopBg = SpriteManager.instance().getSprite(SpriteSet.SCROLL, firstSpriteID + PRESSED_TOP_BACKGROUND);
+				pressedCenterImg = SpriteManager.instance().getSprite(SpriteSet.SCROLL, firstSpriteID + PRESSED_CENTER);
+				pressedBottomBg = SpriteManager.instance().getSprite(SpriteSet.SCROLL, firstSpriteID + PRESSED_BOTTOM_BACKGROUND);
 			}
 			// If it's not vertical, it must be horizontal
 			else {
@@ -1031,6 +1086,10 @@ public class ScrollView extends AbstractElement {
 				centerImg = SpriteManager.instance().getRotatedSprite(SpriteSet.SCROLL, firstSpriteID + CENTER, 90);
 				bottomBg = SpriteManager.instance().getRotatedSprite(SpriteSet.SCROLL, firstSpriteID + BOTTOM_BACKGROUND, 90);
 				bottomBorder = SpriteManager.instance().getRotatedSprite(SpriteSet.SCROLL, firstSpriteID + BOTTOM_BORDER, 90);
+				
+				pressedTopBg = SpriteManager.instance().getRotatedSprite(SpriteSet.SCROLL, firstSpriteID + PRESSED_TOP_BACKGROUND, 90);
+				pressedCenterImg = SpriteManager.instance().getRotatedSprite(SpriteSet.SCROLL, firstSpriteID + PRESSED_CENTER, 90);
+				pressedBottomBg = SpriteManager.instance().getRotatedSprite(SpriteSet.SCROLL, firstSpriteID + PRESSED_BOTTOM_BACKGROUND, 90);
 			}
 		}
 
@@ -1044,6 +1103,11 @@ public class ScrollView extends AbstractElement {
 		@Override
 		public void drawElement(Graphics g, int offsetX, int offsetY) throws IteratorException
 		{
+			// Give us local references for the pressed images, so we only have to condition once (Well three because ternary.. shhh)
+			BufferedImage topBg = isPressedDown() ? this.pressedTopBg : this.topBg;
+			BufferedImage centerImg = isPressedDown() ? this.pressedCenterImg : this.centerImg;
+			BufferedImage bottomBg = isPressedDown() ? this.pressedBottomBg : this.bottomBg;
+			
 			// Draw is slightly different based on orientation
 			if(orientation == VERTICAL)
 			{
@@ -1211,6 +1275,8 @@ public class ScrollView extends AbstractElement {
 				// Obtain some newly sized images for the backgrounds
 				topBg = SpriteManager.instance().getTiledSprite(topBg, -1, topBgHeight);
 				bottomBg = SpriteManager.instance().getTiledSprite(bottomBg, -1, bottomBgHeight);
+				pressedTopBg = SpriteManager.instance().getTiledSprite(pressedTopBg, -1, topBgHeight);
+				pressedBottomBg = SpriteManager.instance().getTiledSprite(pressedBottomBg, -1, bottomBgHeight);
 				
 				// Update the height. It's probably different now
 				setHeight(topBorder.getHeight() + topBg.getHeight() + centerImg.getHeight() + bottomBg.getHeight() + bottomBorder.getHeight());
@@ -1230,6 +1296,8 @@ public class ScrollView extends AbstractElement {
 				// Obtain some newly sized images for the backgrounds
 				topBg = SpriteManager.instance().getTiledSprite(topBg, topBgWidth, -1);
 				bottomBg = SpriteManager.instance().getTiledSprite(bottomBg, bottomBgWidth, -1);
+				pressedTopBg = SpriteManager.instance().getTiledSprite(pressedTopBg, topBgWidth, -1);
+				pressedBottomBg = SpriteManager.instance().getTiledSprite(pressedBottomBg, bottomBgWidth, -1);
 				
 				// Update the width, it's probably different now
 				super.setWidth(topBorder.getWidth() + topBg.getWidth() + centerImg.getWidth() + bottomBg.getWidth() + bottomBorder.getWidth());
@@ -1261,3 +1329,5 @@ public class ScrollView extends AbstractElement {
 	}
 
 }
+
+//lol logan was here. RSN: Memento
