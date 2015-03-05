@@ -2,6 +2,7 @@ package net.cloud.gfx.interfaces;
 
 import java.awt.EventQueue;
 
+import net.cloud.client.util.function.InputValidator;
 import net.cloud.gfx.constants.Colors;
 import net.cloud.gfx.elements.Button;
 import net.cloud.gfx.elements.CenteredText;
@@ -108,17 +109,20 @@ public class SpriteTestInterface extends Interface {
 		
 		
 		TextArea textArea = new TextArea("A large block of text that is displayed on multiple "
-				+ "lines almost like a paragraph is placed within a text area", 600, 130, 120);
+				+ "lines almost like a paragraph is placed within a texty area", 600, 130, 120);
 		add(textArea);
 		
 		
 		
 		
 		Interface largeInterface = new Interface(0, 0, 200, 600);
-		largeInterface.add(new TextArea("This is where my skills at rambling come in handy. I need some large blocks of text to generate test elements with, so I can just type for a while and see what comes out. This should be long enough for the first block.", 10, 10, 170));
-		largeInterface.add(new TextArea("This is another sizeable block of text but instead it is placed downwards in the interface so that there is a gap between it and the previous block of text. That way, to see it, you must scroll down to it.", 10, 300, 130));
+		largeInterface.add(new TextArea("This is where my skills at rambling come in handy. I need some large blocks of text to generate test elements with, "
+				+ "so I can just type for a while and see what comes out. This should be long enough for the first block.", 10, 10, 170));
+		largeInterface.add(new TextArea("This is another sizeable block of text but instead it is placed downwards in the interface so that there is a gap "
+				+ "between it and the previous block of text. That way, to see it, you must scroll down to it.", 10, 300, 130));
 		ScrollView scrollView = new ScrollView(largeInterface, 300, 40, 170, 200);
 		add(scrollView);
+		
 		
 		
 		
@@ -130,8 +134,10 @@ public class SpriteTestInterface extends Interface {
 //			public void run() {
 //				try {
 //					System.out.println("showing dialog");
-//					ModalManager.instance().showMessageDialog("modal", "A friendly message from your friendly neighborhood programmer!");
-//					System.out.println("done showing dialog");
+//					InputValidator<String> v = (txt) -> txt.length() > 15 ? InputValidator.VALID : "Needs to be longer";
+//					String input = ModalManager.instance().showInputDialog("Input!", "Enter something!", v);
+//					System.out.println("done showing dialog. Input: " + input);
+//					
 //				} catch (ModalException e) {
 //					e.printStackTrace();
 //				}

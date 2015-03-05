@@ -31,5 +31,15 @@ public enum Fonts {
 	{
 		return font;
 	}
+	
+	/**
+	 * Obtain the font but the given size rather than default
+	 * @param size Size of the font to get
+	 * @return Resized font
+	 */
+	public Font size(float size)
+	{
+		return font.deriveFont(size);
+	}
 
 }

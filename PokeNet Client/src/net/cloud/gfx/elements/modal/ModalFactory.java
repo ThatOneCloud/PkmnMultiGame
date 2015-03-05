@@ -1,5 +1,6 @@
 package net.cloud.gfx.elements.modal;
 
+import net.cloud.client.util.function.InputValidator;
 import net.cloud.gfx.elements.Element;
 
 /**
@@ -41,6 +42,58 @@ public class ModalFactory {
 		int locY = (parent.getHeight() - MSG_HEIGHT) / 2;
 		
 		return new MessageDialog(message, locX, locY, MSG_WIDTH, MSG_HEIGHT);
+	}
+	
+	/**
+	 * Create a confirmation dialog meant to be placed in the center of the given element. 
+	 * (The location will be centered based on the element's width and height) 
+	 * Nothing extra will be added, a dialog will just be created.
+	 * @param parent The element which will contain this dialog
+	 * @param prompt The message to show on the dialog
+	 * @return A ConfirmationDialog centered in the parent, with the given message
+	 */
+	public ConfirmationDialog createConfirmationDialog(Element parent, String prompt)
+	{
+		// Figure out where the location should be, using the default dimensions
+		int locX = (parent.getWidth() - MSG_WIDTH) / 2;
+		int locY = (parent.getHeight() - MSG_HEIGHT) / 2;
+		
+		return new ConfirmationDialog(prompt, locX, locY, MSG_WIDTH, MSG_HEIGHT);
+	}
+	
+	/**
+	 * Create an input dialog meant to be placed in the center of the given element. 
+	 * (The location will be centered based on the element's width and height) 
+	 * Nothing extra will be added, a dialog will just be created.
+	 * @param parent The element which will contain this dialog
+	 * @param prompt The message to show on the dialog
+	 * @return An InputDialog centered in the parent, with the given message
+	 */
+	public InputDialog createInputDialog(Element parent, String prompt)
+	{
+		// Figure out where the location should be, using the default dimensions
+		int locX = (parent.getWidth() - MSG_WIDTH) / 2;
+		int locY = (parent.getHeight() - MSG_HEIGHT) / 2;
+		
+		return new InputDialog(prompt, locX, locY, MSG_WIDTH, MSG_HEIGHT);
+	}
+	
+	/**
+	 * Create an input dialog meant to be placed in the center of the given element. 
+	 * (The location will be centered based on the element's width and height) 
+	 * Nothing extra will be added, a dialog will just be created.
+	 * @param parent The element which will contain this dialog
+	 * @param prompt The message to show on the dialog
+	 * @param inputValidator An object to make sure the dialog returns only valid input
+	 * @return An InputDialog centered in the parent, with the given message
+	 */
+	public InputDialog createInputDialog(Element parent, String prompt, InputValidator<String> inputValidator)
+	{
+		// Figure out where the location should be, using the default dimensions
+		int locX = (parent.getWidth() - MSG_WIDTH) / 2;
+		int locY = (parent.getHeight() - MSG_HEIGHT) / 2;
+		
+		return new InputDialog(prompt, locX, locY, MSG_WIDTH, MSG_HEIGHT, inputValidator);
 	}
 
 }

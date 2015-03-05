@@ -3,9 +3,10 @@ package net.cloud.gfx.elements;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.Shape;
 import java.awt.image.BufferedImage;
 import java.util.Optional;
+
+import javax.swing.SwingUtilities;
 
 import net.cloud.client.util.IteratorException;
 import net.cloud.gfx.constants.KeyConstants;
@@ -99,6 +100,12 @@ public class ScrollView extends AbstractElement {
 	/** The buttons for scrolling */
 	private ImageButton scrollButtons[][][];
 	
+	/** The bounding rectangle for the graphic clip. Stored here to avoid initialization each draw cycle */
+	private Rectangle previousClip;
+	
+	/** The bounding rectangle we're going to use to clip our graphics */
+	private Rectangle ourClip;
+	
 	/**
 	 * Minimal constructor. 
 	 * Create a new ScrollView which will have its top left at the given x, y location and have a final width and height as given. 
@@ -170,6 +177,10 @@ public class ScrollView extends AbstractElement {
 		// Scrollbars are created later, when they are needed, since at start they may not be and we do not know
 		verticalBar = Optional.empty();
 		horizontalBar = Optional.empty();
+		
+		// Start out with an empty clip. They're overwritten each draw cycle.
+		previousClip = new Rectangle();
+		ourClip = new Rectangle();
 	}
 	
 	/**
@@ -326,6 +337,56 @@ public class ScrollView extends AbstractElement {
 	}
 	
 	/**
+	 * @return The verticalVisibility
+	 */
+	public BarVisibility getVerticalVisibility()
+	{
+		return verticalVisibility;
+	}
+
+	/**
+	 * Set whether or not you want the vertical bar to show when it is otherwise not needed for scrolling
+	 * @param verticalVisibility The verticalVisibility to set
+	 */
+	public void setVerticalVisibility(BarVisibility verticalVisibility)
+	{
+		this.verticalVisibility = verticalVisibility;
+	}
+
+	/**
+	 * @return The horizontalVisibility
+	 */
+	public BarVisibility getHorizontalVisibility()
+	{
+		return horizontalVisibility;
+	}
+
+	/**
+	 * Set whether or not you want the horizontal bar to show when it is otherwise not needed for scrolling
+	 * @param horizontalVisibility The horizontalVisibility to set
+	 */
+	public void setHorizontalVisibility(BarVisibility horizontalVisibility)
+	{
+		this.horizontalVisibility = horizontalVisibility;
+	}
+
+	/**
+	 * @return The wrapped element being viewed
+	 */
+	public Element getView()
+	{
+		return view;
+	}
+	
+	/**
+	 * @return True if this view will hide the frame when neither scroll bars are showing
+	 */
+	public boolean isHidingFrame()
+	{
+		return hideFrame;
+	}
+	
+	/**
 	 * Set whether or not this scroll view will hide its frame when no scroll bars are visible. 
 	 * (Of course, for this to happen, both bars must be in WHEN_NEEDED mode)
 	 * @param hideFrame True if the frame should hide when possible
@@ -437,11 +498,22 @@ public class ScrollView extends AbstractElement {
 			
 			// Both bars are going to be shown, so are they both the right length? Check on that
 			// The bar length is the (scroll view length / element length) * scroll track length (i.e. percentage of stuff in view)
-			int vBarLength = (int) ((scrollViewHeight() / (double) view.getHeight()) * verticalBar.get().getTrackLength());
-			int hBarLength = (int) ((scrollViewWidth() / (double) view.getWidth()) * horizontalBar.get().getTrackLength());
+			int vBarLength = (int) ((scrollViewHeight() / ((double) view.getY() + view.getHeight())) * verticalBar.get().getTrackLength());
+			int hBarLength = (int) ((scrollViewWidth() / ((double) view.getX() + view.getWidth())) * horizontalBar.get().getTrackLength());
 			
 			verticalBar.get().setLength(vBarLength);
 			horizontalBar.get().setLength(hBarLength);
+			
+			// Lengths changed, so have the tracks
+			int vTrackBegin = scrollButtons[VERTICAL][CLICK][BEGIN].getY() + scrollButtons[VERTICAL][CLICK][BEGIN].getHeight();
+			int vTrackEnd = scrollButtons[VERTICAL][CLICK][END].getY();
+			
+			int hTrackBegin = scrollButtons[HORIZONTAL][CLICK][BEGIN].getX() + scrollButtons[HORIZONTAL][CLICK][BEGIN].getWidth();
+			int hTrackEnd = scrollButtons[HORIZONTAL][CLICK][END].getX();
+			
+			verticalBar.get().setTrack(vTrackBegin, vTrackEnd);
+			horizontalBar.get().setTrack(hTrackBegin, hTrackEnd);
+			
 		}
 		// It wasn't both, so was it just the vertical bar?
 		else if(verticalBar.isPresent())
@@ -451,9 +523,15 @@ public class ScrollView extends AbstractElement {
 			scrollButtons[VERTICAL][JUMP][END].setY(getHeight() - bottomBorder.getHeight() - scrollButtons[0][0][0].getHeight());
 			scrollButtons[VERTICAL][CLICK][END].setY(scrollButtons[VERTICAL][JUMP][END].getY() - scrollButtons[0][0][0].getHeight());
 			
-			int vBarLength = (int) ((scrollViewHeight() / (double) view.getHeight()) * verticalBar.get().getTrackLength());
+			int vBarLength = (int) ((scrollViewHeight() / ((double) view.getY() + view.getHeight())) * verticalBar.get().getTrackLength());
 			
 			verticalBar.get().setLength(vBarLength);
+			
+			// Lengths changed, so have the tracks
+			int vTrackBegin = scrollButtons[VERTICAL][CLICK][BEGIN].getY() + scrollButtons[VERTICAL][CLICK][BEGIN].getHeight();
+			int vTrackEnd = scrollButtons[VERTICAL][CLICK][END].getY();
+
+			verticalBar.get().setTrack(vTrackBegin, vTrackEnd);
 		}
 		// It wasn't just the vertical bar, so is it just the horizontal bar?
 		else if(horizontalBar.isPresent())
@@ -462,9 +540,15 @@ public class ScrollView extends AbstractElement {
 			scrollButtons[HORIZONTAL][JUMP][END].setX(getWidth() - rightBorder.getWidth() - scrollButtons[0][0][0].getWidth());
 			scrollButtons[HORIZONTAL][CLICK][END].setX(scrollButtons[HORIZONTAL][JUMP][END].getX() - scrollButtons[0][0][0].getWidth());
 			
-			int hBarLength = (int) ((scrollViewWidth() / (double) view.getWidth()) * horizontalBar.get().getTrackLength());
+			int hBarLength = (int) ((scrollViewWidth() / ((double) view.getX() + view.getWidth())) * horizontalBar.get().getTrackLength());
 			
 			horizontalBar.get().setLength(hBarLength);
+			
+			// Lengths changed, so have the tracks
+			int hTrackBegin = scrollButtons[HORIZONTAL][CLICK][BEGIN].getX() + scrollButtons[HORIZONTAL][CLICK][BEGIN].getWidth();
+			int hTrackEnd = scrollButtons[HORIZONTAL][CLICK][END].getX();
+			
+			horizontalBar.get().setTrack(hTrackBegin, hTrackEnd);
 		}
 	}
 	
@@ -545,18 +629,31 @@ public class ScrollView extends AbstractElement {
 		// Figure them out if there is a bar. It's (scroll percentage) * (max view offset)
 		if(verticalBar.isPresent())
 		{
-			drawOffsetY = (int) (verticalBar.get().getScrollPercentage() * (view.getHeight() - scrollViewHeight()));
+			drawOffsetY = (int) (verticalBar.get().getScrollPercentage() * (view.getY() + view.getHeight() - scrollViewHeight()));
 		}
 		if(horizontalBar.isPresent())
 		{
-			drawOffsetX = (int) (horizontalBar.get().getScrollPercentage() * (view.getWidth() - scrollViewWidth()));
+			drawOffsetX = (int) (horizontalBar.get().getScrollPercentage() * (view.getX() + view.getWidth() - scrollViewWidth()));
 		}
 		
-		// We trick the view and tell it to draw shifted around, and clip the draw area to within this scroll view's area
-		Shape prevClip = g.getClip();
-		g.setClip(offsetX, offsetY, scrollViewWidth(), scrollViewHeight());
+		// Overwrite the clip rectangles with current information
+		g.getClipBounds(previousClip);
+		ourClip.setBounds(offsetX + leftBorder.getWidth(), offsetY + topBorder.getHeight(), scrollViewWidth(), scrollViewHeight());
+		
+		// If there is an existing clip, we'll further restrict it by using the intersection of the two
+		if(!previousClip.isEmpty())
+		{
+			SwingUtilities.computeIntersection(previousClip.x, previousClip.y, previousClip.width, previousClip.height, ourClip);
+		}
+		
+		// Then set whatever the clip should be for this scroll view
+		g.setClip(ourClip);
+		
+		// We trick the view and tell it to draw shifted around
 		view.drawElement(g, offsetX + view.getX() + leftBorder.getWidth() - drawOffsetX, offsetY + view.getY() + topBorder.getHeight() - drawOffsetY);
-		g.setClip(prevClip);
+		
+		// Either clear the clip or set it back depending on whether or not there was a previous clip
+		g.setClip(previousClip.isEmpty() ? null : previousClip);
 	}
 	
 	/**
@@ -748,7 +845,26 @@ public class ScrollView extends AbstractElement {
 		// If the point is within the viewing area and view element, then it's up to that
 		if(withinScrollView(point) && view.getRectangle().contains(point))
 		{
-			point.translate(-view.getX(), -view.getY());
+			// Translating isn't so simple. We have to account for out-of-view parts and our own shifting of the view
+			int shiftX = 0;
+			int shiftY = 0;
+			
+			// Account for offscreen portions only if a scrollbar is even around
+			if(verticalBar.isPresent())
+			{
+				shiftY += (int) (verticalBar.get().getScrollPercentage() * (view.getHeight() - scrollViewHeight()));
+			}
+			if(horizontalBar.isPresent())
+			{
+				shiftX += (int) (horizontalBar.get().getScrollPercentage() * (view.getWidth() - scrollViewWidth()));
+			}
+			
+			// Then our own border moves it over some more
+			shiftX -= leftBorder.getWidth();
+			shiftY -= topBorder.getHeight();
+			
+			// Then it might not be placed at our origin, so account for that as well (as per normal for this)
+			point.translate(shiftX - view.getX(), shiftY - view.getY());
 
 			return view.topElementAtPoint(point);
 		}
@@ -925,7 +1041,7 @@ public class ScrollView extends AbstractElement {
 	private boolean vScrollbarNeeded()
 	{
 		// Can we display all of the element in our full vertical space?
-		return view.getHeight() > (getHeight() - (topBorder.getHeight() + bottomBorder.getHeight()));
+		return (view.getY() + view.getHeight()) > scrollViewHeight();
 	}
 	
 	/**
@@ -936,7 +1052,7 @@ public class ScrollView extends AbstractElement {
 	private boolean hScrollbarNeeded()
 	{
 		// Can we display all of the element in our full horizontal space?
-		return view.getWidth() > (getWidth() - (leftBorder.getWidth() + rightBorder.getWidth()));
+		return (view.getX() + view.getWidth()) > scrollViewWidth();
 	}
 	
 	/**
@@ -944,7 +1060,8 @@ public class ScrollView extends AbstractElement {
 	 */
 	private int scrollViewWidth()
 	{
-		return verticalBar.isPresent() ? getWidth() - 2*rightBorder.getWidth() - verticalBar.get().getWidth() : getWidth() - rightBorder.getWidth();
+		return verticalBar.isPresent() ? getWidth() - 2*rightBorder.getWidth() - leftBorder.getWidth() - verticalBar.get().getWidth()
+				: getWidth() - (leftBorder.getWidth() + rightBorder.getWidth());
 	}
 	
 	/**
@@ -952,7 +1069,56 @@ public class ScrollView extends AbstractElement {
 	 */
 	private int scrollViewHeight()
 	{
-		return horizontalBar.isPresent() ? getHeight() - 2*bottomBorder.getHeight() - horizontalBar.get().getHeight() : getHeight() - bottomBorder.getHeight();
+		return horizontalBar.isPresent() ? getHeight() - 2*bottomBorder.getHeight() - topBorder.getHeight() - horizontalBar.get().getHeight()
+				: getHeight() - (topBorder.getHeight() + bottomBorder.getHeight());
+	}
+	
+	/**
+	 * The maximum width the viewing area will be when the vertical scroll bar is being shown. 
+	 * This is useful for sizing elements so that the horizontal bar will not be needed.
+	 * @return The width of the viewing area when the vertical scroll bar is present
+	 */
+	public int viewWidthWithBar()
+	{
+		// Same as from scroll view width when bar is present, but we grab the bar width manually. Safe assumption it won't change
+		// since there are not methods to change the sprite set after initialization (The idea is may as well just recreate at that point)
+		int barWidth = SpriteManager.instance().getSprite(SpriteSet.SCROLL, firstSpriteID + 4).getWidth();
+		return getWidth() - 2*rightBorder.getWidth() - leftBorder.getWidth() - barWidth;
+	}
+	
+	/**
+	 * The maximum height the viewing area will be when the horizontal scroll bar is being shown. 
+	 * This is useful for sizing elements so that the vertical bar will not be needed.
+	 * @return The height of the viewing area when the horizontal scroll bar is present
+	 */
+	public int viewHeightWithBar()
+	{
+		// Same as from scroll view width when bar is present, but we grab the bar height manually. Safe assumption it won't change
+		// (Yes - it's the width. Rotation won't have been applied.)
+		int barHeight = SpriteManager.instance().getSprite(SpriteSet.SCROLL, firstSpriteID + 4).getWidth();
+		return getHeight() - 2*bottomBorder.getHeight() - topBorder.getHeight() - barHeight;
+	}
+	
+	/**
+	 * The maximum width the viewing area will be when the vertical scroll bar is not being shown. 
+	 * This is useful in conjunction with <code>viewHeightWithoutBar()</code> for sizing elements so at most one bar will be needed
+	 * @return The width of the viewing area when the vertical scroll bar is not present
+	 */
+	public int viewWidthWithoutBar()
+	{
+		// Same as from scroll view width when bar is not present
+		return getWidth() - (leftBorder.getWidth() + rightBorder.getWidth());
+	}
+	
+	/**
+	 * The maximum height the viewing area will be when the horizontal scroll bar is not being shown. 
+	 * This is useful in conjunction with <code>viewWidthWithoutBar()</code> for sizing elements so at most one bar will be needed
+	 * @return The height of the viewing area when the horizontal scroll bar is not present
+	 */
+	public int viewHeightWithoutBar()
+	{
+		// Same as from scroll view width when bar is not present
+		return getHeight() - (topBorder.getHeight() + bottomBorder.getHeight());
 	}
 	
 	/**

@@ -2,6 +2,7 @@ package net.cloud.gfx.elements.modal;
 
 import java.util.Optional;
 
+import net.cloud.client.util.function.InputValidator;
 import net.cloud.gfx.Mainframe;
 import net.cloud.gfx.elements.Container;
 import net.cloud.gfx.elements.Element;
@@ -109,6 +110,80 @@ public class ModalManager {
 		// We don't care about return value. Normally we'd return this result.
 		// Anyways, this takes care of the rest of the generic process
 		genericDialogStuff(title, root, dialog, dialogListener);
+	}
+	
+	/**
+	 * Show a confirmation dialog on the root interface. The dialog will be centered, and placed within a draggable 
+	 * frame. It will be reasonably sized. This method will take care of adding the dialog to the interface 
+	 * and other background work. This method will block until a button is clicked on the dialog.
+	 * @param title The title to show on the frame
+	 * @param prompt The message to display
+	 * @return True if the user confirmed, false if they chose cancel
+	 * @throws ModalException If the dialog could not be shown. Results will not be available in this situation.
+	 */
+	public boolean showConfirmationDialog(String title, String prompt) throws ModalException
+	{
+		// Grab it, short name, we'll need the root interface often
+		Interface root = Mainframe.instance().gfx().rootPanel().getQuasiRoot();
+		
+		// Well, we need a dialog to work with
+		ConfirmationDialog dialog = factory.createConfirmationDialog(root, prompt);
+		
+		// Set up a listener so that when the dialog is acted on, the method can return
+		ConfirmationDialogListener dialogListener = new ConfirmationDialogListener(dialog);
+		
+		// This time it knows the result is a boolean. Such cool type inference!
+		return genericDialogStuff(title, root, dialog, dialogListener);
+	}
+	
+	/**
+	 * Show an input dialog on the root interface. The dialog will be centered, and placed within a draggable 
+	 * frame. It will be reasonably sized. This method will take care of adding the dialog to the interface 
+	 * and other background work. This method will block until a button is clicked on the dialog.
+	 * @param title The title to show on the frame
+	 * @param prompt The message to display
+	 * @return The string of the user input, or null (InputDialog.CANCELED) if they canceled
+	 * @throws ModalException If the dialog could not be shown. Results will not be available in this situation.
+	 */
+	public String showInputDialog(String title, String prompt) throws ModalException
+	{
+		// Grab it, short name, we'll need the root interface often
+		Interface root = Mainframe.instance().gfx().rootPanel().getQuasiRoot();
+		
+		// Well, we need a dialog to work with
+		InputDialog dialog = factory.createInputDialog(root, prompt);
+		
+		// Set up a listener so that when the dialog is acted on, the method can return
+		InputDialogListener dialogListener = new InputDialogListener(dialog);
+		
+		// This time it knows the result is a boolean. Such cool type inference!
+		return genericDialogStuff(title, root, dialog, dialogListener);
+	}
+	
+	/**
+	 * Show an input dialog on the root interface. The dialog will be centered, and placed within a draggable 
+	 * frame. It will be reasonably sized. This method will take care of adding the dialog to the interface 
+	 * and other background work. This method will block until a button is clicked on the dialog. 
+	 * This variant will provide an input validator to check input before it is returned
+	 * @param title The title to show on the frame
+	 * @param prompt The message to display
+	 * @param inputValidator
+	 * @return Validated user input, or null (InputDialog.CANCELED) if they canceled
+	 * @throws ModalException If the dialog could not be shown. Results will not be available in this situation.
+	 */
+	public String showInputDialog(String title, String prompt, InputValidator<String> inputValidator) throws ModalException
+	{
+		// Grab it, short name, we'll need the root interface often
+		Interface root = Mainframe.instance().gfx().rootPanel().getQuasiRoot();
+		
+		// Well, we need a dialog to work with
+		InputDialog dialog = factory.createInputDialog(root, prompt, inputValidator);
+		
+		// Set up a listener so that when the dialog is acted on, the method can return
+		InputDialogListener dialogListener = new InputDialogListener(dialog);
+		
+		// This time it knows the result is a boolean. Such cool type inference!
+		return genericDialogStuff(title, root, dialog, dialogListener);
 	}
 	
 	/**

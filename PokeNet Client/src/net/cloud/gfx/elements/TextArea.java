@@ -117,7 +117,7 @@ public class TextArea extends AbstractElement {
 		}
 		
 		// Our height becomes where we finished - where we started. Set every time but it's not a big deal
-		setHeight(drawPosY - lineHeight - offsetY);
+		setHeight(drawPosY - lineHeight + g2d.getFontMetrics().getMaxDescent() - offsetY);
 	}
 	
 	/**

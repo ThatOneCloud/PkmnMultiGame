@@ -3,7 +3,9 @@ package net.cloud.gfx.elements.modal;
 import java.util.Optional;
 
 import net.cloud.gfx.elements.Button;
+import net.cloud.gfx.elements.ScrollView;
 import net.cloud.gfx.elements.TextArea;
+import net.cloud.gfx.elements.ScrollView.BarVisibility;
 
 /**
  * A very simple dialog. It presents some text message within its interface, and offers a single 
@@ -17,7 +19,6 @@ public class MessageDialog extends AbstractModalDialog {
 	
 	/**
 	 *  A method that will be notified when the 'okay' button is pressed. No return value, parameters, or exceptions.
-	 *  Before this is called, this dialog will attempt to close itself by removing itself from its parent.
 	 */
 	private Optional<Runnable> buttonCallback;
 	
@@ -32,15 +33,9 @@ public class MessageDialog extends AbstractModalDialog {
 	 */
 	public MessageDialog(String message, int x, int y, int width, int height)
 	{
-		// Start with a height of one. We don't really know yet, we'll adjust it soon
 		super(x, y, width, height);
 		
 		buttonCallback = Optional.empty();
-	
-		// Place a text area, inset a bit to give it a border
-		// TODO: Use a ScrollView! (Then make some of the other dialogs)
-		TextArea textArea = new TextArea(message, INSET, INSET, width - (2 * INSET));
-		add(textArea);
 		
 		// Place a button at the bottom of the interface, in the center
 		int X_CENTER = (width / 2);
@@ -49,14 +44,22 @@ public class MessageDialog extends AbstractModalDialog {
 		Button button = new Button("Okay", X_CENTER - (B_WIDTH / 2), height - INSET - B_HEIGHT, B_WIDTH, B_HEIGHT);
 		add(button);
 		
+		// Place a text area, by placing it in a scroll view. The view will only show up when needed
+		TextArea textArea = new TextArea(message, INSET, 0, width - (2 * INSET));
+		ScrollView view = new ScrollView(textArea, INSET, INSET,
+				width - (2 * INSET), height - 3*INSET - B_HEIGHT,
+				BarVisibility.WHEN_NEEDED, BarVisibility.WHEN_NEEDED);
+		textArea.setWidth(view.viewWidthWithBar() - textArea.getX());
+		view.setFrameHiding(true);
+		add(view);
+		
 		// When the button is clicked it'll tell us and then we'll tell whoever is listening to us. Functional!
 		button.setActionHandler(this::buttonAction);
 	}
 	
 	/**
 	 * Provide a listener to this dialog that will be informed when the 'okay' button is pressed. 
-	 * There are no return values or parameters, so a Runnable is fitting. The dialog will be closed 
-	 * before this is called. 
+	 * There are no return values or parameters, so a Runnable is fitting.
 	 * Null may be provided to remove an existing listener
 	 * @param listener Action to take when the 'okay' button is clicked
 	 */
