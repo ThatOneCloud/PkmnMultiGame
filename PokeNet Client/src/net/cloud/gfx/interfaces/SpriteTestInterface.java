@@ -4,6 +4,7 @@ import java.awt.EventQueue;
 
 import net.cloud.client.util.function.InputValidator;
 import net.cloud.gfx.constants.Colors;
+import net.cloud.gfx.elements.Alignment;
 import net.cloud.gfx.elements.Button;
 import net.cloud.gfx.elements.CenteredText;
 import net.cloud.gfx.elements.Checkbox;
@@ -14,6 +15,7 @@ import net.cloud.gfx.elements.ReferenceText;
 import net.cloud.gfx.elements.RadioButton.RadioButtonGroup;
 import net.cloud.gfx.elements.ScrollView;
 import net.cloud.gfx.elements.TextArea;
+import net.cloud.gfx.elements.VerticalView;
 import net.cloud.gfx.elements.decorator.DraggableElement;
 import net.cloud.gfx.elements.decorator.FrameButton;
 import net.cloud.gfx.elements.decorator.FramedElement;
@@ -87,6 +89,7 @@ public class SpriteTestInterface extends Interface {
 		
 		
 		Interface frInt = new Interface(20, 270, 100, 100);
+		frInt.setBackground(SpriteSet.BACKGROUND, 0);
 		Text frTxt = new Text("Framed", 10, 10);
 		Button frBut = new Button("Interface", 10, 40, 75, 25);
 		frInt.add(frTxt);
@@ -116,12 +119,23 @@ public class SpriteTestInterface extends Interface {
 		
 		
 		Interface largeInterface = new Interface(0, 0, 200, 600);
+		largeInterface.setBackground(SpriteSet.BACKGROUND, 0);
 		largeInterface.add(new TextArea("This is where my skills at rambling come in handy. I need some large blocks of text to generate test elements with, "
 				+ "so I can just type for a while and see what comes out. This should be long enough for the first block.", 10, 10, 170));
 		largeInterface.add(new TextArea("This is another sizeable block of text but instead it is placed downwards in the interface so that there is a gap "
 				+ "between it and the previous block of text. That way, to see it, you must scroll down to it.", 10, 300, 130));
 		ScrollView scrollView = new ScrollView(largeInterface, 300, 40, 170, 200);
 		add(scrollView);
+		
+		
+		
+		VerticalView vertView = new VerticalView(300, 260, 200);
+//		vertView.setPadding(20);
+//		vertView.setAlignment(Alignment.RIGHT);
+		vertView.add(new Text("Vertical"));
+		vertView.add(new Button("View Button", 50, 0));
+		vertView.add(new Sprite(SpriteSet.TEST, 0, 0, 0));
+		add(vertView);
 		
 		
 		

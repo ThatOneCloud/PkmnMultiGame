@@ -343,7 +343,6 @@ public class FramedElement extends AbstractDecoratorElement {
 		// Keep the width before resizing - so we know how much to shift buttons
 		int origWidth = getWidth();
 		
-		
 		// Change the original dimension
 		super.setWidth(width);
 		
