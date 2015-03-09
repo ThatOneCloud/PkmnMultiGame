@@ -20,13 +20,13 @@ import net.cloud.gfx.focus.Focusable;
 
 /**
  * A container that shows all of the elements within it. Unlike the interface, which respects the location of each 
- * of the elements, this will show all of the elements in a vertical column. The elements may have some padding between them 
+ * of the elements, this will show all of the elements in a horizontal row. The elements may have some padding between them 
  * and the next, as well as have some alignment. For convenience, a view-wide policy on alignment and padding may be enforced, 
  * so all elements will have the same alignment and padding regardless of individual options. 
- * Note that added elements will have their focus chain changed to be naturally ordered within this view, and their Y coordinates 
+ * Note that added elements will have their focus chain changed to be naturally ordered within this view, and their X coordinates 
  * will be updated to reflect their position within this view.
  */
-public class VerticalView extends AbstractElement implements Container<Element> {
+public class HorizontalView extends AbstractElement implements Container<Element> {
 	
 	/** Default priority of an Interface. Kinda high. */
 	public static final int PRIORITY = Priority.MED_HIGH;
@@ -38,7 +38,7 @@ public class VerticalView extends AbstractElement implements Container<Element> 
 	public static final int NO_PADDING = 0;
 	
 	/** Our list of elements. We don't order by priority, so ElementList is not suitable. */
-	protected List<VerticalViewElement> children;
+	protected List<HorizontalViewElement> children;
 	
 	/** Default alignment within the view. If it exists, it is used. Otherwise the individual element's settings will be used. */
 	private Optional<Alignment> alignment;
@@ -46,11 +46,11 @@ public class VerticalView extends AbstractElement implements Container<Element> 
 	/** Default padding within the view. If set, it is used. Otherwise, the individual element's settings will be used */
 	private int padding;
 	
-	/** Flag that indicates whether or not the child elements will have their height changed dynamically */
+	/** Flag that indicates whether or not the child elements will have their width changed dynamically */
 	private boolean optimizedDrawingEnabled;
 	
 	/** Queue of elements that need to be added, if optimization is enabled */
-	private Queue<VerticalViewElement> addQueue;
+	private Queue<HorizontalViewElement> addQueue;
 	
 	/** Queue of elements that need to be added, if optimization is enabled */
 	private Queue<Element> removeQueue;
@@ -65,9 +65,9 @@ public class VerticalView extends AbstractElement implements Container<Element> 
 	private boolean drawingStarted;
 	
 	/**
-	 * Create a new vertical view which will have the default element attributes. 
+	 * Create a new horizontal view which will have the default element attributes. 
 	 */
-	public VerticalView()
+	public HorizontalView()
 	{
 		super();
 		
@@ -76,34 +76,34 @@ public class VerticalView extends AbstractElement implements Container<Element> 
 	}
 	
 	/**
-	 * Create a vertical view that will be at the given location, and have the given width. 
-	 * The width is pretty important... needed to interact with view elements and align them. 
-	 * The height will adjust on its own as needed.
+	 * Create a horizontal view that will be at the given location, and have the given height. 
+	 * The height is pretty important... needed to interact with view elements and align them. 
+	 * The width will adjust on its own as needed.
 	 * @param x X location
 	 * @param y Y location
-	 * @param width Width
+	 * @param height Height
 	 */
-	public VerticalView(int x, int y, int width)
+	public HorizontalView(int x, int y, int height)
 	{
-		super(PRIORITY, x, y, width, 1);
+		super(PRIORITY, x, y, 1, height);
 		
 		// Common initialization
 		init();
 	}
 	
 	/**
-	 * Create a new vertical view that will be at the given location and be the given width. 
+	 * Create a new horizontal view that will be at the given location and be the given height. 
 	 * It will also use a global policy of using the given alignment and padding. 
-	 * The height will adjust on its own as needed.
+	 * The width will adjust on its own as needed.
 	 * @param x X location
 	 * @param y Y location
-	 * @param width Width
+	 * @param height Height
 	 * @param alignment Global alignment setting, null for not present
-	 * @param padding Global padding setting. VerticalView.PADDING_NOT_SET for not present, else non-negative
+	 * @param padding Global padding setting. HorizontalView.PADDING_NOT_SET for not present, else non-negative
 	 */
-	public VerticalView(int x, int y, int width, Alignment alignment, int padding)
+	public HorizontalView(int x, int y, int height, Alignment alignment, int padding)
 	{
-		super(PRIORITY, x, y, width, 1);
+		super(PRIORITY, x, y, 1, height);
 		
 		// Before proceeding, is the padding a legal value?
 		if(padding != PADDING_NOT_SET && padding < 0)
@@ -160,15 +160,16 @@ public class VerticalView extends AbstractElement implements Container<Element> 
 	public Element topElementAtPoint(Point point) throws IteratorException
 	{
 		// Look through the children (in a read-only way!)
-		StrongIterator<VerticalViewElement> it = new StrongIterator<>(children.iterator());
+		StrongIterator<HorizontalViewElement> it = new StrongIterator<>(children.iterator());
 		while(it.hasNext())
 		{
 			// Pull the child out. If it fails, exception will be re-thrown
-			VerticalViewElement child = it.next();
+			HorizontalViewElement child = it.next();
 
-			// Check if it and the point intersect. We need to use the view's x coordinate for the child
-			int viewX = xPosFor(child);
-			if(viewX <= point.x && point.x <= viewX + child.getWidth() && child.getY() <= point.y && point.y <= child.getY() + child.getHeight())
+			// Check if it and the point intersect. We need to use the view's y coordinate for the child
+			int viewY = yPosFor(child);
+			if(viewY <= point.y && point.y <= viewY + child.getHeight()
+					&& child.getX() <= point.x && point.x <= child.getX() + child.getWidth())
 			{
 				// It does. First one is on top, because reverse order. Adjust the point.
 				point.translate(-child.getX(), -child.getY());
@@ -183,9 +184,10 @@ public class VerticalView extends AbstractElement implements Container<Element> 
 	}
 
 	/**
-	 * Draw each of the child elements down vertically, taking padding into account. The children will have their Y coordinates 
+	 * Draw each of the child elements down horizontally, taking padding into account. The children will have their X coordinates 
 	 * adjusted as this proceeds to reflect their current position.
-	 * The X position takes only one thing into account, depending on which is present. In order: View alignment, child alignment, child X position
+	 * The Y position takes only one thing into account, depending on which is present.
+	 * In order: View alignment, child alignment, child Y position
 	 */
 	@Override
 	public void drawElement(Graphics g, int offsetX, int offsetY) throws IteratorException
@@ -213,33 +215,33 @@ public class VerticalView extends AbstractElement implements Container<Element> 
 	private void simpleDraw(Graphics g, int offsetX, int offsetY) throws IteratorException
 	{
 		// Keep track of where we're going to draw next
-		int drawPosY = 0;
+		int drawPosX = 0;
 		
 		// Look through the children (in a read-only way!)
-		StrongIterator<VerticalViewElement> it = new StrongIterator<>(children.iterator());
+		StrongIterator<HorizontalViewElement> it = new StrongIterator<>(children.iterator());
 		while(it.hasNext())
 		{
-			VerticalViewElement child = it.next();
+			HorizontalViewElement child = it.next();
 			
-			// Figure out which x coordinate to use
-			int drawPosX = xPosFor(child);
+			// Figure out which y coordinate to use
+			int drawPosY = yPosFor(child);
 			
 			// Draw the child wherever it is that it needs to go
-			child.setY(drawPosY);
+			child.setX(drawPosX);
 			child.drawElement(g, offsetX + drawPosX, offsetY + drawPosY);
 			
 			// The element's height is probably most current, now. Bump up the draw position by its height, at least.
-			drawPosY += child.getHeight();
+			drawPosX += child.getWidth();
 			
 			// We may also need to apply padding, if there will be another element
 			if(it.hasNext())
 			{
-				drawPosY += paddingFor(child);
+				drawPosX += paddingFor(child);
 			}
 		}
 		
 		// Update our own height
-		super.setHeight(drawPosY);
+		super.setWidth(drawPosX);
 	}
 	
 	/**
@@ -265,17 +267,17 @@ public class VerticalView extends AbstractElement implements Container<Element> 
 		}
 		
 		// Start out by drawing the children we have. But where do we start?
-		int topViewableY = clipRect.y - offsetY;
-		int bottomViewableY = topViewableY + clipRect.height;
+		int topViewableX = clipRect.x - offsetX;
+		int bottomViewableX = topViewableX + clipRect.width;
 		
 		// Now which child needs to be drawn first?
-		int indexOfFirstChildToDraw = findFirstDrawIndex(topViewableY);
+		int indexOfFirstChildToDraw = findFirstDrawIndex(topViewableX);
 			
 		// We guess that next time around, the same index is gonna be pretty close
 		prevFirstDrawIdx = indexOfFirstChildToDraw;
 		
 		// Draw all of our children that will show
-		drawChildrenWithinView(g, offsetX, offsetY, bottomViewableY, indexOfFirstChildToDraw);
+		drawChildrenWithinView(g, offsetX, offsetY, bottomViewableX, indexOfFirstChildToDraw);
 		
 		// Now that a drawing cycle is done, update our children with new changes - removals first
 		reconcileRemovals();
@@ -287,50 +289,50 @@ public class VerticalView extends AbstractElement implements Container<Element> 
 	/**
 	 * Find which child index drawing should start at, so that all children in view are shown. 
 	 * Only useful during optimized drawing.
-	 * @param topViewableY The top Y coordinate, relative to us, drawing will happen at
+	 * @param topViewableX The top X coordinate, relative to us, drawing will happen at
 	 * @return The index of the first child to draw
 	 * @throws IteratorException In case of co-modification
 	 */
-	private int findFirstDrawIndex(int topViewableY)
+	private int findFirstDrawIndex(int topViewableX)
 	{
 		// Do we not have any clues to work with?
 		if(prevFirstDrawIdx < 0 || children.size() <= prevFirstDrawIdx)
 		{
 			// Then we'll just look through everything. (I suppose this could become a binary search if need be)
-			return findFirstDrawIndexIteratively(topViewableY);
+			return findFirstDrawIndexIteratively(topViewableX);
 		}
 		// Oh cool, we can use the previous index to take a guess
 		else {
-			return findFirstDrawIndexUsingPrevious(topViewableY);
+			return findFirstDrawIndexUsingPrevious(topViewableX);
 		}
 	}
 
 	/**
 	 * Iteratively looks through all children to find which index to start drawing at.
 	 * Only useful during optimized drawing.
-	 * @param topViewableY The top Y coordinate, relative to us, drawing will happen at
+	 * @param topViewableX The top X coordinate, relative to us, drawing will happen at
 	 * @return The index of the first child to draw
 	 */
-	private int findFirstDrawIndexIteratively(int topViewableY)
+	private int findFirstDrawIndexIteratively(int topViewableX)
 	{
 		int indexOfFirstChildToDraw = -1;
 		
 		// We're going to iterate all children
-		Iterator<VerticalViewElement> it = children.iterator();
+		Iterator<HorizontalViewElement> it = children.iterator();
 		while(it.hasNext())
 		{
-			VerticalViewElement child = it.next();
-			int childHeightSum = child.getHeightSum();
+			HorizontalViewElement child = it.next();
+			int childWidthSum = child.getWidthSum();
 
 			// Is this child right at the top of view?
-			if(childHeightSum == topViewableY)
+			if(childWidthSum == topViewableX)
 			{
 				// Well then the current location in the iterator is good to use
 				indexOfFirstChildToDraw++;
 				break;
 			}
 			// Is the child in view, but not right at the top?
-			else if(childHeightSum > topViewableY)
+			else if(childWidthSum > topViewableX)
 			{
 				// So this means we grab this one and the one before it. Is there one before it, though?
 				if(indexOfFirstChildToDraw == -1)
@@ -358,41 +360,41 @@ public class VerticalView extends AbstractElement implements Container<Element> 
 	 * at the index that drawing previously started at. (Based on the assumption that the clip and offset 
 	 * aren't usually going to change.)
 	 * Only useful during optimized drawing. 
-	 * @param topViewableY The top Y coordinate, relative to us, drawing will happen at
+	 * @param topViewableX The top X coordinate, relative to us, drawing will happen at
 	 * @return The index of the first child to draw
 	 */
-	private int findFirstDrawIndexUsingPrevious(int topViewableY)
+	private int findFirstDrawIndexUsingPrevious(int topViewableX)
 	{
 		int idx = prevFirstDrawIdx;
-		VerticalViewElement curChild = children.get(idx);
+		HorizontalViewElement curChild = children.get(idx);
 		
 		// Should we look forward or backward?
-		if(curChild.getHeightSum() == topViewableY)
+		if(curChild.getWidthSum() == topViewableX)
 		{
 			// We hit on the first try!
 			return idx;
 		}
 		// Okay, this will be forward
-		else if(curChild.getHeightSum() < topViewableY)
+		else if(curChild.getWidthSum() < topViewableX)
 		{
 			// Look forward through the rest of the children
-			return lookForwardFrom(idx, topViewableY);
+			return lookForwardFrom(idx, topViewableX);
 		}
 		// This will be backward
 		else {
 			// Look backward through the rest of the children
-			return lookBackwardFrom(idx, topViewableY);
+			return lookBackwardFrom(idx, topViewableX);
 		}
 	}
 
 	/**
 	 * Find which child drawing should begin with, looking forward from the given index until a child 
-	 * will need to be drawn to show given the top viewable Y coordinate
+	 * will need to be drawn to show given the top viewable X coordinate
 	 * @param idx Index to start from (actually only look ahead of this index)
-	 * @param topViewableY The top Y coordinate, relative to us, drawing will happen at
+	 * @param topViewableX The top X coordinate, relative to us, drawing will happen at
 	 * @return The index of the first child to draw
 	 */
-	private int lookForwardFrom(int idx, int topViewableY)
+	private int lookForwardFrom(int idx, int topViewableX)
 	{
 		int indexOfFirstChildToDraw = -1;
 		
@@ -400,14 +402,14 @@ public class VerticalView extends AbstractElement implements Container<Element> 
 		for(int i = idx+1; i < children.size(); ++i)
 		{
 			// This child will draw at the line
-			if(children.get(i).getHeightSum() == topViewableY)
+			if(children.get(i).getWidthSum() == topViewableX)
 			{
 				// So use its index
 				indexOfFirstChildToDraw = i;
 				break;
 			}
 			// This child is one too far
-			else if(children.get(i).getHeightSum() > topViewableY)
+			else if(children.get(i).getWidthSum() > topViewableX)
 			{
 				// So use the index before it (We know this is an okay index - we started one ahead)
 				indexOfFirstChildToDraw = i-1;
@@ -425,12 +427,12 @@ public class VerticalView extends AbstractElement implements Container<Element> 
 
 	/**
 	 * Find which child drawing should begin with, looking backward from the given index until a child 
-	 * will need to be drawn to show given the top viewable Y coordinate
+	 * will need to be drawn to show given the top viewable X coordinate
 	 * @param idx Index to start from (actually only look behind this index)
-	 * @param topViewableY The top Y coordinate, relative to us, drawing will happen at
+	 * @param topViewableX The top X coordinate, relative to us, drawing will happen at
 	 * @return The index of the first child to draw
 	 */
-	private int lookBackwardFrom(int idx, int topViewableY)
+	private int lookBackwardFrom(int idx, int topViewableX)
 	{
 		int indexOfFirstChildToDraw = -1;
 		
@@ -438,14 +440,14 @@ public class VerticalView extends AbstractElement implements Container<Element> 
 		for(int i = idx-1; i >= 0; --i)
 		{
 			// This child will draw at the line
-			if(children.get(i).getHeightSum() == topViewableY)
+			if(children.get(i).getWidthSum() == topViewableX)
 			{
 				// So use its index
 				indexOfFirstChildToDraw = i;
 				break;
 			}
 			// This child is one too far
-			else if(children.get(i).getHeightSum() < topViewableY)
+			else if(children.get(i).getWidthSum() < topViewableX)
 			{
 				// So use the index before it
 				indexOfFirstChildToDraw = i;
@@ -463,17 +465,17 @@ public class VerticalView extends AbstractElement implements Container<Element> 
 	
 	/**
 	 * Draw children that will appear within view, starting at the given index and going until drawing 
-	 * would happen beyond the bottom coordinate. Along the way this sets the Y coordinate of the elements 
+	 * would happen beyond the bottom coordinate. Along the way this sets the X coordinate of the elements 
 	 * that have been drawn.
 	 * @param g The graphics object
 	 * @param offsetX Offset X
 	 * @param offsetY Offset Y
-	 * @param bottomViewableY Lowest Y coordinate that will show
+	 * @param bottomViewableX Lowest X coordinate that will show
 	 * @param indexOfFirstChildToDraw Which child to start drawing with
 	 * @throws IteratorException If thrown while drawing a child element
 	 */
 	private void drawChildrenWithinView(Graphics g, int offsetX, int offsetY,
-			int bottomViewableY, int indexOfFirstChildToDraw)
+			int bottomViewableX, int indexOfFirstChildToDraw)
 			throws IteratorException
 	{
 		// Just make sure the index hasn't remained -1 up to this point
@@ -483,32 +485,32 @@ public class VerticalView extends AbstractElement implements Container<Element> 
 		}
 
 		// We don't quite start at the top - instead wherever the first child would start
-		int drawPosY = children.get(indexOfFirstChildToDraw).getHeightSum();
+		int drawPosX = children.get(indexOfFirstChildToDraw).getWidthSum();
 		
 		// We can actually obtain an iterator starting at the start index
-		Iterator<VerticalViewElement> drawIt = children.listIterator(indexOfFirstChildToDraw);
+		Iterator<HorizontalViewElement> drawIt = children.listIterator(indexOfFirstChildToDraw);
 		while (drawIt.hasNext())
 		{
-			VerticalViewElement child = drawIt.next();
+			HorizontalViewElement child = drawIt.next();
 
-			// Figure out which x coordinate to use
-			int drawPosX = xPosFor(child);
+			// Figure out which y coordinate to use
+			int drawPosY = yPosFor(child);
 
 			// Draw the child wherever it is that it needs to go
-			child.setY(drawPosY);
+			child.setX(drawPosX);
 			child.drawElement(g, offsetX + drawPosX, offsetY + drawPosY);
 
 			// The element's height is probably most current, now. Bump up the draw position by its height, at least.
-			drawPosY += child.getHeight();
+			drawPosX += child.getWidth();
 
 			// We may also need to apply padding, if there will be another element
 			if (drawIt.hasNext())
 			{
-				drawPosY += paddingFor(child);
+				drawPosX += paddingFor(child);
 			}
 
 			// Has the drawing position exceeded the viewing area yet?
-			if (drawPosY > bottomViewableY)
+			if (drawPosX > bottomViewableX)
 			{
 				// Since it has, no point in drawing further
 				break;
@@ -531,28 +533,28 @@ public class VerticalView extends AbstractElement implements Container<Element> 
 			Element toRemove = removeQueue.poll();
 			
 			// We want to remove a child. Iterate until we find it
-			Iterator<VerticalViewElement> childIt = children.iterator();
+			Iterator<HorizontalViewElement> childIt = children.iterator();
 			while(childIt.hasNext())
 			{
-				VerticalViewElement curChild = childIt.next();
+				HorizontalViewElement curChild = childIt.next();
 				
 				// Have we found it?
 				if(curChild.equals(toRemove))
 				{
-					// Since we have, keep track of its height (how much to shift the rest by) and remove it
+					// Since we have, keep track of its width (how much to shift the rest by) and remove it
 					childIt.remove();
 					curChild.setParent(null);
 					removeLink(curChild);
 					
-					// We adjust the height of the view
+					// We adjust the width of the view
 					if(children.get(children.size() - 1).equals(toRemove))
 					{
 						// Removing the last child, we don't need to account for its padding
-						super.setHeight(super.getHeight() - curChild.getHeight());
+						super.setWidth(super.getWidth() - curChild.getWidth());
 					}
 					else {
 						// Removing some other child, its padding comes into play
-						super.setHeight(super.getHeight() - (curChild.getHeight() + paddingFor(curChild)));
+						super.setWidth(super.getWidth() - (curChild.getWidth() + paddingFor(curChild)));
 					}
 					
 					// We don't need this loop anymore, but we'll pick up where we left off for shifting
@@ -563,18 +565,18 @@ public class VerticalView extends AbstractElement implements Container<Element> 
 			// So now our iteration is on the remaining children
 			while(childIt.hasNext())
 			{
-				VerticalViewElement curChild = childIt.next();
+				HorizontalViewElement curChild = childIt.next();
 				
 				// We want to shift this remaining child back up to fill the gap, basically
-				curChild.changeHeightSum(-(curChild.getHeight() + paddingFor(curChild)));
+				curChild.changeWidthSum(-(curChild.getWidth() + paddingFor(curChild)));
 			}
 		}
 	}
 	
 	/**
 	 * Process pending requests to add a child to the view.  This adds the element to this view, 
-	 * and then updates the overall height of the view.  This child is drawn far offscreen, so that 
-	 * its height will be validated
+	 * and then updates the overall width of the view.  This child is drawn far offscreen, so that 
+	 * its width will be validated
 	 * @param g A graphics object drawing is happening on
 	 * @throws IteratorException If it occurs while drawing the element offscreen
 	 */
@@ -583,23 +585,23 @@ public class VerticalView extends AbstractElement implements Container<Element> 
 		// Continue while there are still elements to add
 		while(!addQueue.isEmpty())
 		{
-			VerticalViewElement toAdd = addQueue.poll();
+			HorizontalViewElement toAdd = addQueue.poll();
 			
 			// Draw it way offscreen somewhere, so that its height is valid
 			toAdd.drawElement(g, 9999, 9999);
 			
-			// Set the partial sum value and update our height, depending on whether this is the first child or not
+			// Set the partial sum value and update our width, depending on whether this is the first child or not
 			if (children.size() == 0)
 			{
-				toAdd.setHeightSum(0);
-				super.setHeight(super.getHeight() + toAdd.getHeight());
+				toAdd.setWidthSum(0);
+				super.setWidth(super.getWidth() + toAdd.getWidth());
 			}
 			else {
-				toAdd.setHeightSum(
-						toAdd.getHeight()
+				toAdd.setWidthSum(
+						toAdd.getWidth()
 						+ paddingFor(children.get(children.size() - 1))
-						+ children.get(children.size() - 1).getHeightSum());
-				super.setHeight(super.getHeight() + toAdd.getHeight() + paddingFor(children.get(children.size() - 1)));
+						+ children.get(children.size() - 1).getWidthSum());
+				super.setWidth(super.getWidth() + toAdd.getWidth() + paddingFor(children.get(children.size() - 1)));
 			}
 			
 			// And add the new element to our children
@@ -656,14 +658,14 @@ public class VerticalView extends AbstractElement implements Container<Element> 
 			throw new IllegalArgumentException("Padding must be PADDING_NOT_SET or non-negative");
 		}
 		
-		// This is a vertical view, so horizontal-specific alignments are no good
-		if(alignment != null && alignment != Alignment.LEFT && alignment != Alignment.CENTER && alignment != Alignment.RIGHT)
+		// This is a horizontal view, so vertical-specific alignments are no good
+		if(alignment != null && alignment != Alignment.TOP && alignment != Alignment.CENTER && alignment != Alignment.BOTTOM)
 		{
 			throw new IllegalArgumentException("Meaningless alignment value: " + alignment.toString());
 		}
 		
 		// Wrap it in our decorator
-		VerticalViewElement decChild = new VerticalViewElement(newChild, alignment, padding);
+		HorizontalViewElement decChild = new HorizontalViewElement(newChild, alignment, padding);
 		
 		if(optimizedDrawingEnabled)
 		{
@@ -746,7 +748,7 @@ public class VerticalView extends AbstractElement implements Container<Element> 
 	/**
 	 * Turn on or off optimized drawing. This will reduce the amount of drawing done from all 
 	 * elements in the view, to only those that would show within the current graphics clip. 
-	 * To do this, all of the elements in the view must never have their height changed after 
+	 * To do this, all of the elements in the view must never have their width changed after 
 	 * they have been added to this view. (So for example, a TextArea may not have its text changed) 
 	 * Will do nothing if it is being set on but already on, or being set off and already off
 	 * @param enabled True if optimization should be turned on
@@ -826,16 +828,16 @@ public class VerticalView extends AbstractElement implements Container<Element> 
 
 	/**
 	 * @param alignment The alignment to set, or null to remove the setting
-	 * @throws IllegalArgumentException If the alignment is not vertically meaningful
+	 * @throws IllegalArgumentException If the alignment is not horizontally meaningful
 	 */
 	public void setAlignment(Alignment alignment)
 	{
-		// This is a vertical view, so horizontal-specific alignments are no good
-		if(alignment != null && alignment != Alignment.LEFT && alignment != Alignment.CENTER && alignment != Alignment.RIGHT)
+		// This is a horizontal view, so horizontal-specific alignments are no good
+		if(alignment != null && alignment != Alignment.TOP && alignment != Alignment.CENTER && alignment != Alignment.BOTTOM)
 		{
 			throw new IllegalArgumentException("Meaningless alignment value: " + alignment.toString());
 		}
-				
+
 		this.alignment = Optional.ofNullable(alignment);
 	}
 
@@ -848,7 +850,7 @@ public class VerticalView extends AbstractElement implements Container<Element> 
 	}
 
 	/**
-	 * @param padding The padding to set. Either VerticalView.PADDING_NOT_SET or non-negative
+	 * @param padding The padding to set. Either HorizontalView.PADDING_NOT_SET or non-negative
 	 */
 	public void setPadding(int padding)
 	{
@@ -869,56 +871,56 @@ public class VerticalView extends AbstractElement implements Container<Element> 
 	}
 
 	/**
-	 * Figure out where to draw this child along the X axis by taking into account the 
+	 * Figure out where to draw this child along the Y axis by taking into account the 
 	 * different factors that may affect it
 	 * @param child The child about to be drawn
-	 * @return The x position to draw the child at
+	 * @return The y position to draw the child at
 	 */
-	private int xPosFor(VerticalViewElement child)
+	private int yPosFor(HorizontalViewElement child)
 	{
 		// First, is there a global alignment to obey?
 		if(alignment.isPresent())
 		{
-			return xCoordForAlignment(alignment.get(), getWidth(), child.getWidth());
+			return yCoordForAlignment(alignment.get(), getHeight(), child.getHeight());
 		}
 		// What about some alignment on the element itself?
 		else if(child.hasAlignment())
 		{
-			return xCoordForAlignment(child.getAlignment(), getWidth(), child.getWidth());
+			return yCoordForAlignment(child.getAlignment(), getHeight(), child.getHeight());
 		}
-		// If nothing else, the x coordinate of the child
+		// If nothing else, the y coordinate of the child
 		else {
-			return child.getX();
+			return child.getY();
 		}
 	}
 	
 	/**
-	 * Find the x coordinate drawing should take place from given an alignment factor. 
+	 * Find the y coordinate drawing should take place from given an alignment factor. 
 	 * @param alignment The alignment in use
-	 * @param availableWidth The parent width
-	 * @param elementWidth The child width
-	 * @return The x coordinate to draw at
+	 * @param availableHeight The parent width
+	 * @param elementHeight The child width
+	 * @return The y coordinate to draw at
 	 */
-	private int xCoordForAlignment(Alignment alignment, int availableWidth, int elementWidth)
+	private int yCoordForAlignment(Alignment alignment, int availableHeight, int elementHeight)
 	{
 		switch(alignment)
 		{
 		
 		// Well this is easy. We just put it all the way left.
-		case LEFT:
+		case TOP:
 			return 0;
 			
 		// Align the center lines of each
 		case CENTER:
-			return (int) ((availableWidth / 2.0) - (elementWidth / 2.0));
+			return (int) ((availableHeight / 2.0) - (elementHeight / 2.0));
 			
 		// Put it as far right as the widths will allow
-		case RIGHT:
-			return availableWidth - elementWidth;
+		case BOTTOM:
+			return availableHeight - elementHeight;
 			
 		// Because why not? Heh
 		default:
-			throw new AssertionError("VerticalView.xCoordForAlignment() reached default case. Unhandled enum value: " + alignment.toString());
+			throw new AssertionError("HorizontalView.xCoordForAlignment() unhandled enum value: " + alignment.toString());
 		}
 	}
 	
@@ -929,7 +931,7 @@ public class VerticalView extends AbstractElement implements Container<Element> 
 	 * @param child The element being drawn
 	 * @return The padding between the child and its next sibling
 	 */
-	private int paddingFor(VerticalViewElement child)
+	private int paddingFor(HorizontalViewElement child)
 	{
 		// First, is there a global padding setting to obey?
 		if(padding != PADDING_NOT_SET)
@@ -953,7 +955,7 @@ public class VerticalView extends AbstractElement implements Container<Element> 
 	 * child or the view itself, and the child and the focusable after this view if there is one
 	 * @param child
 	 */
-	private void linkAddedChild(VerticalViewElement child)
+	private void linkAddedChild(HorizontalViewElement child)
 	{
 		ContainerFocusHandler handler = (ContainerFocusHandler) super.getFocusHandler();
 		
@@ -1076,43 +1078,43 @@ public class VerticalView extends AbstractElement implements Container<Element> 
 	 * Decorator that adds two fields to an element that's been added to the view. 
 	 * It adds alignment and padding. These may or may not be set.
 	 */
-	private static class VerticalViewElement extends AbstractDecoratorElement {
+	private static class HorizontalViewElement extends AbstractDecoratorElement {
 		
 		/** The alignment, which may or may not be set */
 		private Optional<Alignment> alignment;
 		
-		/** The padding, which may or may not be set (using VerticalView.PADDING_NOT_SET) */
+		/** The padding, which may or may not be set (using HorizontalView.PADDING_NOT_SET) */
 		private int padding;
 		
 		/** A partial sum tracking the total Y location of this element. Only used when optimized */
-		private int heightSum;
+		private int widthSum;
 
 		/**
 		 * Create a new decorated element which will have neither alignment nor padding set
 		 * @param wrapped The element being decorated
 		 */
-		public VerticalViewElement(Element wrapped)
+		public HorizontalViewElement(Element wrapped)
 		{
 			super(wrapped);
 			
 			this.alignment = Optional.empty();
 			this.padding = PADDING_NOT_SET;
-			this.heightSum = 0;
+			this.widthSum = 0;
 		}
 		
 		/**
 		 * Create a new custom decorator which will have the given parameters
 		 * @param wrapped The element being decorated
 		 * @param alignment The alignment. May be null
-		 * @param padding The padding. May be VerticalView.PADDING_NOT_SET
+		 * @param padding The padding. May be HorizontalView.PADDING_NOT_SET
 		 */
-		public VerticalViewElement(Element wrapped, Alignment alignment, int padding)
+		public HorizontalViewElement(Element wrapped, Alignment alignment, int padding)
 		{
 			super(wrapped);
 			
 			this.alignment = Optional.ofNullable(alignment);
 			this.padding = padding;
-			this.heightSum = 0;
+			this.widthSum = 0;
 		}
 		
 		/**
@@ -1141,27 +1143,27 @@ public class VerticalView extends AbstractElement implements Container<Element> 
 		}
 		
 		/**
-		 * @return The height sum
+		 * @return The width sum
 		 */
-		public int getHeightSum()
+		public int getWidthSum()
 		{
-			return heightSum;
+			return widthSum;
 		}
 		
 		/**
-		 * @param delta How much to change the height sum by
+		 * @param delta How much to change the width sum by
 		 */
-		public void changeHeightSum(int delta)
+		public void changeWidthSum(int delta)
 		{
-			this.heightSum += delta;
+			this.widthSum += delta;
 		}
 		
 		/**
-		 * @param heightSum The new height sum
+		 * @param widthSum The new width sum
 		 */
-		public void setHeightSum(int heightSum)
+		public void setWidthSum(int widthSum)
 		{
-			this.heightSum = heightSum;
+			this.widthSum = widthSum;
 		}
 		
 	}

@@ -235,7 +235,8 @@ public class ModalManager {
 	 * @return The coalesced result from the dialog, obtained via the listener
 	 * @throws ModalException If results could not be reliably obtained
 	 */
-	private <T> T genericDialogStuff(String title, Container parent, AbstractModalDialog dialog, DialogListener<T> listener) throws ModalException
+	private <T> T genericDialogStuff(String title, Container<? super Element> parent, AbstractModalDialog dialog, DialogListener<T> listener)
+			throws ModalException
 	{
 		// Wrap it in a frame wrapped in a draggable element
 		DraggableElement dragFrame = decoratedDialog(title, dialog);
@@ -286,7 +287,7 @@ public class ModalManager {
 	 * @param decorator The decorator wrapping the dialog
 	 * @throws ModalException Registration of the dialog failed
 	 */
-	private void showDialog(Container parent, AbstractModalDialog dialog, Element decorator) throws ModalException
+	private void showDialog(Container<? super Element> parent, AbstractModalDialog dialog, Element decorator) throws ModalException
 	{
 		// Register then add.
 		register(dialog);
@@ -308,7 +309,7 @@ public class ModalManager {
 	 * @param parent The container that the dialog will be placed in
 	 * @param decorator The decorator wrapping the dialog
 	 */
-	private void removeDialog(Container parent, Element decorator)
+	private void removeDialog(Container<? super Element> parent, Element decorator)
 	{
 		// Opposite order from showDialog
 		parent.remove(decorator);

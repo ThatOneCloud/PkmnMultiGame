@@ -29,7 +29,7 @@ public class ScrollView extends AbstractElement {
 	 * A simple enum, scroll bars may either always be showing or only show when they would be needed. 
 	 * Yes, an enum rather than booleans. It's... clearer.
 	 */
-	public static enum BarVisibility {ALWAYS, WHEN_NEEDED};
+	public static enum BarVisibility {ALWAYS, WHEN_NEEDED, NEVER};
 	
 	/** Offset for the top border sprite */
 	private static final int TOP_BORDER = 0;
@@ -42,6 +42,12 @@ public class ScrollView extends AbstractElement {
 	
 	/** Offset for the left border sprite */
 	private static final int LEFT_BORDER = 3;
+	
+	/** Offset for the vertical scroll track background sprite */
+	private static final int VERTICAL_SCROLL_BACKGROUND = 4;
+	
+	/** Offset for the horizontal scroll track background sprite */
+	private static final int HORIZONTAL_SCROLL_BACKGROUND = 5;
 	
 	/** Vertical scroll button */
 	private static final int VERTICAL = 0;
@@ -61,8 +67,8 @@ public class ScrollView extends AbstractElement {
 	/** Ending of the scroll area */
 	private static final int END = 1;
 	
-	/** How much to move the scroll bar each click. Deterministic and maybe rough. In future, could use double-precision location and move by percentage */
-	private static final int SCROLL_AMOUNT = 5;
+	/** How many pixels the view will shift when we scroll */
+	private static final int SCROLL_AMOUNT = 25;
 	
 	/** The 'mode' the vertical scroll bar will be in */
 	private BarVisibility verticalVisibility;
@@ -96,6 +102,21 @@ public class ScrollView extends AbstractElement {
 	
 	/** Image for the left border */
 	private BufferedImage leftBorder;
+	
+	/** Background for the vertical scroll tracks */
+	private BufferedImage verticalScrollBackground;
+	
+	/** Background for the horizontal scroll tracks */
+	private BufferedImage horizontalScrollBackground;
+	
+	/** Background image we've originally been assigned */
+	private Optional<BufferedImage> originalBg;
+	
+	/** Background image we're actually going to draw */
+	private Optional<BufferedImage> background;
+	
+	/** Optimization flag. If set, the background is a solid color */
+	private boolean solidBackground;
 	
 	/** The buttons for scrolling */
 	private ImageButton scrollButtons[][][];
@@ -181,6 +202,11 @@ public class ScrollView extends AbstractElement {
 		// Start out with an empty clip. They're overwritten each draw cycle.
 		previousClip = new Rectangle();
 		ourClip = new Rectangle();
+		
+		// Of course, an optimization flag isn't set to begin with
+		originalBg = Optional.empty();
+		background = Optional.empty();
+		solidBackground = false;
 	}
 	
 	/**
@@ -193,6 +219,12 @@ public class ScrollView extends AbstractElement {
 		rightBorder = SpriteManager.instance().getScaledSprite(SpriteSet.SCROLL, firstSpriteID + RIGHT_BORDER, -1, getHeight());
 		bottomBorder = SpriteManager.instance().getScaledSprite(SpriteSet.SCROLL, firstSpriteID + BOTTOM_BORDER, getWidth(), -1);
 		leftBorder = SpriteManager.instance().getScaledSprite(SpriteSet.SCROLL, firstSpriteID + LEFT_BORDER, -1, getHeight());
+		verticalScrollBackground = SpriteManager.instance().getScaledSprite(
+				SpriteSet.SCROLL, firstSpriteID + VERTICAL_SCROLL_BACKGROUND,
+				-1, getHeight() - topBorder.getHeight() - bottomBorder.getHeight());
+		horizontalScrollBackground = SpriteManager.instance().getScaledSprite(
+				SpriteSet.SCROLL, firstSpriteID + HORIZONTAL_SCROLL_BACKGROUND,
+				getWidth() - leftBorder.getWidth() - rightBorder.getWidth(), -1);
 	}
 	
 	/**
@@ -294,14 +326,14 @@ public class ScrollView extends AbstractElement {
 		// Lambdas make this not look like a wretched mess!
 		scrollButtons[VERTICAL][JUMP][BEGIN].setActionHandler((button) -> verticalBar.ifPresent((bar) -> bar.jumpBegin()));
 		scrollButtons[VERTICAL][JUMP][END].setActionHandler((button) -> verticalBar.ifPresent((bar) -> bar.jumpEnd()));
-		scrollButtons[VERTICAL][CLICK][BEGIN].setActionHandler((button) -> verticalBar.ifPresent((bar) -> bar.move(-SCROLL_AMOUNT)));
-		scrollButtons[VERTICAL][CLICK][END].setActionHandler((button) -> verticalBar.ifPresent((bar) -> bar.move(SCROLL_AMOUNT)));
+		scrollButtons[VERTICAL][CLICK][BEGIN].setActionHandler((button) -> verticalBar.ifPresent((bar) -> bar.move(-vScrollAmount())));
+		scrollButtons[VERTICAL][CLICK][END].setActionHandler((button) -> verticalBar.ifPresent((bar) -> bar.move(vScrollAmount())));
 		scrollButtons[HORIZONTAL][JUMP][BEGIN].setActionHandler((button) -> horizontalBar.ifPresent((bar) -> bar.jumpBegin()));
 		scrollButtons[HORIZONTAL][JUMP][END].setActionHandler((button) -> horizontalBar.ifPresent((bar) -> bar.jumpEnd()));
-		scrollButtons[HORIZONTAL][CLICK][BEGIN].setActionHandler((button) -> horizontalBar.ifPresent((bar) -> bar.move(-SCROLL_AMOUNT)));
-		scrollButtons[HORIZONTAL][CLICK][END].setActionHandler((button) -> horizontalBar.ifPresent((bar) -> bar.move(SCROLL_AMOUNT)));
+		scrollButtons[HORIZONTAL][CLICK][BEGIN].setActionHandler((button) -> horizontalBar.ifPresent((bar) -> bar.move(-hScrollAmount())));
+		scrollButtons[HORIZONTAL][CLICK][END].setActionHandler((button) -> horizontalBar.ifPresent((bar) -> bar.move(hScrollAmount())));
 	}
-
+	
 	/**
 	 * Draw all of the scroll view. The border, scroll bars, scroll buttons, and wrapped element view are all drawn. 
 	 * Much of the sizing happens here, so that it is as dynamic as possible and will adapt to changes in the 
@@ -314,14 +346,14 @@ public class ScrollView extends AbstractElement {
 	@Override
 	public void drawElement(Graphics g, int offsetX, int offsetY) throws IteratorException
 	{
-		// Have the borders drawn
-		drawBorders(g, offsetX, offsetY);
-		
 		// Updates the existence of the vertical bar
 		updateVerticalBarVisibility();
-		
+
 		// Updates the existence of the horizontal bar
 		updateHorizontalBarVisibility();
+		
+		// Have the borders drawn
+		drawBorders(g, offsetX, offsetY);
 		
 		// Updates the size and position of both bars and related buttons
 		updateBarDimensions();
@@ -332,8 +364,17 @@ public class ScrollView extends AbstractElement {
 		// Horizontal's turn
 		drawHorizontalBar(g, offsetX, offsetY);
 		
+		// Clip the drawing surface down to just the view area
+		updateClip(g, offsetX, offsetY);
+		
+		// Draw a background behind the view (if there is one)
+		drawBackground(g, offsetX, offsetY);
+		
 		// Draw the view last - gives us the most recent scroll figures
 		drawElementView(g, offsetX, offsetY);
+		
+		// Put the clip back to normal
+		resetClip(g);
 	}
 	
 	/**
@@ -395,7 +436,7 @@ public class ScrollView extends AbstractElement {
 	{
 		this.hideFrame = hideFrame;
 	}
-
+	
 	/**
 	 * Draw just the borders. These are the four borders that frame the scroll view.
 	 * They are only drawn if they should be showing.
@@ -422,7 +463,7 @@ public class ScrollView extends AbstractElement {
 	private void updateVerticalBarVisibility()
 	{
 		// Do we have a bar and no longer need it?
-		if(verticalBar.isPresent() && !vScrollbarNeeded() && verticalVisibility == BarVisibility.WHEN_NEEDED)
+		if(verticalBar.isPresent() && !vScrollbarNeeded() && verticalVisibility != BarVisibility.ALWAYS)
 		{
 			// Removing and setting it to empty is like saying it no longer exists
 			verticalBar.get().setParent(null);
@@ -437,7 +478,7 @@ public class ScrollView extends AbstractElement {
 			Scrollbar scrollBar =  new Scrollbar(
 					scrollButtons[VERTICAL][CLICK][BEGIN].getX(),
 					scrollButtons[VERTICAL][CLICK][BEGIN].getY() + scrollButtons[VERTICAL][CLICK][BEGIN].getHeight(),
-					VERTICAL, trackBegin, trackEnd, firstSpriteID+4);
+					VERTICAL, trackBegin, trackEnd, firstSpriteID+6);
 			
 			// We're going to be its parent
 			scrollBar.setParent(new ParentElement(this));
@@ -454,7 +495,7 @@ public class ScrollView extends AbstractElement {
 	private void updateHorizontalBarVisibility()
 	{
 		// Do we still need the horizontal bar?
-		if(horizontalBar.isPresent() && !hScrollbarNeeded() && horizontalVisibility == BarVisibility.WHEN_NEEDED)
+		if(horizontalBar.isPresent() && !hScrollbarNeeded() && horizontalVisibility != BarVisibility.ALWAYS)
 		{
 			// Removing and setting it to empty is like saying it no longer exists
 			horizontalBar.get().setParent(null);
@@ -469,7 +510,7 @@ public class ScrollView extends AbstractElement {
 			Scrollbar scrollBar =  new Scrollbar(
 					scrollButtons[HORIZONTAL][CLICK][BEGIN].getX() + scrollButtons[HORIZONTAL][CLICK][BEGIN].getWidth(),
 					scrollButtons[HORIZONTAL][CLICK][BEGIN].getY(),
-					HORIZONTAL, trackBegin, trackEnd, firstSpriteID+4);
+					HORIZONTAL, trackBegin, trackEnd, firstSpriteID+6);
 
 			// We're going to be its parent
 			scrollBar.setParent(new ParentElement(this));
@@ -564,6 +605,9 @@ public class ScrollView extends AbstractElement {
 		// Of course we only draw it if it exists
 		if(verticalBar.isPresent())
 		{
+			// Put the vertical bar's track background behind it
+			g.drawImage(verticalScrollBackground, offsetX + verticalBar.get().getX(), offsetY + topBorder.getHeight(), null);
+			
 			// The vertical bar is present. Tell it to draw.
 			verticalBar.get().drawElement(g, offsetX + verticalBar.get().getX(), offsetY + verticalBar.get().getY());
 			
@@ -573,7 +617,8 @@ public class ScrollView extends AbstractElement {
 				for(int k = 0; k < scrollButtons[VERTICAL][j].length; ++k)
 				{
 					// Looks complicated but we're just having it draw itself and giving it the proper offset
-					scrollButtons[VERTICAL][j][k].drawElement(g, offsetX + scrollButtons[VERTICAL][j][k].getX(), offsetY + scrollButtons[VERTICAL][j][k].getY());
+					scrollButtons[VERTICAL][j][k].drawElement(g,
+							offsetX + scrollButtons[VERTICAL][j][k].getX(), offsetY + scrollButtons[VERTICAL][j][k].getY());
 				}
 			}
 			
@@ -594,6 +639,9 @@ public class ScrollView extends AbstractElement {
 		// Of course we only draw it if it exists
 		if(horizontalBar.isPresent())
 		{
+			// Put the horizontal bar's track background behind it
+			g.drawImage(horizontalScrollBackground, offsetX + leftBorder.getWidth(), offsetY + horizontalBar.get().getY(), null);
+						
 			// The vertical bar is present. Tell it to draw.
 			horizontalBar.get().drawElement(g, offsetX + horizontalBar.get().getX(), offsetY + horizontalBar.get().getY());
 			
@@ -603,13 +651,106 @@ public class ScrollView extends AbstractElement {
 				for(int k = 0; k < scrollButtons[HORIZONTAL][j].length; ++k)
 				{
 					// Looks complicated but we're just having it draw itself and giving it the proper offset
-					scrollButtons[HORIZONTAL][j][k].drawElement(g, offsetX + scrollButtons[HORIZONTAL][j][k].getX(), offsetY + scrollButtons[HORIZONTAL][j][k].getY());
+					scrollButtons[HORIZONTAL][j][k].drawElement(g,
+							offsetX + scrollButtons[HORIZONTAL][j][k].getX(), offsetY + scrollButtons[HORIZONTAL][j][k].getY());
 				}
 			}
 			
 			// Draw the right border again to the left of the vertical scrollbar
-			g.drawImage(bottomBorder, offsetX, offsetY + getHeight() - 2*bottomBorder.getHeight() - scrollButtons[0][0][0].getHeight(), null);
+			g.drawImage(bottomBorder,
+					offsetX, offsetY + getHeight() - 2*bottomBorder.getHeight() - scrollButtons[0][0][0].getHeight(), null);
 		}
+	}
+	
+	/**
+	 * Set the graphics clip to only the viewing area of this scroll view
+	 * @param g The graphics object to draw to
+	 * @param offsetX Offset X
+	 * @param offsetY Offset Y
+	 */
+	private void updateClip(Graphics g, int offsetX, int offsetY) {
+		// Overwrite the clip rectangles with current information
+		previousClip.setBounds(0, 0, 0, 0);
+		g.getClipBounds(previousClip);
+		ourClip.setBounds(offsetX + leftBorder.getWidth(), offsetY + topBorder.getHeight(), scrollViewWidth(), scrollViewHeight());
+		
+		// If there is an existing clip, we'll further restrict it by using the intersection of the two
+		if(!previousClip.isEmpty())
+		{
+			SwingUtilities.computeIntersection(previousClip.x, previousClip.y, previousClip.width, previousClip.height, ourClip);
+		}
+		
+		// Then set whatever the clip should be for this scroll view
+		g.setClip(ourClip);
+	}
+	
+	/**
+	 * Set the graphics clip back to what it was before it was last updated
+	 * @param g The graphics object to draw to
+	 */
+	private void resetClip(Graphics g) {
+		// Either clear the clip or set it back depending on whether or not there was a previous clip
+		g.setClip(previousClip.isEmpty() ? null : previousClip);
+	}
+	
+	/**
+	 * Draw a background if there is one present. The scroll bars should be updated before 
+	 * this is called, it requires knowing about them.  The background will be drawn as if it 
+	 * moves with the scroll bars, as well.
+	 * @param g The graphics object to draw to
+	 * @param offsetX Offset X
+	 * @param offsetY Offset Y
+	 */
+	private void drawBackground(Graphics g, int offsetX, int offsetY)
+	{
+		// Do we even have a background to draw?
+		if(!background.isPresent())
+		{
+			return;
+		}
+		
+		// Now do we go with the optimized algorithm or the truly scrolling one?
+		if(solidBackground)
+		{
+			// Background is a solid color, it's just a matter of drawing it - plain and simple
+			g.drawImage(background.get(), offsetX + leftBorder.getWidth(), offsetY + topBorder.getHeight(), null);
+		}
+		else {
+			// Need to use slightly more complex drawing code
+			drawScrollingBackground(g, offsetX, offsetY);
+		}
+	}
+	
+	/**
+	 * Draw specifically for when the background needs to be drawn and appear to scroll
+	 * @param g The graphics object to draw to
+	 * @param offsetX Offset X
+	 * @param offsetY Offset Y
+	 */
+	private void drawScrollingBackground(Graphics g, int offsetX, int offsetY)
+	{
+		// This is the same as when drawing the view - it'll still tell us how much scrolling is needed
+		int drawOffsetX = 0;
+		int drawOffsetY = 0;
+
+		// Figure them out if there is a bar. It's (scroll percentage) * (max view offset)
+		if(verticalBar.isPresent())
+		{
+			drawOffsetY = (int) (verticalBar.get().getScrollPercentage() * (view.getY() + view.getHeight() - scrollViewHeight()));
+		}
+		if(horizontalBar.isPresent())
+		{
+			drawOffsetX = (int) (horizontalBar.get().getScrollPercentage() * (view.getX() + view.getWidth() - scrollViewWidth()));
+		}
+		
+		int tileWidth = originalBg.get().getWidth();
+		int tileHeight = originalBg.get().getHeight();
+		
+		// We don't wanna shift it as much as the view... but still by a similar amount.
+		// Since the background will tile, we want it so the tiles will align
+		g.drawImage(background.get(),
+				offsetX + leftBorder.getWidth() - (drawOffsetX % tileWidth),
+				offsetY + topBorder.getHeight() - (drawOffsetY % tileHeight), null);
 	}
 	
 	/**
@@ -636,26 +777,12 @@ public class ScrollView extends AbstractElement {
 			drawOffsetX = (int) (horizontalBar.get().getScrollPercentage() * (view.getX() + view.getWidth() - scrollViewWidth()));
 		}
 		
-		// Overwrite the clip rectangles with current information
-		g.getClipBounds(previousClip);
-		ourClip.setBounds(offsetX + leftBorder.getWidth(), offsetY + topBorder.getHeight(), scrollViewWidth(), scrollViewHeight());
-		
-		// If there is an existing clip, we'll further restrict it by using the intersection of the two
-		if(!previousClip.isEmpty())
-		{
-			SwingUtilities.computeIntersection(previousClip.x, previousClip.y, previousClip.width, previousClip.height, ourClip);
-		}
-		
-		// Then set whatever the clip should be for this scroll view
-		g.setClip(ourClip);
-		
 		// We trick the view and tell it to draw shifted around
-		view.drawElement(g, offsetX + view.getX() + leftBorder.getWidth() - drawOffsetX, offsetY + view.getY() + topBorder.getHeight() - drawOffsetY);
-		
-		// Either clear the clip or set it back depending on whether or not there was a previous clip
-		g.setClip(previousClip.isEmpty() ? null : previousClip);
+		view.drawElement(g,
+				offsetX + view.getX() + leftBorder.getWidth() - drawOffsetX,
+				offsetY + view.getY() + topBorder.getHeight() - drawOffsetY);
 	}
-	
+
 	/**
 	 * A ScrollView is interested in key events which may tell it to scroll. 
 	 * These are the SCROLL and ARROW key constants.
@@ -671,25 +798,25 @@ public class ScrollView extends AbstractElement {
 		case KeyConstants.UP_ARROW:
 		case KeyConstants.SCROLL_UP:
 			// Tell the vertical bar to move, just as if the click begin button was pressed
-			verticalBar.ifPresent((bar) -> bar.move(-SCROLL_AMOUNT));
+			verticalBar.ifPresent((bar) -> bar.move(-vScrollAmount()));
 			return;
 			
 		case KeyConstants.DOWN_ARROW:
 		case KeyConstants.SCROLL_DOWN:
 			// Tell the vertical bar to move, just as if the click end button was pressed
-			verticalBar.ifPresent((bar) -> bar.move(SCROLL_AMOUNT));
+			verticalBar.ifPresent((bar) -> bar.move(vScrollAmount()));
 			return;
 			
 		case KeyConstants.LEFT_ARROW:
 		case KeyConstants.SCROLL_LEFT:
 			// Tell the horizontal bar to move, just as if the click begin button was pressed
-			horizontalBar.ifPresent((bar) -> bar.move(-SCROLL_AMOUNT));
+			horizontalBar.ifPresent((bar) -> bar.move(-hScrollAmount()));
 			return;
 			
 		case KeyConstants.RIGHT_ARROW:
 			case KeyConstants.SCROLL_RIGHT:
 				// Tell the horizontal bar to move, just as if the click end button was pressed
-				horizontalBar.ifPresent((bar) -> bar.move(SCROLL_AMOUNT));
+				horizontalBar.ifPresent((bar) -> bar.move(hScrollAmount()));
 				return;
 		}
 		
@@ -874,6 +1001,80 @@ public class ScrollView extends AbstractElement {
 	}
 	
 	/**
+	 * Set a background for the scroll view. This will appear behind the viewed element 
+	 * and appear to scroll with it. The background is tiled. 
+	 * If the background being set is known to be a solid color, then <code>setSolidBackground()</code> 
+	 * may be used instead.
+	 * @param set The set the sprite is from
+	 * @param spriteID The ID of the sprite within the set
+	 */
+	public void setBackground(SpriteSet set, int spriteID)
+	{
+		this.originalBg = Optional.of(SpriteManager.instance().getSprite(set, spriteID));
+		
+		int scaledWidth = viewWidthWithoutBar() + originalBg.get().getWidth();
+		int scaledHeight = viewHeightWithoutBar() + originalBg.get().getHeight();
+		
+		this.background = Optional.of(SpriteManager.instance().getTiledSprite(originalBg.get(), scaledWidth, scaledHeight));
+	}
+	
+	/**
+	 * Set a background for the scroll view. This will appear behind the viewed element 
+	 * and appear to scroll with it. The background is tiled. 
+	 * If the background being set is known to be a solid color, then <code>setSolidBackground()</code> 
+	 * may be used instead.
+	 * @param image The image to use
+	 */
+	public void setBackground(BufferedImage image)
+	{
+		this.originalBg = Optional.of(image);
+		
+		int scaledWidth = viewWidthWithoutBar() + originalBg.get().getWidth();
+		int scaledHeight = viewHeightWithoutBar() + originalBg.get().getHeight();
+		
+		this.background = Optional.of(SpriteManager.instance().getTiledSprite(originalBg.get(), scaledWidth, scaledHeight));
+	}
+	
+	/**
+	 * Set a background for the scroll view. It will appear behind the viewed element 
+	 * and appear to scroll with it. It will be tiled. 
+	 * This is more efficient than the other background method, but is only suitable 
+	 * for when the background being used is a solid color.
+	 * @param set The set the sprite is from
+	 * @param spriteID The ID of the sprite within the set
+	 */
+	public void setSolidBackground(SpriteSet set, int spriteID)
+	{
+		solidBackground = true;
+		
+		this.originalBg = Optional.of(SpriteManager.instance().getSprite(set, spriteID));
+		
+		int scaledWidth = viewWidthWithoutBar();
+		int scaledHeight = viewHeightWithoutBar();
+		
+		this.background = Optional.of(SpriteManager.instance().getTiledSprite(originalBg.get(), scaledWidth, scaledHeight));
+	}
+	
+	/**
+	 * Set a background for the scroll view. It will appear behind the viewed element 
+	 * and appear to scroll with it. It will be tiled. 
+	 * This is more efficient than the other background method, but is only suitable 
+	 * for when the background being used is a solid color.
+	 * @param image The image to use
+	 */
+	public void setSolidBackground(BufferedImage image)
+	{
+		solidBackground = true;
+		
+		this.originalBg = Optional.of(image);
+		
+		int scaledWidth = viewWidthWithoutBar();
+		int scaledHeight = viewHeightWithoutBar();
+		
+		this.background = Optional.of(SpriteManager.instance().getTiledSprite(originalBg.get(), scaledWidth, scaledHeight));
+	}
+	
+	/**
 	 * Sets the position rectangle, and also updates the size of the view so that 
 	 * everything still appears correctly. 
 	 * @param r The new location rectangle
@@ -888,6 +1089,7 @@ public class ScrollView extends AbstractElement {
 		super.setRectangle(r);
 		
 		// Run through all of the resizing operations
+		resizeBackground();
 		resizeForWidthChange(widthDelta);
 		resizeForHeightChange(heightDelta);
 	}
@@ -906,6 +1108,7 @@ public class ScrollView extends AbstractElement {
 		super.setWidth(width);
 		
 		// Only do the width resizing operations
+		resizeBackground();
 		resizeForWidthChange(widthDelta);
 	}
 	
@@ -923,7 +1126,23 @@ public class ScrollView extends AbstractElement {
 		super.setHeight(height);
 		
 		// Only do the height resizing operations
+		resizeBackground();
 		resizeForHeightChange(heightDelta);
+	}
+	
+	/**
+	 * Resize the background if one has been set. This depends on both the width and the height, 
+	 * so a change in either will require a resize of it.
+	 */
+	private void resizeBackground()
+	{
+		if(background.isPresent())
+		{
+			int scaledWidth = viewWidthWithoutBar() + 2*originalBg.get().getWidth();
+			int scaledHeight = viewHeightWithoutBar() + 2*originalBg.get().getHeight();
+			
+			this.background = Optional.of(SpriteManager.instance().getTiledSprite(originalBg.get(), scaledWidth, scaledHeight));
+		}
 	}
 	
 	/**
@@ -1008,6 +1227,8 @@ public class ScrollView extends AbstractElement {
 	{
 		topBorder = SpriteManager.instance().getScaledSprite(topBorder, getWidth(), -1);
 		bottomBorder = SpriteManager.instance().getScaledSprite(bottomBorder, getWidth(), -1);
+		horizontalScrollBackground = SpriteManager.instance().getScaledSprite(horizontalScrollBackground,
+				getWidth() - leftBorder.getWidth() - rightBorder.getWidth(), -1);
 	}
 	
 	/**
@@ -1017,6 +1238,8 @@ public class ScrollView extends AbstractElement {
 	{
 		leftBorder = SpriteManager.instance().getScaledSprite(leftBorder, -1, getHeight());
 		rightBorder = SpriteManager.instance().getScaledSprite(rightBorder, -1, getHeight());
+		verticalScrollBackground = SpriteManager.instance().getScaledSprite(verticalScrollBackground,
+				-1, getHeight() - topBorder.getHeight() - bottomBorder.getHeight());
 	}
 	
 	/**
@@ -1069,8 +1292,31 @@ public class ScrollView extends AbstractElement {
 	 */
 	private int scrollViewHeight()
 	{
-		return horizontalBar.isPresent() ? getHeight() - 2*bottomBorder.getHeight() - topBorder.getHeight() - horizontalBar.get().getHeight()
+		return horizontalBar.isPresent() ?
+				getHeight() - 2*bottomBorder.getHeight() - topBorder.getHeight() - horizontalBar.get().getHeight()
 				: getHeight() - (topBorder.getHeight() + bottomBorder.getHeight());
+	}
+	
+	/**
+	 * Figure out how many pixels to move the scroll bar by, given the current view.
+	 * @return How much one click of the scroll bar will be
+	 */
+	private double vScrollAmount()
+	{
+		// Find the amount to move the bar, relative to the view
+		// This is the view scroll amount times the track length, all divided by the total view height
+		return (SCROLL_AMOUNT * verticalBar.get().getTrackLength()) / ((double) (view.getY() + view.getHeight()));
+	}
+	
+	/**
+	 * Figure out how many pixels to move the scroll bar by, given the current view.
+	 * @return How much one click of the scroll bar will be
+	 */
+	private double hScrollAmount()
+	{
+		// Find the amount to move the bar, relative to the view
+		// This is the view scroll amount times the track length, all divided by the total view height
+		return (SCROLL_AMOUNT * horizontalBar.get().getTrackLength()) / ((double) (view.getX() + view.getWidth()));
 	}
 	
 	/**
@@ -1185,6 +1431,12 @@ public class ScrollView extends AbstractElement {
 		/** Sprite for the pressed in stretch-able bottom portion of the scroll bar */
 		private BufferedImage pressedBottomBg;
 		
+		/** Double precision x location, for those long scroll tracks */
+		private double locX;
+		
+		/** Double precision y location, for those long scroll tracks */
+		private double locY;
+		
 		/**
 		 * Create a scroll bar at the given location, using the given orientation (which is either VERTICAL or HORIZONTAL)
 		 * @param x X location
@@ -1198,6 +1450,9 @@ public class ScrollView extends AbstractElement {
 		public Scrollbar(int x, int y, int orientation, int trackBegin, int trackEnd, int firstSpriteID)
 		{
 			super(ScrollView.PRIORITY, x, y);
+			
+			this.locX = x;
+			this.locY = y;
 			
 			// Because why not practice hygiene
 			if(orientation != VERTICAL && orientation != HORIZONTAL)
@@ -1215,10 +1470,18 @@ public class ScrollView extends AbstractElement {
 			if(orientation == VERTICAL)
 			{
 				super.setWidth(topBorder.getWidth());
-				super.setHeight(topBorder.getHeight() + topBg.getHeight() + centerImg.getHeight() + bottomBg.getHeight() + bottomBorder.getHeight());
+				super.setHeight(topBorder.getHeight()
+						+ topBg.getHeight()
+						+ centerImg.getHeight()
+						+ bottomBg.getHeight()
+						+ bottomBorder.getHeight());
 			}
 			else {
-				super.setWidth(topBorder.getWidth() + topBg.getWidth() + centerImg.getWidth() + bottomBg.getWidth() + bottomBorder.getWidth());
+				super.setWidth(topBorder.getWidth()
+						+ topBg.getWidth()
+						+ centerImg.getWidth()
+						+ bottomBg.getWidth()
+						+ bottomBorder.getWidth());
 				super.setHeight(topBorder.getHeight());
 			}
 		}
@@ -1281,14 +1544,16 @@ public class ScrollView extends AbstractElement {
 				g.drawImage(topBg, offsetX, offsetY + topBorder.getHeight(), null);
 				g.drawImage(centerImg, offsetX, offsetY + topBorder.getHeight() + topBg.getHeight(), null);
 				g.drawImage(bottomBg, offsetX, offsetY + topBorder.getHeight() + topBg.getHeight() + centerImg.getHeight(), null);
-				g.drawImage(bottomBorder, offsetX, offsetY + topBorder.getHeight() + topBg.getHeight() + centerImg.getHeight() + bottomBg.getHeight(), null);
+				g.drawImage(bottomBorder,
+						offsetX, offsetY + topBorder.getHeight() + topBg.getHeight() + centerImg.getHeight() + bottomBg.getHeight(), null);
 			}
 			else {
 				g.drawImage(topBorder, offsetX, offsetY, null);
 				g.drawImage(topBg, offsetX + topBorder.getWidth(), offsetY, null);
 				g.drawImage(centerImg, offsetX + topBorder.getWidth() + topBg.getWidth(), offsetY, null);
 				g.drawImage(bottomBg, offsetX + topBorder.getWidth() + topBg.getWidth() + centerImg.getWidth(), offsetY, null);
-				g.drawImage(bottomBorder, offsetX + topBorder.getWidth() + topBg.getWidth() + centerImg.getWidth() + bottomBg.getWidth(), offsetY, null);
+				g.drawImage(bottomBorder,
+						offsetX + topBorder.getWidth() + topBg.getWidth() + centerImg.getWidth() + bottomBg.getWidth(), offsetY, null);
 			}
 			
 		}
@@ -1322,6 +1587,60 @@ public class ScrollView extends AbstractElement {
 				// Update our location
 				setX(destX);
 			}
+		}
+		
+		/**
+		 * @return Double precision X location
+		 */
+		public double getLocX()
+		{
+			return locX;
+		}
+
+		/**
+		 * Sets both integer and double x location
+		 */
+		@Override
+		public void setX(int x)
+		{
+			super.setX(x);
+			this.locX = x;
+		}
+		
+		/**
+		 * Sets both integer and double x location
+		 */
+		public void setLocX(double x)
+		{
+			super.setX((int) x);
+			this.locX = x;
+		}
+		
+		/**
+		 * @return Double precision Y location
+		 */
+		public double getLocY()
+		{
+			return locY;
+		}
+		
+		/**
+		 * Sets both integer and double y location
+		 */
+		@Override
+		public void setY(int y)
+		{
+			super.setY(y);
+			this.locY = y;
+		}
+		
+		/**
+		 * Sets both integer and double y location
+		 */
+		public void setLocY(double y)
+		{
+			super.setY((int) y);
+			this.locY = y;
 		}
 		
 		/**
@@ -1359,27 +1678,27 @@ public class ScrollView extends AbstractElement {
 		 * while a positive amount will move it towards the end. The bar will stay within its track.
 		 * @param delta The amount to move the bar
 		 */
-		public void move(int delta)
+		public void move(double delta)
 		{
 			// Make sure that the movement won't run us off the track
 			if(orientation == VERTICAL)
 			{
 				// Figure out the destination Y coordinate
-				int destY = getY() + delta;
+				double destY = getLocY() + delta;
 				destY = destY < trackBegin ? trackBegin : destY;
 				destY = destY > trackEnd - getHeight() ? trackEnd - getHeight() : destY;
 				
 				// Update our location
-				setY(destY);
+				setLocY(destY);
 			}
 			else {
 				// Figure out the destination X coordinate
-				int destX = getX() + delta;
+				double destX = getLocX() + delta;
 				destX = destX < trackBegin ? trackBegin : destX;
 				destX = destX > trackEnd - getWidth() ? trackEnd - getWidth(): destX;
 				
 				// Update our location
-				setX(destX);
+				setLocX(destX);
 			}
 		}
 		
@@ -1393,7 +1712,7 @@ public class ScrollView extends AbstractElement {
 			// What's the distance range we can travel? Slightly different from track length
 			double scrollLength = getTrackLength() - (orientation == VERTICAL ? getHeight() : getWidth());
 			
-			return ((orientation == VERTICAL ? getY() : getX()) - trackBegin) / scrollLength;
+			return ((orientation == VERTICAL ? getLocY() : getLocX()) - trackBegin) / scrollLength;
 		}
 		
 		/**
@@ -1445,7 +1764,11 @@ public class ScrollView extends AbstractElement {
 				pressedBottomBg = SpriteManager.instance().getTiledSprite(pressedBottomBg, -1, bottomBgHeight);
 				
 				// Update the height. It's probably different now
-				setHeight(topBorder.getHeight() + topBg.getHeight() + centerImg.getHeight() + bottomBg.getHeight() + bottomBorder.getHeight());
+				setHeight(topBorder.getHeight()
+						+ topBg.getHeight()
+						+ centerImg.getHeight()
+						+ bottomBg.getHeight()
+						+ bottomBorder.getHeight());
 			}
 			else {
 				// So we're going to change the width. The minimum is the size of those that cannot resize, and 1 for the backgrounds
@@ -1466,7 +1789,11 @@ public class ScrollView extends AbstractElement {
 				pressedBottomBg = SpriteManager.instance().getTiledSprite(pressedBottomBg, bottomBgWidth, -1);
 				
 				// Update the width, it's probably different now
-				super.setWidth(topBorder.getWidth() + topBg.getWidth() + centerImg.getWidth() + bottomBg.getWidth() + bottomBorder.getWidth());
+				super.setWidth(topBorder.getWidth()
+						+ topBg.getWidth()
+						+ centerImg.getWidth()
+						+ bottomBg.getWidth()
+						+ bottomBorder.getWidth());
 			}
 		}
 		

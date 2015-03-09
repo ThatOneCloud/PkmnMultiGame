@@ -118,24 +118,38 @@ public class SpriteTestInterface extends Interface {
 		
 		
 		
-		Interface largeInterface = new Interface(0, 0, 200, 600);
-		largeInterface.setBackground(SpriteSet.BACKGROUND, 0);
-		largeInterface.add(new TextArea("This is where my skills at rambling come in handy. I need some large blocks of text to generate test elements with, "
-				+ "so I can just type for a while and see what comes out. This should be long enough for the first block.", 10, 10, 170));
-		largeInterface.add(new TextArea("This is another sizeable block of text but instead it is placed downwards in the interface so that there is a gap "
-				+ "between it and the previous block of text. That way, to see it, you must scroll down to it.", 10, 300, 130));
-		ScrollView scrollView = new ScrollView(largeInterface, 300, 40, 170, 200);
+//		Interface largeInterface = new Interface(0, 0, 200, 600);
+//		largeInterface.add(new TextArea("This is where my skills at rambling come in handy. I need some large blocks of text to generate test elements with, "
+//				+ "so I can just type for a while and see what comes out. This should be long enough for the first block.", 10, 10, 170));
+//		largeInterface.add(new TextArea("This is another sizeable block of text but instead it is placed downwards in the interface so that there is a gap "
+//				+ "between it and the previous block of text. That way, to see it, you must scroll down to it.", 10, 300, 130));
+//		ScrollView scrollView = new ScrollView(largeInterface, 300, 40, 170, 200);
+//		scrollView.setBackground(SpriteSet.BACKGROUND, 2);
+//		add(scrollView);
+//
+//		
+//		
+//		
+//		VerticalView vertView = new VerticalView(300, 260, 200);
+////		vertView.setPadding(20);
+////		vertView.setAlignment(Alignment.RIGHT);
+//		vertView.add(new Text("Vertical"));
+//		vertView.add(new Button("View Button", 50, 0));
+//		vertView.add(new Sprite(SpriteSet.TEST, 0, 0, 0));
+//		add(vertView);
+		
+		
+		
+		VerticalView longView = new VerticalView(0, 0, 250);
+		longView.setPadding(10);
+		longView.setOptimizedDrawing(true);
+		for(int i = 0; i < 50000; ++i)
+		{
+			longView.add(new TextArea("Block " + i + " of text used for a rather long vertical view meant to be placed in a scroll view",
+					0, 0, 250));
+		}
+		ScrollView scrollView = new ScrollView(longView, 300, 40, 170, 200);
 		add(scrollView);
-		
-		
-		
-		VerticalView vertView = new VerticalView(300, 260, 200);
-//		vertView.setPadding(20);
-//		vertView.setAlignment(Alignment.RIGHT);
-		vertView.add(new Text("Vertical"));
-		vertView.add(new Button("View Button", 50, 0));
-		vertView.add(new Sprite(SpriteSet.TEST, 0, 0, 0));
-		add(vertView);
 		
 		
 		
@@ -143,7 +157,6 @@ public class SpriteTestInterface extends Interface {
 		
 //		EventQueue.invokeLater(new Runnable()
 //		{
-//
 //			@Override
 //			public void run() {
 //				try {
@@ -151,12 +164,10 @@ public class SpriteTestInterface extends Interface {
 //					InputValidator<String> v = (txt) -> txt.length() > 15 ? InputValidator.VALID : "Needs to be longer";
 //					String input = ModalManager.instance().showInputDialog("Input!", "Enter something!", v);
 //					System.out.println("done showing dialog. Input: " + input);
-//					
 //				} catch (ModalException e) {
 //					e.printStackTrace();
 //				}
 //			}
-//			
 //		});
 
 		

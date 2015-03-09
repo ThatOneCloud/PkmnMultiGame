@@ -6,8 +6,10 @@ package net.cloud.gfx.elements;
  */
 public enum Alignment {
 	
-	LEFT,
 	CENTER,
-	RIGHT;
+	LEFT,
+	RIGHT,
+	TOP,
+	BOTTOM;
 
 }

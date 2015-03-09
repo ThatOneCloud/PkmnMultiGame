@@ -53,7 +53,7 @@ public class ConfirmationDialog extends AbstractModalDialog {
 		TextArea textArea = new TextArea(prompt, INSET, 0, width - (2 * INSET));
 		ScrollView view = new ScrollView(textArea, INSET, INSET,
 				width - (2 * INSET), height - 3*INSET - B_HEIGHT,
-				BarVisibility.WHEN_NEEDED, BarVisibility.WHEN_NEEDED);
+				BarVisibility.WHEN_NEEDED, BarVisibility.NEVER);
 		textArea.setWidth(view.viewWidthWithBar() - textArea.getX());
 		view.setFrameHiding(true);
 		add(view);
