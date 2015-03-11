@@ -9,6 +9,7 @@ import net.cloud.client.nio.packet.PacketSender;
 import net.cloud.client.entity.player.LoginState;
 import net.cloud.client.nio.bufferable.Bufferable;
 import net.cloud.client.nio.bufferable.BufferableException;
+import net.cloud.client.util.HashObj;
 import net.cloud.client.util.StringUtil;
 
 /**
@@ -31,8 +32,8 @@ public class Player extends Entity implements Bufferable {
 	/** The player's username. */
 	private String username;
 	
-	/** The player's password. */
-	private String password;
+	/** The player's password, as a SHA-1 hash. */
+	private HashObj password;
 	
 	/**
 	 * Constructor that accepts the PacketSender, for the World Player. 
@@ -55,14 +56,14 @@ public class Player extends Entity implements Bufferable {
 	}
 
 	/** @return The player's password */
-	public String getPassword()
+	public HashObj getPassword()
 	{
 		return password;
 	}
 	
 	/** @param password the password to set */
 	public void setPassword(String password) {
-		this.password = password;
+		this.password = new HashObj(password);
 	}
 	
 	/** @return The LoginState for this player. Ie, which step of login process they are in */
@@ -85,18 +86,28 @@ public class Player extends Entity implements Bufferable {
 		return packetSender;
 	}
 	
+	/**
+	 * Save all of the non-transient player data to the buffer
+	 */
 	@Override
-	public void save(ByteBuf buffer) throws BufferableException {
-		// Well for now all we have is the fake username & password
+	public void save(ByteBuf buffer) throws BufferableException
+	{
+		// Well for now all we have is the username & password
 		StringUtil.writeStringToBuffer(getUsername(), buffer);
-		StringUtil.writeStringToBuffer(getPassword(), buffer);
+		
+		password.save(buffer);
 	}
 
+	/**
+	 * Restore all of the non-transient player data from the buffer
+	 */
 	@Override
-	public void restore(ByteBuf buffer) throws BufferableException {
+	public void restore(ByteBuf buffer) throws BufferableException
+	{
 		// And for now, restore the user & pass just to verify it
 		username = StringUtil.getFromBuffer(buffer);
-		password = StringUtil.getFromBuffer(buffer);
+		
+		password = HashObj.createFrom(buffer);
 	}
 
 }

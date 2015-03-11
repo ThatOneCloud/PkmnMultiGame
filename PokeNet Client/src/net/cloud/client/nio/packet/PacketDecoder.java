@@ -14,8 +14,13 @@ import io.netty.handler.codec.ByteToMessageDecoder;
  */
 public class PacketDecoder extends ByteToMessageDecoder {
 
+	/**
+	 * Figure out which packet is coming through the pipeline (by reading its opcode) 
+	 * then pass it off to the PacketManager
+	 */
 	@Override
-	protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
+	protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception
+	{
 		// Before this in the pipeline was a length based decoder, so now we need to figure out which Packet 
 		// to create, create it, and pass it on to the PacketHandler, which is next in the pipeline.
 		

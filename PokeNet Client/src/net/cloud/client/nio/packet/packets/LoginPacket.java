@@ -4,10 +4,12 @@ import io.netty.buffer.ByteBuf;
 import net.cloud.client.entity.player.LoginState;
 import net.cloud.client.entity.player.Player;
 import net.cloud.client.logging.Logger;
+import net.cloud.client.nio.bufferable.BufferableException;
 import net.cloud.client.nio.packet.Packet;
 import net.cloud.client.nio.packet.PacketConstants;
 import net.cloud.client.nio.packet.ReceiveOnlyPacket;
 import net.cloud.client.nio.packet.SendOnlyPacket;
+import net.cloud.client.util.HashObj;
 import net.cloud.client.util.StringUtil;
 
 /**
@@ -22,30 +24,38 @@ public class LoginPacket extends SendOnlyPacket {
 	
 	/** Username of the player trying to login */
 	private String username;
+	
 	/** Password of the player trying to login */
-	private String password;
+	private HashObj password;
 	
 	/** Default constructor leaves all data fields default or null */
 	public LoginPacket() {}
 	
 	/** Create a LoginPacket which contains the given login credentials */
-	public LoginPacket(String username, String password) {
+	public LoginPacket(String username, HashObj password)
+	{
 		this.username = username;
 		this.password = password;
 	}
 
 	@Override
-	public short getOpcode() {
+	public short getOpcode()
+	{
 		return PacketConstants.LOGIN_PACKET;
 	}
 
 	@Override
-	public void encode(ByteBuf buffer) {
+	public void encode(ByteBuf buffer) throws BufferableException
+	{
 		// Place the username and password into the buffer
 		StringUtil.writeStringToBuffer(username, buffer);
-		StringUtil.writeStringToBuffer(password, buffer);
+		
+		password.save(buffer);
 	}
 
+	/**
+	 * A packet to deal with the server's response to our request to login
+	 */
 	public static class LoginResponsePacket extends ReceiveOnlyPacket {
 		
 		/** The response we're going to send */
@@ -57,17 +67,20 @@ public class LoginPacket extends SendOnlyPacket {
 		/**
 		 * @param response What we'll tell the server about their login request
 		 */
-		public LoginResponsePacket(LoginResponse response) {
+		public LoginResponsePacket(LoginResponse response)
+		{
 			this.response = response;
 		}
 
 		@Override
-		public short getOpcode() {
+		public short getOpcode()
+		{
 			return PacketConstants.LOGIN_RESPONSE_PACKET;
 		}
 
 		@Override
-		public Packet decode(ByteBuf data) {
+		public Packet decode(ByteBuf data)
+		{
 			// The packet has a response in it - from the enum
 			LoginResponse response = LoginResponse.values()[data.readInt()];
 			
@@ -75,7 +88,8 @@ public class LoginPacket extends SendOnlyPacket {
 		}
 
 		@Override
-		public void handlePacket(Player player) {
+		public void handlePacket(Player player)
+		{
 			// TODO Take real action based on the response, but no GUI yet
 			switch(response) {
 			

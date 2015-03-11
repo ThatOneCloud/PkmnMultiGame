@@ -11,6 +11,7 @@ import net.cloud.server.entity.player.save.PlayerSaveHandler;
 import net.cloud.server.nio.bufferable.Bufferable;
 import net.cloud.server.nio.bufferable.BufferableException;
 import net.cloud.server.nio.packet.PacketSender;
+import net.cloud.server.util.HashObj;
 import net.cloud.server.util.StringUtil;
 
 /**
@@ -34,7 +35,7 @@ public class Player extends Entity implements Bufferable {
 	private String username;
 	
 	/** The player's password. */
-	private String password;
+	private HashObj password;
 	
 	/**
 	 * Constructor that accepts the PacketSender
@@ -63,14 +64,14 @@ public class Player extends Entity implements Bufferable {
 	}
 
 	/** @return The player's password */
-	public String getPassword()
+	public HashObj getPassword()
 	{
 		return password;
 	}
 	
 	/** @param password the password to set */
 	public void setPassword(String password) {
-		this.password = password;
+		this.password = new HashObj(password);
 	}
 	
 	/** @return The LoginState for this player. Ie, which step of login process they are in */
@@ -115,18 +116,28 @@ public class Player extends Entity implements Bufferable {
 		}
 	}
 
+	/**
+	 * Save all of the non-transient player data to the buffer
+	 */
 	@Override
-	public void save(ByteBuf buffer) throws BufferableException {
-		// Well for now all we have is the fake username & password
+	public void save(ByteBuf buffer) throws BufferableException
+	{
+		// Well for now all we have is the username & password
 		StringUtil.writeStringToBuffer(getUsername(), buffer);
-		StringUtil.writeStringToBuffer(getPassword(), buffer);
+		
+		password.save(buffer);
 	}
 
+	/**
+	 * Restore all of the non-transient player data from the buffer
+	 */
 	@Override
-	public void restore(ByteBuf buffer) throws BufferableException {
+	public void restore(ByteBuf buffer) throws BufferableException
+	{
 		// And for now, restore the user & pass just to verify it
 		username = StringUtil.getFromBuffer(buffer);
-		password = StringUtil.getFromBuffer(buffer);
+		
+		password = HashObj.createFrom(buffer);
 	}
 
 }

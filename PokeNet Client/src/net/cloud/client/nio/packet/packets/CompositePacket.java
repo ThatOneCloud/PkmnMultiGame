@@ -6,6 +6,7 @@ import java.util.List;
 
 import io.netty.buffer.ByteBuf;
 import net.cloud.client.entity.player.Player;
+import net.cloud.client.nio.bufferable.BufferableException;
 import net.cloud.client.nio.packet.Packet;
 import net.cloud.client.nio.packet.PacketConstants;
 
@@ -37,14 +38,19 @@ public class CompositePacket implements Packet {
 	}
 
 	@Override
-	public short getOpcode() {
+	public short getOpcode()
+	{
 		// Not entirely opaque - this packet has its own opcode
 		return PacketConstants.COMPOSITE_PACKET;
 	}
 
-	/** Encode each of the packets this one is composed of, one after the other */
+	/** 
+	 * Encode each of the packets this one is composed of, one after the other 
+	 * @throws BufferableException If encoding a Bufferable object fails
+	 */
 	@Override
-	public void encode(ByteBuf buffer) {
+	public void encode(ByteBuf buffer) throws BufferableException
+	{
 		// Place the number of packets first (may not be necessary, but clears things up)
 		buffer.writeInt(packets.size());
 		
@@ -64,9 +70,11 @@ public class CompositePacket implements Packet {
 	 * Decode the packet, by decoding each of the packets this one is composed of. 
 	 * Do note that this circumvents PacketDecoder, so each 'composed packet' 
 	 * does not go through the channel pipeline. 
+	 * @throws BufferableException One of the packets failed to decode a Bufferable object
 	 */
 	@Override
-	public Packet decode(ByteBuf data) {
+	public Packet decode(ByteBuf data) throws BufferableException
+	{
 		// Sorta different - create a blank Packet and initialize its list
 		CompositePacket newPacket = new CompositePacket();
 		newPacket.packets = new LinkedList<Packet>();
@@ -90,7 +98,8 @@ public class CompositePacket implements Packet {
 
 	/** Handle each packet this one is composed of, in order */
 	@Override
-	public void handlePacket(Player player) {
+	public void handlePacket(Player player)
+	{
 		// Handle each of the packets in turn
 		packets.stream().forEach(packet -> packet.handlePacket(player));
 	}

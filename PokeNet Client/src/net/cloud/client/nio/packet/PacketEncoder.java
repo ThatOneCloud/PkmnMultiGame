@@ -11,7 +11,8 @@ import io.netty.handler.codec.MessageToByteEncoder;
 public class PacketEncoder extends MessageToByteEncoder<Packet> {
 
 	@Override
-	protected void encode(ChannelHandlerContext ctx, Packet msg, ByteBuf out) throws Exception {
+	protected void encode(ChannelHandlerContext ctx, Packet msg, ByteBuf out) throws Exception
+	{
 		// Packet's opcode goes into a header before its data
 		out.writeShort(msg.getOpcode());
 

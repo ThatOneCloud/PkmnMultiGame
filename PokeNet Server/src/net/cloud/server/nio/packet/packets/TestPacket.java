@@ -6,27 +6,34 @@ import net.cloud.server.logging.Logger;
 import net.cloud.server.nio.packet.Packet;
 import net.cloud.server.nio.packet.PacketConstants;
 
+/** Packet for testing stuff. Like a box of chocolates, never know what it's gonna do */
 public class TestPacket implements Packet {
 	
+	/** test value */
 	private int testValue;
 	
-	// Default constructor for PacketManager only
-	protected TestPacket() {
+	/** Default constructor for PacketManager only */
+	protected TestPacket()
+	{
 		this(-1);
 	}
 
-	public TestPacket(int testValue) {
+	/** Create a packet with the given test value in it */
+	public TestPacket(int testValue)
+	{
 		// Would normally initialize some values here
 		this.testValue = testValue;
 	}
 	
 	@Override
-	public short getOpcode() {
+	public short getOpcode()
+	{
 		return PacketConstants.TEST_PACKET;
 	}
 
 	@Override
-	public void encode(ByteBuf buffer) {
+	public void encode(ByteBuf buffer)
+	{
 		// Write some data
 		buffer.writeInt(testValue);
 
@@ -35,15 +42,18 @@ public class TestPacket implements Packet {
 	}
 
 	@Override
-	public Packet decode(ByteBuf data) {
+	public Packet decode(ByteBuf data)
+	{
 		// This needs to create a new TestPacket, with the same data as it had when it was encoded
 		return new TestPacket(data.readInt());
 	}
 
+	/** Displays a message about the packet */
 	@Override
-	public void handlePacket(Player player) {
+	public void handlePacket(Player player)
+	{
 		Logger.writer().println(player + ": Handling test packet, value: " + testValue);
-		Logger.writer().flush();
+		Logger.writer();
 	}
 
 }

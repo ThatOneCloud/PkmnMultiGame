@@ -3,10 +3,12 @@ package net.cloud.server.nio.packet.packets;
 import io.netty.buffer.ByteBuf;
 import net.cloud.server.entity.player.LoginState;
 import net.cloud.server.entity.player.Player;
+import net.cloud.server.nio.bufferable.BufferableException;
 import net.cloud.server.nio.packet.Packet;
 import net.cloud.server.nio.packet.PacketConstants;
 import net.cloud.server.nio.packet.ReceiveOnlyPacket;
 import net.cloud.server.nio.packet.SendOnlyPacket;
+import net.cloud.server.util.HashObj;
 import net.cloud.server.util.StringUtil;
 
 /**
@@ -21,35 +23,40 @@ public class LoginPacket extends ReceiveOnlyPacket {
 	
 	/** Username of the player trying to login */
 	private String username;
+	
 	/** Password of the player trying to login */
-	private String password;
+	private HashObj password;
 	
 	/** Default constructor leaves all data fields default or null */
 	public LoginPacket() {}
 	
 	/** Create a LoginPacket which contains the given login credentials */
-	public LoginPacket(String username, String password) {
+	public LoginPacket(String username, HashObj password)
+	{
 		this.username = username;
 		this.password = password;
 	}
 
 	@Override
-	public short getOpcode() {
+	public short getOpcode()
+	{
 		return PacketConstants.LOGIN_PACKET;
 	}
 
 	@Override
-	public Packet decode(ByteBuf data) {
+	public Packet decode(ByteBuf data) throws BufferableException
+	{
 		// Pull the username & password from the buffer
 		String user = StringUtil.getFromBuffer(data);
-		String pass = StringUtil.getFromBuffer(data);
+		HashObj pass = HashObj.createFrom(data);
 		
 		// Return a packet with that new information contained in it
 		return new LoginPacket(user, pass);
 	}
 
 	@Override
-	public void handlePacket(Player player) {
+	public void handlePacket(Player player)
+	{
 		// We need to verify the correctness of the user & pass.
 		// First - check for a player with the given username
 		// TODO: Well.. without actual player saving.. can't do this.
@@ -83,17 +90,20 @@ public class LoginPacket extends ReceiveOnlyPacket {
 		/**
 		 * @param response What we'll tell the server about their login request
 		 */
-		public LoginResponsePacket(LoginResponse response) {
+		public LoginResponsePacket(LoginResponse response)
+		{
 			this.response = response;
 		}
 
 		@Override
-		public short getOpcode() {
+		public short getOpcode()
+		{
 			return PacketConstants.LOGIN_RESPONSE_PACKET;
 		}
 
 		@Override
-		public void encode(ByteBuf buffer) {
+		public void encode(ByteBuf buffer)
+		{
 			// Put the response in the buffer. (via its index - I know, dangerous-ish)
 			buffer.writeInt(response.ordinal());
 		}

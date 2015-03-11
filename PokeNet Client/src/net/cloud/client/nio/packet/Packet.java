@@ -1,6 +1,7 @@
 package net.cloud.client.nio.packet;
 
 import net.cloud.client.entity.player.Player;
+import net.cloud.client.nio.bufferable.BufferableException;
 import io.netty.buffer.ByteBuf;
 
 public interface Packet {
@@ -14,8 +15,9 @@ public interface Packet {
 	 * Packs the information contained in the Packet into a ByteBuf. 
 	 * The Packet at this point should already be initialized. 
 	 * @param buffer The ByteBuf that data will be placed into, from the current position
+	 * @throws BufferableException If there is an issue encoding a Bufferable object
 	 */
-	public void encode(ByteBuf buffer);
+	public void encode(ByteBuf buffer) throws BufferableException;
 	
 	/**
 	 * Decodes the Packet. Takes the data and creates a copy of the specific Packet 
@@ -23,8 +25,9 @@ public interface Packet {
 	 * set according to the data, <u>not</u> the original.
 	 * @param data The data required for the Packet, assumed to be without header.
 	 * @return A copy of the Packet deserialized to reflect the provided data
+	 * @throws BufferableException If there is an issue decoding a Bufferable object
 	 */
-	public Packet decode(ByteBuf data);
+	public Packet decode(ByteBuf data) throws BufferableException;
 	
 	/**
 	 * Executes whatever action the Packet needs to take, to take action on the information 

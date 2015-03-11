@@ -18,11 +18,8 @@ public class QuasiRoot extends Interface {
 	 * meant to serve as a bridge between some other graphic library. The
 	 * position will be 0,0 as this is the root - there's really no other
 	 * option.
-	 * 
-	 * @param width
-	 *            The width of the graphic interface
-	 * @param height
-	 *            The height of the graphic interface
+	 * @param width The width of the graphic interface
+	 * @param height The height of the graphic interface
 	 */
 	public QuasiRoot(int width, int height) {
 		super(0, 0, width, height);
@@ -35,9 +32,7 @@ public class QuasiRoot extends Interface {
 	 * When the root interface receives a key event, it will check to see if the
 	 * key is essentially a global hotkey of some sort. Since this is sort of
 	 * the final element any event should get to.
-	 * 
-	 * @param key
-	 *            The key that was typed
+	 * @param key The key that was typed
 	 */
 	@Override
 	public void keyTyped(char key) {

@@ -16,6 +16,10 @@ import io.netty.handler.codec.LengthFieldPrepender;
  */
 public class NettyClientChannelInitializer extends ChannelInitializer<SocketChannel> {
 
+	/**
+	 * Initialize a channel pipeline, which will send packets through various decoders and then a PacketHandler, 
+	 * and also through various encoders going the other direction.
+	 */
 	@Override
 	protected void initChannel(SocketChannel ch) throws Exception {
 		// Inbound handlers

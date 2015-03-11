@@ -1,10 +1,6 @@
 package net.cloud.gfx.interfaces;
 
-import java.awt.EventQueue;
-
-import net.cloud.client.util.function.InputValidator;
 import net.cloud.gfx.constants.Colors;
-import net.cloud.gfx.elements.Alignment;
 import net.cloud.gfx.elements.Button;
 import net.cloud.gfx.elements.CenteredText;
 import net.cloud.gfx.elements.Checkbox;
@@ -19,8 +15,6 @@ import net.cloud.gfx.elements.VerticalView;
 import net.cloud.gfx.elements.decorator.DraggableElement;
 import net.cloud.gfx.elements.decorator.FrameButton;
 import net.cloud.gfx.elements.decorator.FramedElement;
-import net.cloud.gfx.elements.modal.ModalException;
-import net.cloud.gfx.elements.modal.ModalManager;
 import net.cloud.gfx.elements.Sprite;
 import net.cloud.gfx.elements.Text;
 import net.cloud.gfx.elements.TextField;
@@ -34,8 +28,8 @@ public class SpriteTestInterface extends Interface {
 	
 	/**
 	 * Create interface
-	 * @param width
-	 * @param height
+	 * @param width width
+	 * @param height height
 	 */
 	public SpriteTestInterface(int width, int height)
 	{
@@ -114,36 +108,14 @@ public class SpriteTestInterface extends Interface {
 		TextArea textArea = new TextArea("A large block of text that is displayed on multiple "
 				+ "lines almost like a paragraph is placed within a texty area", 600, 130, 120);
 		add(textArea);
-		
-		
-		
-		
-//		Interface largeInterface = new Interface(0, 0, 200, 600);
-//		largeInterface.add(new TextArea("This is where my skills at rambling come in handy. I need some large blocks of text to generate test elements with, "
-//				+ "so I can just type for a while and see what comes out. This should be long enough for the first block.", 10, 10, 170));
-//		largeInterface.add(new TextArea("This is another sizeable block of text but instead it is placed downwards in the interface so that there is a gap "
-//				+ "between it and the previous block of text. That way, to see it, you must scroll down to it.", 10, 300, 130));
-//		ScrollView scrollView = new ScrollView(largeInterface, 300, 40, 170, 200);
-//		scrollView.setBackground(SpriteSet.BACKGROUND, 2);
-//		add(scrollView);
-//
-//		
-//		
-//		
-//		VerticalView vertView = new VerticalView(300, 260, 200);
-////		vertView.setPadding(20);
-////		vertView.setAlignment(Alignment.RIGHT);
-//		vertView.add(new Text("Vertical"));
-//		vertView.add(new Button("View Button", 50, 0));
-//		vertView.add(new Sprite(SpriteSet.TEST, 0, 0, 0));
-//		add(vertView);
+
 		
 		
 		
 		VerticalView longView = new VerticalView(0, 0, 250);
 		longView.setPadding(10);
 		longView.setOptimizedDrawing(true);
-		for(int i = 0; i < 50000; ++i)
+		for(int i = 0; i < 100; ++i)
 		{
 			longView.add(new TextArea("Block " + i + " of text used for a rather long vertical view meant to be placed in a scroll view",
 					0, 0, 250));

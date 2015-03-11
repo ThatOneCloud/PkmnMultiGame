@@ -7,6 +7,7 @@ import net.cloud.client.game.World;
 import net.cloud.client.logging.Logger;
 import net.cloud.client.nio.NettyClient;
 import net.cloud.gfx.Mainframe;
+import net.cloud.gfx.interfaces.LoginInterface;
 
 /**
  * Entry point, to start the game client. 
@@ -84,6 +85,9 @@ public class Client {
 
 		// Start up the various sub-systems and services in the server
 		startServices();
+		
+		// It may seem odd to do this here rather than during construction of the Quasi-root, but show the login interface
+		Mainframe.instance().gfx().rootPanel().getQuasiRoot().add(new LoginInterface());
 
 		// Sit back, wait for someone to tell us it's shutdown time
 		try {

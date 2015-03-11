@@ -20,6 +20,11 @@ import io.netty.handler.codec.LengthFieldPrepender;
  */
 public class NettyServerChannelInitializer extends ChannelInitializer<SocketChannel> {
 
+	/**
+	 * Initialize a channel pipeline, which will send packets through various decoders and then a PacketHandler, 
+	 * and also through various encoders going the other direction. 
+	 * Notably, this creates and adds a blank player to the world.
+	 */
 	@Override
 	protected void initChannel(SocketChannel ch) throws Exception {
 		// Place a Player in the world for this new connection

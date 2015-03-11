@@ -14,6 +14,9 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
  */
 public class PacketHandler extends ChannelInboundHandlerAdapter {
 	
+	/**
+	 * Take a constructed packet from the pipeline, and then have it handle itself
+	 */
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) {
 		// The object has been decoded into a Packet. Grab it
@@ -27,6 +30,9 @@ public class PacketHandler extends ChannelInboundHandlerAdapter {
 		packet.handlePacket(player.orElseThrow(() -> new NullPointerException(nullMsg)));
 	}
 
+	/**
+	 * An exception occurred somewhere while reading a packet. Log it, close the channel
+	 */
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
 		// Exception occurred, close the connection

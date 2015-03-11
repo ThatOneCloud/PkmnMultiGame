@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.Optional;
 
+import net.cloud.client.nio.bufferable.BufferableException;
 import net.cloud.client.nio.packet.Packet;
 import net.cloud.client.nio.packet.PacketConstants;
 
@@ -19,7 +20,8 @@ public class PacketManager {
 	private static final Packet[] packets = new Packet[PacketConstants.NUM_PACKETS];
 	
 	// Static initializer block, to instantiate each default packet
-	static {
+	static
+	{
 		packets[PacketConstants.TEST_PACKET] = new TestPacket();
 		packets[PacketConstants.COMPOSITE_PACKET] = new CompositePacket();
 		packets[PacketConstants.LOGIN_PACKET] = new LoginPacket();
@@ -32,8 +34,11 @@ public class PacketManager {
 	 * @param opcode The 2 byte opcode of the packet
 	 * @param data The rest of the data (excluding length and opcode header)
 	 * @return A Packet of the right class, deserialized from the data
+	 * @throws BufferableException There was an issue decoding a Bufferable object
+	 * @throws IllegalArgumentException The packet opcode is unknown
 	 */
-	public static Packet decodeCopy(short opcode, ByteBuf data) {
+	public static Packet decodeCopy(short opcode, ByteBuf data) throws IllegalArgumentException, BufferableException
+	{
 		// Make sure the opcode is valid
 		if(opcode < 0 || opcode >= packets.length) {
 			throw new IllegalArgumentException("Packet opcode out of range: " + opcode);
