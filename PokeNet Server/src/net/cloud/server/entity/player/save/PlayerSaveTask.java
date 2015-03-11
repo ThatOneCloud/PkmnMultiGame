@@ -20,7 +20,7 @@ public class PlayerSaveTask implements VoidTask {
 	@Override
 	public void execute() {
 		// The list takes care of conditional complexities. We just tell it what to do.
-		World.getInstance().getPlayerMap().forAllLoggedIn(this::attemptSave);
+		World.instance().getPlayerMap().forAllLoggedIn(this::attemptSave);
 	}
 	
 	/**

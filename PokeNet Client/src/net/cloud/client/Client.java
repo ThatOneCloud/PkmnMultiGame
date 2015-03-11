@@ -29,12 +29,13 @@ public class Client {
 	 * starting up the sub systems and then waiting for shutdown. 
 	 * @param args Runtime arguments. Accepts none.
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args)
+	{
 		// Honestly this is here so that it kicks open the Eclipse console window
 		System.err.println("Starting PokeNet Client!");
 		
 		// Kick off the client on the main thread
-		Client.getInstance().init();
+		Client.instance().init();
 	}
 
 	/** Private default constructor - does nothing */
@@ -47,7 +48,7 @@ public class Client {
 	 * components of the client. Responsible for starting and stopping many services. 
 	 * @return The singleton Client instance
 	 */
-	public static Client getInstance()
+	public static Client instance()
 	{
 		if(instance == null)
 		{
@@ -70,7 +71,7 @@ public class Client {
 	private void init()
 	{
 		// Get the World initialized (rather than lazy initialization)
-		World.getInstance();
+		World.instance();
 				
 		// Initialize the shutdown handler
 		shutdownHandler = new ShutdownHandler();
@@ -112,7 +113,7 @@ public class Client {
 		shutdownHandler.addHook(Mainframe.instance().gfx().getShutdownHook());
 		
 		// Grab the TaskEngine, put its shutdown hook in here
-		shutdownHandler.addHook(TaskEngine.getInstance().getShutdownHook());
+		shutdownHandler.addHook(TaskEngine.instance().getShutdownHook());
 
 		// The FileServer is another service we'll start here
 		shutdownHandler.addHook(FileServer.instance().getShutdownHook());
@@ -140,6 +141,14 @@ public class Client {
 			// Hey look. The end of an exception chain
 			Logger.instance().logException("Shutdown resulted in an exception", e);
 		}
+	}
+	
+	/**
+	 * @return The NettyClient object acting as an entry point to the network code
+	 */
+	public NettyClient nettyClient()
+	{
+		return nettyClient;
 	}
 
 }

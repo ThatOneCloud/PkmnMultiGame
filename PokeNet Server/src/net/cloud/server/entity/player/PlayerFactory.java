@@ -1,5 +1,7 @@
 package net.cloud.server.entity.player;
 
+import net.cloud.server.entity.player.LoginState;
+import net.cloud.server.entity.player.Player;
 import net.cloud.server.entity.player.save.PlayerSaveException;
 import net.cloud.server.file.FileServer;
 import net.cloud.server.file.address.FileAddressBuilder;
@@ -22,7 +24,12 @@ public class PlayerFactory {
 	 */
 	public static Player createOnNewConnection(PacketSender packetSender)
 	{
-		return new Player(packetSender);
+		Player newPlayer = new Player(packetSender);
+		
+		// It's a new connection, so they start out connected in this situation
+		newPlayer.setLoginState(LoginState.CONNECTED);
+		
+		return newPlayer;
 	}
 	
 	/**
@@ -90,6 +97,9 @@ public class PlayerFactory {
 	public static Player createNewPlayer(String username, String password)
 	{
 		Player newPlayer = new Player(null);
+		
+		newPlayer.setLoginState(LoginState.INITIAL);
+		
 		newPlayer.setUsername(username);
 		newPlayer.setPassword(password);
 		
@@ -105,6 +115,7 @@ public class PlayerFactory {
 	public static Player createPlayerForDataUpdate(String username)
 	{
 		Player p = new Player(null);
+		
 		p.setUsername(username);
 		
 		return p;

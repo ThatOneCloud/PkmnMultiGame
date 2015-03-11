@@ -21,19 +21,22 @@ public class NettyClientChannelInitializer extends ChannelInitializer<SocketChan
 	 * and also through various encoders going the other direction.
 	 */
 	@Override
-	protected void initChannel(SocketChannel ch) throws Exception {
+	protected void initChannel(SocketChannel ch) throws Exception
+	{
 		// Inbound handlers
-		ch.pipeline().addLast(new LengthFieldBasedFrameDecoder(
-				PacketConstants.MAX_PACKET_LENGTH, 
-				PacketConstants.LENGTH_FIELD_OFFSET,
-				PacketConstants.LENGTH_FIELD_LENGTH, 
-				PacketConstants.LENGTH_FIELD_ADJUSTMENT, 
-				PacketConstants.BYTES_TO_STRIP),
+		ch.pipeline().addLast(
+				new LengthFieldBasedFrameDecoder(
+					PacketConstants.MAX_PACKET_LENGTH, 
+					PacketConstants.LENGTH_FIELD_OFFSET,
+					PacketConstants.LENGTH_FIELD_LENGTH, 
+					PacketConstants.LENGTH_FIELD_ADJUSTMENT, 
+					PacketConstants.BYTES_TO_STRIP),
 				new PacketDecoder(),
 				new PacketHandler());
 
 		// Outbound handlers
-		ch.pipeline().addLast(new LengthFieldPrepender(PacketConstants.LENGTH_FIELD_LENGTH),
+		ch.pipeline().addLast(
+				new LengthFieldPrepender(PacketConstants.LENGTH_FIELD_LENGTH),
 				new PacketEncoder());
 	}
 

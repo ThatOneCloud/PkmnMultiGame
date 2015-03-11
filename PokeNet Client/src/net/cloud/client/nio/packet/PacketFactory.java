@@ -40,7 +40,7 @@ public class PacketFactory {
 	 */
 	public Packet createLogin()
 	{
-		Player p = World.getInstance().getPlayer();
+		Player p = World.instance().getPlayer();
 		LoginPacket loginPacket = new LoginPacket(p.getUsername(), p.getPassword());
 		
 		return loginPacket;

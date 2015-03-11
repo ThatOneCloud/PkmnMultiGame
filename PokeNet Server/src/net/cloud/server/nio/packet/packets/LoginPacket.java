@@ -46,6 +46,7 @@ public class LoginPacket extends ReceiveOnlyPacket {
 	@Override
 	public Packet decode(ByteBuf data) throws BufferableException
 	{
+System.out.println("decoding login packet");
 		// Pull the username & password from the buffer
 		String user = StringUtil.getFromBuffer(data);
 		HashObj pass = HashObj.createFrom(data);
@@ -57,6 +58,15 @@ public class LoginPacket extends ReceiveOnlyPacket {
 	@Override
 	public void handlePacket(Player player)
 	{
+		// TODO: Remove this short-circuit
+		System.out.println("Login Packet, user: " + username);
+		System.out.println("Login Packet, pass: " + password);
+		int i = 1;
+		if(i < 2)
+		{
+			return;
+		}
+		
 		// We need to verify the correctness of the user & pass.
 		// First - check for a player with the given username
 		// TODO: Well.. without actual player saving.. can't do this.

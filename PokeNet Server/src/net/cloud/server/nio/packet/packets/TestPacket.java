@@ -53,7 +53,7 @@ public class TestPacket implements Packet {
 	public void handlePacket(Player player)
 	{
 		Logger.writer().println(player + ": Handling test packet, value: " + testValue);
-		Logger.writer();
+		Logger.writer().flush();
 	}
 
 }

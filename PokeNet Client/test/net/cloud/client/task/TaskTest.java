@@ -27,7 +27,7 @@ public class TaskTest {
 		};
 		
 		try {
-			String value = TaskEngine.getInstance().submitImmediate(task).get();
+			String value = TaskEngine.instance().submitImmediate(task).get();
 			assertTrue(value.equals(VALUE));
 		} catch (InterruptedException | ExecutionException e) {
 			fail("Task should not have thrown exception");
@@ -45,7 +45,7 @@ public class TaskTest {
 		};
 		
 		try {
-			TaskEngine.getInstance().submitImmediate(task).get();
+			TaskEngine.instance().submitImmediate(task).get();
 			fail("Exception should have been thrown");
 		} catch (InterruptedException | ExecutionException e) {
 			// Goody. Exception was thrown and caught
@@ -66,7 +66,7 @@ public class TaskTest {
 		
 		try {
 			// No value, but if we make it to the assertion we're good
-			TaskEngine.getInstance().submitImmediate(task).get();
+			TaskEngine.instance().submitImmediate(task).get();
 			assertTrue(true);
 		} catch (InterruptedException | ExecutionException e) {
 			fail("Task should not have thrown exception");
@@ -86,7 +86,7 @@ public class TaskTest {
 		
 		try {
 			// No value, but an exception should occur
-			TaskEngine.getInstance().submitImmediate(task).get();
+			TaskEngine.instance().submitImmediate(task).get();
 			fail("Exception should have been thrown");
 		} catch (InterruptedException | ExecutionException e) {
 			// Goody - it got thrown and caught

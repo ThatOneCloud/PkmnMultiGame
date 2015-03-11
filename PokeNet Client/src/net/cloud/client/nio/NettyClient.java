@@ -34,6 +34,9 @@ public class NettyClient implements ShutdownService {
 	
 	/** The Bootstrap object Netty was started on */
 	private Bootstrap bootstrap;
+	
+	/** The channel future obtained from connecting to the server */
+	private ChannelFuture connectFuture;
 
 	/**
 	 * Startup procedure for the client's network communication.
@@ -62,26 +65,62 @@ public class NettyClient implements ShutdownService {
 	/**
 	 * Attempts to connect to the server. When a connection 
 	 * is made, then this client's player object is created.
-	 * @throws InterruptedException If the client could not connect
+	 * @return False if the connection was not successful
 	 */
-	public void connectToServer() throws InterruptedException
+	public boolean connectToServer()
 	{
-		// Try to connect to the server
-		ChannelFuture f = bootstrap.connect(ADDRESS, PORT).sync();
-		Logger.writer().println("Connected to server.");
-		Logger.writer().flush();
+		// Have we already connected?
+		if(connectFuture != null && connectFuture.isSuccess() && World.instance().getPlayer() != null)
+		{
+			return true;
+		}
 		
-		// Create the ShutdownHook now
-		shutdownHook = new NettyShutdownHook(f, bootstrap.group());
+		try {
+			// Try to connect to the server
+			connectFuture = bootstrap.connect(ADDRESS, PORT).sync();
+			Logger.writer().println("Connected to server.");
+			Logger.writer().flush();
 
-		// A PacketSender is made based on the channel that was returned
-		PacketSender packetSender = new PacketSender(f.channel());
+			// Create the ShutdownHook now
+			shutdownHook = new NettyShutdownHook(connectFuture, bootstrap.group());
 
-		// A new Player object is created and given the PacketSender
-		World.getInstance().setPlayer(PlayerFactory.createOnNewConnection(packetSender));
+			// A PacketSender is made based on the channel that was returned
+			PacketSender packetSender = new PacketSender(connectFuture.channel());
 
-		// That player is now going to try to login
-		World.getInstance().getPlayer().getPacketSender().sendLogin();
+			// A new Player object is created and given the PacketSender
+			World.instance().setPlayer(PlayerFactory.createOnNewConnection(packetSender));
+			
+			return true;
+		} catch(Exception e) {
+			Logger.instance().logException("Could not connect to server.", e);
+			
+			return false;
+		}
+	}
+	
+	/**
+	 * Disconnect from the server. This will also destroy the current player object, 
+	 * since it was initially created by connecting. (Reconnecting will re-create). 
+	 * This will not shutdown the netty threads.
+	 * @return True if the disconnect was successful. Not like we can do much if it isn't.
+	 */
+	public boolean disconnect()
+	{
+		// Destroy the player
+		World.instance().setPlayer(null);
+		
+		// Close the channel
+		try {
+			connectFuture.channel().close().sync();
+			
+			connectFuture = null;
+		} catch (InterruptedException e) {
+			Logger.instance().logException("[FATAL] Could not disconnect from server. Unpredictable network behavior will follow.", e);
+			
+			return false;
+		}
+		
+		return true;
 	}
 	
 	/** 
@@ -89,7 +128,8 @@ public class NettyClient implements ShutdownService {
 	 * In other words, it should not be added to a ShutdownHandler right away.
 	 */
 	@Override
-	public ShutdownHook getShutdownHook() throws NullPointerException {
+	public ShutdownHook getShutdownHook() throws NullPointerException
+	{
 		// Return the hook or throw NPE if it is null
 		return Optional.ofNullable(shutdownHook)
 				.orElseThrow(() -> new NullPointerException("NettyServer has not created a ShutdownHook"));

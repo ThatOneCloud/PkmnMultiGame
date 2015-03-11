@@ -24,7 +24,8 @@ public class Server {
 	/**
 	 * Entry point! Start the server and all of its sub-services
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args)
+	{
 		// Kick-off the server on the main thread
 		Server.getInstance().init();
 	}

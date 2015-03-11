@@ -24,7 +24,8 @@ public class PacketSender {
 	 * Creates a PacketSender, where the connection is given by the Channel
 	 * @param channel The Channel for the connection between client and server
 	 */
-	public PacketSender(Channel channel) {
+	public PacketSender(Channel channel)
+	{
 		this.channel = channel;
 		this.packetFactory = new PacketFactory();
 	}
@@ -33,17 +34,20 @@ public class PacketSender {
 	 * Only creates and returns a Packet. For a description of the packet, see<br>
 	 * {@link PacketFactory#createTestPacket(int)}
 	 */
-	public Packet createTestPacket(int value) {
+	public Packet createTestPacket(int value)
+	{
 		return packetFactory.createTestPacket(value);
 	}
 	/** Writes, but does not send a packet. <br>See {@link PacketFactory#createTestPacket(int)} */
-	public PacketSender writeTestPacket(int value) {
+	public PacketSender writeTestPacket(int value)
+	{
 		write(createTestPacket(value));
 		
 		return this;
 	}
 	/** Writes and sends a packet.  <br>See {@link PacketFactory#createTestPacket(int)} */
-	public void sendTestPacket(int value) {
+	public void sendTestPacket(int value)
+	{
 		this.writeTestPacket(value).send();
 	}
 	
@@ -53,17 +57,20 @@ public class PacketSender {
 	 * @param first The first packet that the composite will consist of
 	 * @param others Any other packets the new packet will consist of
 	 */
-	public Packet createCompositePacket(Packet first, Packet... others) {
+	public Packet createCompositePacket(Packet first, Packet... others)
+	{
 		return packetFactory.createCompositePacket(first, others);
 	}
 	/** Writes, but does not send a packet. <br>See {@link PacketFactory#createCompositePacket(Packet, Packet...)} */
-	public PacketSender writeCompositePacket(Packet first, Packet... others) {
+	public PacketSender writeCompositePacket(Packet first, Packet... others)
+	{
 		write(createCompositePacket(first, others));
 		
 		return this;
 	}
 	/** Writes and sends a packet.  <br>See {@link PacketFactory#createCompositePacket(Packet, Packet...)} */
-	public void sendCompositePacket(Packet first, Packet... others) {
+	public void sendCompositePacket(Packet first, Packet... others)
+	{
 		this.writeCompositePacket(first, others).send();
 	}
 	

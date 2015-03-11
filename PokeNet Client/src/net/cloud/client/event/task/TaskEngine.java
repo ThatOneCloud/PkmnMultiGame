@@ -49,7 +49,7 @@ public class TaskEngine implements ShutdownService {
 	 * submit tasks.
 	 * @return The singleton TaskEngine instance
 	 */
-	public static TaskEngine getInstance()
+	public static TaskEngine instance()
 	{
 		if(instance == null)
 		{

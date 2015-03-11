@@ -347,7 +347,7 @@ public class TextField extends AbstractElement {
 		
 		// Create a new task and submit it
 		blinkTask = new CursorBlinkTask();
-		TaskEngine.getInstance().scheduleImmediate(blinkTask, BLINK_INTERVAL);
+		TaskEngine.instance().scheduleImmediate(blinkTask, BLINK_INTERVAL);
 		
 		// If there is still hint text, clear that out
 		if(hintText != null)
@@ -577,6 +577,15 @@ public class TextField extends AbstractElement {
 	{
 		// Roughly, when removed it is nullified
 		return hintText != null;
+	}
+	
+	/**
+	 * @return True if no text has been placed in the field yet
+	 */
+	public boolean isEmpty()
+	{
+		// No text? Empty text? Still the hint text?
+		return (text == null) || (text.isEmpty()) || (hintText != null && hintText.equals(text));
 	}
 	
 	/**

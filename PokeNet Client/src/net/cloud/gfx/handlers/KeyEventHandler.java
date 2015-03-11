@@ -61,7 +61,7 @@ public class KeyEventHandler extends KeyAdapter {
 		// Key typed events have a character. Pressed and released do not necessarily. 
 		char c = event.getKeyChar();
 		
-		System.out.println("key typed: " + c + ", " + (int) c);
+//		System.out.println("key typed: " + c + ", " + (int) c);
 		
 		// A few characters are simply ignored from the get-go
 		if(isIgnored(c))

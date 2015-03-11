@@ -17,7 +17,11 @@ public class PlayerFactory {
 	 */
 	public static Player createOnNewConnection(PacketSender packetSender)
 	{
-		return new Player(packetSender);
+		Player newPlayer = new Player(packetSender);
+		
+		newPlayer.setLoginState(LoginState.INITIAL);
+		
+		return newPlayer;
 	}
 	
 	/**
@@ -31,6 +35,9 @@ public class PlayerFactory {
 	public static Player createNewPlayer(String username, String password)
 	{
 		Player newPlayer = new Player(null);
+		
+		newPlayer.setLoginState(LoginState.INITIAL);
+		
 		newPlayer.setUsername(username);
 		newPlayer.setPassword(password);
 		

@@ -1,8 +1,11 @@
 package net.cloud.server.nio;
 
+import net.cloud.server.entity.player.LoginState;
 import net.cloud.server.entity.player.Player;
 import net.cloud.server.entity.player.PlayerFactory;
+import net.cloud.server.event.task.TaskEngine;
 import net.cloud.server.game.World;
+import net.cloud.server.logging.Logger;
 import net.cloud.server.nio.packet.PacketConstants;
 import net.cloud.server.nio.packet.PacketDecoder;
 import net.cloud.server.nio.packet.PacketEncoder;
@@ -19,6 +22,9 @@ import io.netty.handler.codec.LengthFieldPrepender;
  * Afterwards, this is removed from the channel pipeline.
  */
 public class NettyServerChannelInitializer extends ChannelInitializer<SocketChannel> {
+	
+	/** How long will we wait for the client to follow up before giving up */
+	private static long TIMEOUT = 5000;
 
 	/**
 	 * Initialize a channel pipeline, which will send packets through various decoders and then a PacketHandler, 
@@ -26,14 +32,30 @@ public class NettyServerChannelInitializer extends ChannelInitializer<SocketChan
 	 * Notably, this creates and adds a blank player to the world.
 	 */
 	@Override
-	protected void initChannel(SocketChannel ch) throws Exception {
+	protected void initChannel(SocketChannel channel) throws Exception
+	{
 		// Place a Player in the world for this new connection
-		PacketSender packetSender = new PacketSender(ch);
+		PacketSender packetSender = new PacketSender(channel);
 		Player newPlayer = PlayerFactory.createOnNewConnection(packetSender);
-		World.getInstance().getPlayerMap().place(ch, newPlayer);
+		World.instance().getPlayerMap().place(channel, newPlayer);
+		
+		// At this point, state is CONNECTED. They should be following up to become VERIFIED soon.
+		// so we use a task to time-out and abort the player if they fail to do so
+		TaskEngine.getInstance().submitDelayed(() ->
+		{
+			// Body of the task. Is the player still sitting in the CONNECTED state?
+			if(newPlayer.getLoginState() != LoginState.CONNECTED)
+			{
+				// They are not, so this task need not proceed.
+				return;
+			}
+			
+			// They are stuck in CONNECTED... terminate the connection
+			abortConnection(newPlayer, channel);
+		}, TIMEOUT);
 		
 		// Inbound handlers
-		ch.pipeline().addLast(new LengthFieldBasedFrameDecoder(
+		channel.pipeline().addLast(new LengthFieldBasedFrameDecoder(
 				PacketConstants.MAX_PACKET_LENGTH, 
 				PacketConstants.LENGTH_FIELD_OFFSET,
 				PacketConstants.LENGTH_FIELD_LENGTH, 
@@ -43,9 +65,29 @@ public class NettyServerChannelInitializer extends ChannelInitializer<SocketChan
 				new PacketHandler());
 
 		// Outbound handlers
-		ch.pipeline().addLast(new LengthFieldPrepender(PacketConstants.LENGTH_FIELD_LENGTH),
+		channel.pipeline().addLast(new LengthFieldPrepender(PacketConstants.LENGTH_FIELD_LENGTH),
 				new PacketEncoder());
 		
+	}
+	
+	/**
+	 * Called when a player fails to follow up with a login request after connecting. 
+	 * Removes the player from the world and terminates their channel connection. 
+	 * @param player The player that failed to login
+	 * @param channel The channel that player had connected with
+	 */
+	private void abortConnection(Player player, SocketChannel channel)
+	{
+		// We'll remove the player from the global list immediately
+		World.instance().getPlayerMap().remove(channel);
+		
+		// And then disconnect the channel that player was connected on
+		try {
+			channel.close().sync();
+		} catch (InterruptedException e) {
+			// There's not much we can do if the channel does not close, except shout about it
+			Logger.instance().logException("Could not close channel while aborting newly connected player.", e);
+		}
 	}
 
 }

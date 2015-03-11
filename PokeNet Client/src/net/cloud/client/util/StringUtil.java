@@ -43,7 +43,8 @@ public class StringUtil {
 	 * @param text The text to format
 	 * @return A formatted string
 	 */
-	public static String upperFirst(String text) {
+	public static String upperFirst(String text)
+	{
 		String newText = text.replaceAll("_", " ");
 		newText = newText.toLowerCase();
 		StringBuilder builder = new StringBuilder(newText);
@@ -68,7 +69,8 @@ public class StringUtil {
 	 * @param text The text to format
 	 * @return A formatted string
 	 */
-	public static String allCaps(String text) {
+	public static String allCaps(String text)
+	{
 		String newText = text.replaceAll(" ", "_");
 		newText = newText.toUpperCase();
 		
@@ -81,7 +83,8 @@ public class StringUtil {
 	 * @param buffer The Buffer to read from.
 	 * @return The String of chars from the start pos to the pos of the first TERMINATOR char.
 	 */
-	public static String getFromBuffer(ByteBuffer buffer) {
+	public static String getFromBuffer(ByteBuffer buffer)
+	{
 		StringBuilder builder = new StringBuilder();
 		char c = (char) buffer.get();
 		
@@ -94,7 +97,8 @@ public class StringUtil {
 	}
 	
 	/** A variant that uses the Netty ByteBuf rather than the NIO ByteBuffer */
-	public static String getFromBuffer(ByteBuf buffer) {
+	public static String getFromBuffer(ByteBuf buffer)
+	{
 		StringBuilder builder = new StringBuilder();
 		char c = (char) buffer.readByte();
 		
@@ -112,7 +116,8 @@ public class StringUtil {
 	 * @param string The text to write
 	 * @param buffer The buffer to write to.
 	 */
-	public static void writeStringToBuffer(String string, ByteBuffer buffer) {
+	public static void writeStringToBuffer(String string, ByteBuffer buffer)
+	{
 		for(int i = 0; i < string.length(); ++i) {
 			buffer.put((byte) string.charAt(i));
 		}
@@ -121,7 +126,8 @@ public class StringUtil {
 	}
 	
 	/** Uses a Netty ByteBuf rather than NIO's ByteBuffer */
-	public static void writeStringToBuffer(String string, ByteBuf buffer) {
+	public static void writeStringToBuffer(String string, ByteBuf buffer)
+	{
 		for(int i = 0; i < string.length(); ++i) {
 			buffer.writeByte((byte) string.charAt(i));
 		}
@@ -132,7 +138,8 @@ public class StringUtil {
 	/**
 	 * @return The number of bytes this string will occupy when written out
 	 */
-	public static int getNumBytesInString(String string) {
+	public static int getNumBytesInString(String string)
+	{
 		return string.length() + 1;
 	}
 	
@@ -142,7 +149,8 @@ public class StringUtil {
 	 * @param hex The hexadecimal literal (Must be of even length)
 	 * @return An array of bytes, matching the hex value.
 	 */
-	public static byte[] getBytesFromHex(String hex) {
+	public static byte[] getBytesFromHex(String hex)
+	{
 		byte[] bytes = new byte[hex.length() / 2];
 		
 		for(int i = 0; i < bytes.length; ++i) {

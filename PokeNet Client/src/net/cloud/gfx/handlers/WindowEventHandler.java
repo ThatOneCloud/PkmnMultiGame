@@ -17,7 +17,7 @@ public class WindowEventHandler extends WindowAdapter {
 	@Override
 	public void windowClosed(WindowEvent evt)
 	{
-		Client.getInstance().shutdown();
+		Client.instance().shutdown();
 	}
 
 }

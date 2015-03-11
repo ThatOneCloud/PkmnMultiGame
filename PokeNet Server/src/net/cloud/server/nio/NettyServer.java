@@ -43,6 +43,7 @@ public class NettyServer implements ShutdownService {
 		// First, EventLoopGroups are created - for handling tasks
 		EventLoopGroup bossGroup = new NioEventLoopGroup();
 		EventLoopGroup workerGroup = new NioEventLoopGroup();
+		
 		// Bootstrap object handles a lot of start up for us
 		ServerBootstrap bootStrap = new ServerBootstrap();
 
@@ -64,12 +65,11 @@ public class NettyServer implements ShutdownService {
 	}
 
 	@Override
-	public ShutdownHook getShutdownHook() throws NullPointerException {
+	public ShutdownHook getShutdownHook() throws NullPointerException
+	{
 		// Return the hook or throw NPE if it is null
 		return Optional.ofNullable(shutdownHook)
 				.orElseThrow(() -> new NullPointerException("NettyServer has not created a ShutdownHook"));
 	}
-
-
 
 }

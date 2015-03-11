@@ -30,6 +30,7 @@ public class PacketDecoder extends ByteToMessageDecoder {
 		
 		// Read the opcode of the Packet
 		short opcode = in.readShort();
+System.out.println("got packet " + opcode);
 		
 		// Now that we have the opcode, we can create a specific instance of a Packet
 		out.add(PacketManager.decodeCopy(opcode, in));

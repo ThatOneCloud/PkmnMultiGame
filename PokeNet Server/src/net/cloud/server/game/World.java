@@ -29,7 +29,7 @@ public class World {
 	 * Get a reference to the World instance, holding global information about the game world
 	 * @return A reference to the single World instance
 	 */
-	public static World getInstance()
+	public static World instance()
 	{
 		if(instance == null)
 		{

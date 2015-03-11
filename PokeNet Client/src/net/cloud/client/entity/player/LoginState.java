@@ -5,6 +5,9 @@ package net.cloud.client.entity.player;
  */
 public enum LoginState {
 	
+	/** Not even connected, the initial state */
+	INITIAL,
+	
 	/** A new player - just connected */
 	CONNECTED,
 	

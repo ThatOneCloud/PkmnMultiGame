@@ -59,7 +59,8 @@ public class Player extends Entity implements Bufferable {
 	}
 	
 	/** @param username the username to set */
-	public void setUsername(String username) {
+	public void setUsername(String username)
+	{
 		this.username = username;
 	}
 
@@ -70,17 +71,20 @@ public class Player extends Entity implements Bufferable {
 	}
 	
 	/** @param password the password to set */
-	public void setPassword(String password) {
+	public void setPassword(String password)
+	{
 		this.password = new HashObj(password);
 	}
 	
 	/** @return The LoginState for this player. Ie, which step of login process they are in */
-	public LoginState getLoginState() {
+	public LoginState getLoginState()
+	{
 		return loginState;
 	}
 
 	/** @param loginState Which step of the login process the player is now in */
-	public void setLoginState(LoginState loginState) {
+	public void setLoginState(LoginState loginState)
+	{
 		this.loginState = loginState;
 	}
 	
