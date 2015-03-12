@@ -52,7 +52,8 @@ public interface VoidTask {
 	public default Future<?> applyTri(
 			TriFunction<Runnable, Long, TimeUnit, Future<?>> func,
 			Runnable executeMethod,
-			long delay) {
+			long delay)
+			{
 		return func.apply(executeMethod, delay, TimeUnit.MILLISECONDS);
 	}
 	

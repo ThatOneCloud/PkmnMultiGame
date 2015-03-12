@@ -186,7 +186,8 @@ public class Logger implements ShutdownService {
 	 * This hook will be left null if logging is not enabled (via the LOGGING_ENABLED constant)
 	 */
 	@Override
-	public ShutdownHook getShutdownHook() throws NullPointerException {
+	public ShutdownHook getShutdownHook() throws NullPointerException
+	{
 		return shutdownHook;
 	}
 

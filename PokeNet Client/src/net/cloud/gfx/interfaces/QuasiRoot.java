@@ -21,7 +21,8 @@ public class QuasiRoot extends Interface {
 	 * @param width The width of the graphic interface
 	 * @param height The height of the graphic interface
 	 */
-	public QuasiRoot(int width, int height) {
+	public QuasiRoot(int width, int height)
+	{
 		super(0, 0, width, height);
 
 		statOverlay = null;
@@ -35,7 +36,8 @@ public class QuasiRoot extends Interface {
 	 * @param key The key that was typed
 	 */
 	@Override
-	public void keyTyped(char key) {
+	public void keyTyped(char key)
+	{
 		// Check if we want to do something with the key
 		switch (key) {
 		
@@ -59,7 +61,8 @@ public class QuasiRoot extends Interface {
 	 * Will show the stat overlay if it isn't already, otherwise it will close
 	 * it.
 	 */
-	private void toggleStatOverlay() {
+	private void toggleStatOverlay()
+	{
 		// null is used to indicate it's not up
 		if (statOverlay == null) {
 			// Creation code is external
@@ -97,7 +100,8 @@ public class QuasiRoot extends Interface {
 			// Add the interface and transfer focus over to it
 			add(testInterface);
 			FocusController.instance().register(testInterface);
-		} else {
+		}
+		else {
 			// Remove the interface and transfer focus back to us
 			super.remove(testInterface);
 			FocusController.instance().register(this);

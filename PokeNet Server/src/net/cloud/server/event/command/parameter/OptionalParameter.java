@@ -23,7 +23,8 @@ public class OptionalParameter<V> extends CommandParameter<V> {
 	 * @param longName The full name associated with this parameter
 	 * @param argument The value in this parameter
 	 */
-	public OptionalParameter(String shortName, String longName, CommandArgument<V> argument) {
+	public OptionalParameter(String shortName, String longName, CommandArgument<V> argument)
+	{
 		super(argument);
 		this.shortName = shortName;
 		this.longName = longName;
@@ -48,14 +49,16 @@ public class OptionalParameter<V> extends CommandParameter<V> {
 	/**
 	 * @return The full name associated with this parameter
 	 */
-	public String getLongName() {
+	public String getLongName()
+	{
 		return longName;
 	}
 
 	/**
 	 * @return The brief name associated with this parameter
 	 */
-	public String getShortName() {
+	public String getShortName()
+	{
 		return shortName;
 	}
 

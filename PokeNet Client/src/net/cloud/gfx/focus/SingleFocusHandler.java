@@ -27,19 +27,22 @@ public class SingleFocusHandler implements FocusHandler {
 	}
 
 	@Override
-	public void focusGained() {
+	public void focusGained()
+	{
 		// Set the focus flag. Can be checked on demand by hasFocus()
 		this.hasFocus = true;
 	}
 
 	@Override
-	public void focusLost() {
+	public void focusLost()
+	{
 		// Clear the focus flag
 		this.hasFocus = false;
 	}
 
 	@Override
-	public void traverseNext() {
+	public void traverseNext()
+	{
 		// Transfer focus over if there's a handler up next
 		if(next != null)
 		{
@@ -48,7 +51,8 @@ public class SingleFocusHandler implements FocusHandler {
 	}
 
 	@Override
-	public void traversePrevious() {
+	public void traversePrevious()
+	{
 		// Transfer focus over if there's a handler behind this one
 		if(previous != null)
 		{
@@ -57,27 +61,32 @@ public class SingleFocusHandler implements FocusHandler {
 	}
 
 	@Override
-	public boolean hasFocus() {
+	public boolean hasFocus()
+	{
 		return hasFocus;
 	}
 	
 	@Override
-	public Focusable getNext() {
+	public Focusable getNext()
+	{
 		return next;
 	}
 
 	@Override
-	public void setNext(Focusable next) {
+	public void setNext(Focusable next)
+	{
 		this.next = next;
 	}
 	
 	@Override
-	public Focusable getPrevious() {
+	public Focusable getPrevious()
+	{
 		return previous;
 	}
 
 	@Override
-	public void setPrevious(Focusable previous) {
+	public void setPrevious(Focusable previous)
+	{
 		this.previous = previous;
 	}
 

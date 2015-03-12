@@ -15,7 +15,8 @@ public class RequiredParameter<V> extends CommandParameter<V> {
 	 * Create a new Parameter that will contain the given argument
 	 * @param argument The argument, complete with value, in this parameter
 	 */
-	public RequiredParameter(CommandArgument<V> argument) {
+	public RequiredParameter(CommandArgument<V> argument)
+	{
 		super(argument);
 	}
 	

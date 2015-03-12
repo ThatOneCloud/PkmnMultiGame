@@ -38,7 +38,8 @@ public class FileRequestException extends Exception {
 		if(super.getCause() == null)
 		{
 			return "[FileRequestException]: " + getMessage();
-		} else {
+		}
+		else {
 			return "[FileRequestException]: " + getMessage() + System.lineSeparator() 
 					+ "   Caused by: " + super.getCause().getMessage();
 		}

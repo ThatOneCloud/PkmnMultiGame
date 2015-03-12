@@ -24,7 +24,8 @@ public class ShutdownHandler {
 	private State state;
 
 	/** Create a ShutdownHandler with an initially empty list of ShutdownHooks */
-	public ShutdownHandler() {
+	public ShutdownHandler()
+	{
 		state = State.INIT;
 	}
 	
@@ -127,7 +128,8 @@ public class ShutdownHandler {
 	 * @throws ShutdownException If one or more ShutdownHooks encounter a problem. Message is combined 
 	 * from each hook's exception - so printStackTrace may not prove useful. The message should be, however.
 	 */
-	private void executeHooks(PrintWriter out) throws ShutdownException {
+	private void executeHooks(PrintWriter out) throws ShutdownException
+	{
 		// Starting the process, so we're in progress
 		setState(State.IN_PROGRESS);
 

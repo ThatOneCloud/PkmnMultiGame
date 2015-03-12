@@ -317,17 +317,20 @@ public class RadioButton extends SelectableButton {
 		}
 
 		/** @return The group the event happened within */
-		public RadioButtonGroup getGroup() {
+		public RadioButtonGroup getGroup()
+		{
 			return group;
 		}
 
 		/** @return The de-selected button. May not always be present. */
-		public Optional<RadioButton> getDeselected() {
+		public Optional<RadioButton> getDeselected()
+		{
 			return deselected;
 		}
 
 		/** @return The newly selected button */
-		public RadioButton getSelected() {
+		public RadioButton getSelected()
+		{
 			return selected;
 		}
 		

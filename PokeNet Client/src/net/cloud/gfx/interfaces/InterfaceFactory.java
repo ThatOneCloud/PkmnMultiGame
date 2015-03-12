@@ -20,15 +20,12 @@ public class InterfaceFactory {
 	 * be an overlay - essentially no background and no dimensions so that it
 	 * will not hide the elements under it and will not consume any input
 	 * events.
-	 * 
-	 * @param width
-	 *            The width of the interface this will be in - for positioning
-	 * @param height
-	 *            The height of the interface this will be in - for positioning
-	 * @return An Interface which can be added to some Container... maybe the
-	 *         root...
+	 * @param width The width of the interface this will be in - for positioning
+	 * @param height The height of the interface this will be in - for positioning
+	 * @return An Interface which can be added to some Container... maybe the root...
 	 */
-	public static Interface createStatOverlay(int width, int height) {
+	public static Interface createStatOverlay(int width, int height)
+	{
 		// Create an interface to add components to
 		Interface overlay = new Interface();
 		overlay.setPriority(Priority.MAX);
@@ -48,22 +45,23 @@ public class InterfaceFactory {
 	 * need be, preferring to re-use the existing String if it's the same. I
 	 * think an anonymous inner class may be the best solution, lambdas won't
 	 * work since I need to store the previous value and modify it.
-	 * 
 	 * @return A Function supplying an updated FPS string
 	 */
-	private static Function<String, String> createUpdateFpsFunction() {
+	private static Function<String, String> createUpdateFpsFunction()
+	{
 		return new Function<String, String>() {
-			double previousFps = 0.0; // Keep track of the fps from the previous
-										// update
-			int CYCLE_LIMIT = 5; // How many cycles to wait before letting the
-									// string update
-			int cycleCount = CYCLE_LIMIT; // Keep track of how many times we're
+			double previousFps = 0.0; 		// Keep track of the fps from the previous
+											// update
+			int CYCLE_LIMIT = 5; 			// How many cycles to wait before letting the
+											// string update
+			int cycleCount = CYCLE_LIMIT;   // Keep track of how many times we're
 											// called. Don't update too fast...
 											// can't read it. Start off
 											// updating, though.
 
 			@Override
-			public String apply(String curTxt) {
+			public String apply(String curTxt)
+			{
 				// Grab the latest fps reading
 				double curFps = StatTracker.instance().getStats().getFpsStat();
 

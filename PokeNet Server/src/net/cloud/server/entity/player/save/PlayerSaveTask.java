@@ -18,7 +18,8 @@ public class PlayerSaveTask implements VoidTask {
 	 * If the save fails, report the issue and carry on. 
 	 */
 	@Override
-	public void execute() {
+	public void execute()
+	{
 		// The list takes care of conditional complexities. We just tell it what to do.
 		World.instance().getPlayerMap().forAllLoggedIn(this::attemptSave);
 	}

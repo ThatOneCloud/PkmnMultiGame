@@ -26,7 +26,8 @@ public class BlockLoadRequestHandler implements FileRequestListener<CachedFileRe
 	 * @param collection The collection to put the sprites in 
 	 * @param firstSpriteID The index of the first sprite this handler will be loading
 	 */
-	public BlockLoadRequestHandler(SpriteCollection collection, int firstSpriteID) {
+	public BlockLoadRequestHandler(SpriteCollection collection, int firstSpriteID)
+	{
 		this.collection = collection;
 		this.firstSpriteID = firstSpriteID;
 	}
@@ -37,7 +38,8 @@ public class BlockLoadRequestHandler implements FileRequestListener<CachedFileRe
 	 * When all of the images have been placed into the collection, the block's lock is released. 
 	 */
 	@Override
-	public void requestReady(CachedFileRegion region) {
+	public void requestReady(CachedFileRegion region)
+	{
 		try {
 			// Encapsulate the method in a try block. No matter what happens... 
 			loadBlock(region);

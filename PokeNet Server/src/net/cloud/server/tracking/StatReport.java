@@ -28,7 +28,8 @@ public class StatReport extends LogReport {
 	}
 
 	@Override
-	public void logReport(PrintWriter out) {
+	public void logReport(PrintWriter out)
+	{
 		// A "nice" header with some general information. Lots of prints because primitives? I 'unno
 		out.print("Status Report at ");
 		out.print(stats.getCreationTime().getHour());

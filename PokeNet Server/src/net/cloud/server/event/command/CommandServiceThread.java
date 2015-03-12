@@ -32,7 +32,8 @@ public class CommandServiceThread implements Runnable {
 	 * @param in An InputStream commands can be read from
 	 * @param out An OutputStream results can be written to
 	 */
-	public CommandServiceThread(int pollDelay, BufferedReader in, PrintWriter out) {
+	public CommandServiceThread(int pollDelay, BufferedReader in, PrintWriter out)
+	{
 		this.POLL_DELAY = pollDelay;
 		
 		// Wrap the input streams, buffered is good (and has line operations)
@@ -52,7 +53,8 @@ public class CommandServiceThread implements Runnable {
 	 * Stops if the thread is interrupted for the running flag is set to false.
 	 */
 	@Override
-	public void run() {
+	public void run()
+	{
 		this.running = true;
 		
 		// Continue to loop as long as this thread is running
@@ -84,14 +86,16 @@ public class CommandServiceThread implements Runnable {
 	 * @throws IOException If the input could not be read from
 	 * @throws InterruptedException If the thread was interrupted whilst sleeping
 	 */
-	private void readLines() throws IOException, InterruptedException {
+	private void readLines() throws IOException, InterruptedException
+	{
 		// Check if there is a line to read (Documentation says read() but it's readLine() this tests)
 		if(in.ready())
 		{
 			// The CommandReader takes care of actually reading from the input
 			cmdReader.readCommands();
 			
-		} else {
+		}
+		else {
 			// There was nothing to read. Wait a bit before polling again
 			Thread.sleep(POLL_DELAY);
 		}
@@ -111,7 +115,8 @@ public class CommandServiceThread implements Runnable {
 	/**
 	 * @return If the service is currently doing its loop
 	 */
-	public boolean isRunning() {
+	public boolean isRunning()
+	{
 		return running;
 	}
 
@@ -119,7 +124,8 @@ public class CommandServiceThread implements Runnable {
 	 * Set the running flag - which will keep the io loop going or stop it
 	 * @param running The flag. Once set false, the loop will not resume
 	 */
-	public void setRunning(boolean running) {
+	public void setRunning(boolean running)
+	{
 		this.running = running;
 	}
 

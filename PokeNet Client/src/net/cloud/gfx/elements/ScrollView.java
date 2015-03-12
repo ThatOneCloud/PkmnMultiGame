@@ -668,7 +668,8 @@ public class ScrollView extends AbstractElement {
 	 * @param offsetX Offset X
 	 * @param offsetY Offset Y
 	 */
-	private void updateClip(Graphics g, int offsetX, int offsetY) {
+	private void updateClip(Graphics g, int offsetX, int offsetY)
+	{
 		// Overwrite the clip rectangles with current information
 		previousClip.setBounds(0, 0, 0, 0);
 		g.getClipBounds(previousClip);
@@ -688,7 +689,8 @@ public class ScrollView extends AbstractElement {
 	 * Set the graphics clip back to what it was before it was last updated
 	 * @param g The graphics object to draw to
 	 */
-	private void resetClip(Graphics g) {
+	private void resetClip(Graphics g)
+	{
 		// Either clear the clip or set it back depending on whether or not there was a previous clip
 		g.setClip(previousClip.isEmpty() ? null : previousClip);
 	}

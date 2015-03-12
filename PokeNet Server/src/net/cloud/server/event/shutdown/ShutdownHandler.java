@@ -24,7 +24,8 @@ public class ShutdownHandler {
 	private State state;
 
 	/** Create a ShutdownHandler with an initially empty list of ShutdownHooks */
-	public ShutdownHandler() {
+	public ShutdownHandler()
+	{
 		state = State.INIT;
 	}
 	

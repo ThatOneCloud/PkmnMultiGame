@@ -31,7 +31,8 @@ public class StrongIterator<T> {
 	 * Check to see if there is another element to retrieve
 	 * @return True if the underlying iterator's hasNext would return true
 	 */
-	public boolean hasNext() {
+	public boolean hasNext()
+	{
 		return iterator.hasNext();
 	}
 
@@ -42,7 +43,8 @@ public class StrongIterator<T> {
 	 * @return The next element in the list
 	 * @throws IteratorException If the list was modified and behavior is no longer guarantee-able
 	 */
-	public T next() throws IteratorException {
+	public T next() throws IteratorException
+	{
 		try {
 			return iterator.next();
 		} catch (ConcurrentModificationException cme) {

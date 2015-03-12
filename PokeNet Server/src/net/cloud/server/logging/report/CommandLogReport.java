@@ -9,10 +9,10 @@ import java.io.PrintWriter;
 public class CommandLogReport extends LogReport {
 	
 	/** The command that was issued in entirety */
-	private String line;
+	private final String line;
 	
 	/** The results that the handling of the command returned */
-	private String results;
+	private final String results;
 	
 	/**
 	 * Create a new CommandReport with the given line and results. It will 
@@ -33,7 +33,8 @@ public class CommandLogReport extends LogReport {
 	 * about the usage of a command.
 	 */
 	@Override
-	public void logReport(PrintWriter out) {
+	public void logReport(PrintWriter out)
+	{
 		// It's implied that a command is being used. So jump right into the command
 		out.println("[Command]: " + line);
 		

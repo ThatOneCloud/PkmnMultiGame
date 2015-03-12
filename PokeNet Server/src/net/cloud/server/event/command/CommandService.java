@@ -63,7 +63,8 @@ public class CommandService implements ShutdownService {
 	 * @throws NullPointerException If the hook has not yet been created
 	 */
 	@Override
-	public ShutdownHook getShutdownHook() throws NullPointerException {
+	public ShutdownHook getShutdownHook() throws NullPointerException
+	{
 		return Optional.ofNullable(shutdownHook).orElseThrow(() -> new NullPointerException("Null ShutdownHook"));
 	}
 

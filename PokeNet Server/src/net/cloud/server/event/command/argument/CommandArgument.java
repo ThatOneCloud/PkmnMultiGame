@@ -42,7 +42,8 @@ public abstract class CommandArgument<V> {
 	/**
 	 * @return The value of this argument
 	 */
-	public V getArgValue() {
+	public V getArgValue()
+	{
 		return argValue;
 	}
 

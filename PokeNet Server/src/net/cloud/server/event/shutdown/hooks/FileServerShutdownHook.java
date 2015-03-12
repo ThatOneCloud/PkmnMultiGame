@@ -25,7 +25,8 @@ public class FileServerShutdownHook implements ShutdownHook {
 	 * @param thread The thread executing the file server logic loop
 	 * @param fileServerThread The object with the logic loop code
 	 */
-	public FileServerShutdownHook(Thread thread, FileServerThread fileServerThread) {
+	public FileServerShutdownHook(Thread thread, FileServerThread fileServerThread)
+	{
 		this.thread = thread;
 		this.fileServerThread = fileServerThread;
 	}
@@ -37,7 +38,8 @@ public class FileServerShutdownHook implements ShutdownHook {
 	 * This shutdown method will return immediately.
 	 */
 	@Override
-	public void shutdown(PrintWriter out) throws ShutdownException {
+	public void shutdown(PrintWriter out) throws ShutdownException
+	{
 		out.println("Shutting down file server");
 		out.flush();
 		
@@ -52,7 +54,6 @@ public class FileServerShutdownHook implements ShutdownHook {
 		
 		out.println("File server shut down");
 		out.flush();
-
 	}
 
 }

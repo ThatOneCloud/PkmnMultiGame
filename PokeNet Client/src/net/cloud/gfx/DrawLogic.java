@@ -83,7 +83,8 @@ public class DrawLogic implements Runnable {
 	 * the loop will run constantly without delay. 
 	 */
 	@Override
-	public void run() {
+	public void run()
+	{
 		this.running = true;
 		
 		// Just repaint the panel in a loop!

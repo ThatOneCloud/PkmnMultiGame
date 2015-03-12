@@ -19,7 +19,8 @@ public class ShutdownException extends Exception {
 	 * @param message Brief description of the root cause
 	 * @param cause The exception that the ShutdownHook encountered
 	 */
-	public ShutdownException(String message, Throwable cause) {
+	public ShutdownException(String message, Throwable cause)
+	{
 		super(message, cause);
 	}
 	

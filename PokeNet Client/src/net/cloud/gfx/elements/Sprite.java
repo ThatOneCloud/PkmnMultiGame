@@ -98,7 +98,8 @@ public class Sprite extends AbstractElement {
 	 * left corner is the coordinate to draw from. 
 	 */
 	@Override
-	public void drawElement(Graphics g, int offsetX, int offsetY) throws IteratorException {
+	public void drawElement(Graphics g, int offsetX, int offsetY) throws IteratorException
+	{
 		// Draw the image
 		g.drawImage(image, offsetX, offsetY, null);
 	}

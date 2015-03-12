@@ -22,7 +22,8 @@ public class FileServerThread implements Runnable {
 	/** We'll use a blocking queue to handle request storage for us */
 	private BlockingQueue<FileRequest<?>> requestQueue;
 
-	public FileServerThread(RequestHandler requestHandler) {
+	public FileServerThread(RequestHandler requestHandler)
+	{
 		// Start with the flag true
 		this.running = true;
 		
@@ -33,7 +34,8 @@ public class FileServerThread implements Runnable {
 	}
 
 	@Override
-	public void run() {
+	public void run()
+	{
 		// Only go while the running flag is set
 		while(running && !Thread.currentThread().isInterrupted())
 		{

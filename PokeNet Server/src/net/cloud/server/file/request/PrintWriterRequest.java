@@ -15,12 +15,14 @@ public class PrintWriterRequest extends SaveRequest<PrintWriter> {
 	 * Simply calls the super constructor. See {@link LoadRequest#LoadRequest(FileAddress)}
 	 * @param address The location of the file we want to obtain a PrintWriter for
 	 */
-	public PrintWriterRequest(FileAddress address) {
+	public PrintWriterRequest(FileAddress address)
+	{
 		super(address);
 	}
 
 	@Override
-	public void handle(RequestHandler handler) {
+	public void handle(RequestHandler handler)
+	{
 		// Double dispatch off to the handler
 		handler.handleRequest(this);
 	}

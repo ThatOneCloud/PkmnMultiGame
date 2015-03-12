@@ -130,7 +130,8 @@ public class TextField extends AbstractElement {
 		{
 			this.textBuilder = new StringBuilder("");
 			this.text = textBuilder.toString();
-		} else {
+		}
+		else {
 			this.textBuilder = new StringBuilder(hintText);
 			this.text = hintText;
 		}
@@ -165,7 +166,8 @@ public class TextField extends AbstractElement {
 		{
 			this.textBuilder = new StringBuilder("");
 			this.text = textBuilder.toString();
-		} else {
+		}
+		else {
 			this.textBuilder = new StringBuilder(hintText);
 			this.text = hintText;
 		}
@@ -347,7 +349,7 @@ public class TextField extends AbstractElement {
 		
 		// Create a new task and submit it
 		blinkTask = new CursorBlinkTask();
-		TaskEngine.instance().scheduleImmediate(blinkTask, BLINK_INTERVAL);
+		TaskEngine.instance().scheduleImmediate(BLINK_INTERVAL, blinkTask);
 		
 		// If there is still hint text, clear that out
 		if(hintText != null)
@@ -930,7 +932,7 @@ public class TextField extends AbstractElement {
 		 * moving right to left. The display field members are changed, the glyph vector is not invalidated.
 		 * @param metrics A FontMetrics object to measure text with
 		 */
-		protected void determineRightwise(FontMetrics metrics) 
+		protected void determineRightwise(FontMetrics metrics)
 		{
 			// Since right - start at the end
 			int startIdx = rightIdx;
@@ -946,7 +948,8 @@ public class TextField extends AbstractElement {
 				{
 					endIdx++;
 					break;
-				} else {
+				}
+				else {
 					endIdx--;
 				}
 			}
@@ -977,7 +980,8 @@ public class TextField extends AbstractElement {
 				{
 					endIdx--;
 					break;
-				} else {
+				}
+				else {
 					endIdx++;
 				}
 			}

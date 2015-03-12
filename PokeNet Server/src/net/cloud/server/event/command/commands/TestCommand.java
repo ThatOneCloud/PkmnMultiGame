@@ -13,14 +13,16 @@ import net.cloud.server.event.command.parameter.RequiredParameter;
 public class TestCommand extends AbstractCommand {
 	
 	// Define the optional parameters this command could possibly accept
-	private static OptionalParameter<?>[] allOptParams = {
+	private static OptionalParameter<?>[] allOptParams =
+	{
 		new OptionalParameter<String>("p", "parameter", ArgumentPrototypes.STRING),
 		new OptionalParameter<String>("a", "aaa", ArgumentPrototypes.STRING),
 		new OptionalParameter<String>("b", "bbb", ArgumentPrototypes.STRING)
 	};
 	
 	// Define the parameters this command must have provided to it
-	private static RequiredParameter<?>[] allReqParams = {
+	private static RequiredParameter<?>[] allReqParams =
+	{
 		new RequiredParameter<String>(ArgumentPrototypes.STRING),
 		new RequiredParameter<String>(ArgumentPrototypes.STRING)
 	};
@@ -39,7 +41,8 @@ public class TestCommand extends AbstractCommand {
 	 * @return A result message. Useful feedback for the user
 	 */
 	@Override
-	public String doCommand() {
+	public String doCommand()
+	{
 		return "do command";
 	}
 	
@@ -56,12 +59,14 @@ public class TestCommand extends AbstractCommand {
 	}
 
 	@Override
-	protected OptionalParameter<?>[] getAllOptionalParameters() {
+	protected OptionalParameter<?>[] getAllOptionalParameters()
+	{
 		return allOptParams;
 	}
 
 	@Override
-	protected RequiredParameter<?>[] getAllRequiredParameters() {
+	protected RequiredParameter<?>[] getAllRequiredParameters()
+	{
 		return allReqParams;
 	}
 

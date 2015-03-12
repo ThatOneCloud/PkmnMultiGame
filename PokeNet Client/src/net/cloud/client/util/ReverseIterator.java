@@ -37,17 +37,20 @@ public class ReverseIterator<T> implements Iterator<T>, Iterable<T> {
 	 * @return An iterator in reverse order
 	 */
 	@Override
-	public Iterator<T> iterator() {
+	public Iterator<T> iterator()
+	{
 		return this;
 	}
 
 	@Override
-	public boolean hasNext() {
+	public boolean hasNext()
+	{
 		return iterator.hasPrevious();
 	}
 
 	@Override
-	public T next() {
+	public T next()
+	{
 		return iterator.previous();
 	}
 

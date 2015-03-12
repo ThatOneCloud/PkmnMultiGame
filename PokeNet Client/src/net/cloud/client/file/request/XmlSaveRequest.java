@@ -13,14 +13,16 @@ public class XmlSaveRequest extends SaveRequest<Object> {
 	 * @param address The save location
 	 * @param saveObject The object to serialize to XML
 	 */
-	public XmlSaveRequest(FileAddress address, Object saveObject) {
+	public XmlSaveRequest(FileAddress address, Object saveObject)
+	{
 		super(address);
 		
 		this.saveObject = saveObject;
 	}
 
 	@Override
-	public void handle(RequestHandler handler) {
+	public void handle(RequestHandler handler)
+	{
 		// Double dispatch off to the handler
 		handler.handleRequest(this);
 	}

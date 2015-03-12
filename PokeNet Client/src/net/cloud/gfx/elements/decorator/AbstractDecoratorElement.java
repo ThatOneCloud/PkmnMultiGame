@@ -28,17 +28,20 @@ public abstract class AbstractDecoratorElement implements DecoratorElement {
 	 * Constructor which will set the wrapped element. It may not be changed.
 	 * @param wrapped The element to decorate
 	 */
-	public AbstractDecoratorElement(Element wrapped) {
+	public AbstractDecoratorElement(Element wrapped)
+	{
 		this.wrapped = wrapped;
 	}
 
 	@Override
-	public Element getDecoratedElement() {
+	public Element getDecoratedElement()
+	{
 		return wrapped;
 	}
 	
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(Object obj)
+	{
 		// We're comparing to another decorator. Our goal is to strip it down (the obj parameter) to the bottom element
 		if(obj instanceof DecoratorElement)
 		{
@@ -64,7 +67,8 @@ public abstract class AbstractDecoratorElement implements DecoratorElement {
 	 * Note: This is not called when a child element is clicked
 	 */
 	@Override
-	public void clicked(Element clicked, Point relPoint, boolean isRightClick) {
+	public void clicked(Element clicked, Point relPoint, boolean isRightClick)
+	{
 		wrapped.clicked(clicked, relPoint, isRightClick);
 	}
 
@@ -73,7 +77,8 @@ public abstract class AbstractDecoratorElement implements DecoratorElement {
 	 * Note: This is not called when a child element is pressed
 	 */
 	@Override
-	public void pressed(Element pressed, Point relPoint) {
+	public void pressed(Element pressed, Point relPoint)
+	{
 		wrapped.pressed(pressed, relPoint);
 	}
 
@@ -82,7 +87,8 @@ public abstract class AbstractDecoratorElement implements DecoratorElement {
 	 * Note: This is not called when a child element is released
 	 */
 	@Override
-	public void released(Element released, Point relPoint, boolean onElement) {
+	public void released(Element released, Point relPoint, boolean onElement)
+	{
 		wrapped.released(released, relPoint, onElement);
 	}
 	
@@ -91,7 +97,8 @@ public abstract class AbstractDecoratorElement implements DecoratorElement {
 	 * Note: This is not called when a child element is dragged
 	 */
 	@Override
-	public void dragged(Element dragged, Point start, Point withinStart, Point current) {
+	public void dragged(Element dragged, Point start, Point withinStart, Point current)
+	{
 		wrapped.dragged(dragged, start, withinStart, current);
 	}
 
@@ -100,7 +107,8 @@ public abstract class AbstractDecoratorElement implements DecoratorElement {
 	 * Note: This is not called when a child element transfers responsibility
 	 */
 	@Override
-	public void keyTyped(char key) {
+	public void keyTyped(char key)
+	{
 		wrapped.keyTyped(key);
 	}
 
@@ -108,7 +116,8 @@ public abstract class AbstractDecoratorElement implements DecoratorElement {
 	 * Delegate to the wrapped element
 	 */
 	@Override
-	public void focusGained() {
+	public void focusGained()
+	{
 		wrapped.focusGained();
 	}
 
@@ -116,7 +125,8 @@ public abstract class AbstractDecoratorElement implements DecoratorElement {
 	 * Delegate to the wrapped element
 	 */
 	@Override
-	public void focusLost() {
+	public void focusLost()
+	{
 		wrapped.focusLost();
 	}
 
@@ -127,7 +137,8 @@ public abstract class AbstractDecoratorElement implements DecoratorElement {
 	 * to this decorator is returned instead.
 	 */
 	@Override
-	public Element topElementAtPoint(Point point) throws IteratorException {
+	public Element topElementAtPoint(Point point) throws IteratorException
+	{
 		// Let the wrapped element keep going
 		Element top = wrapped.topElementAtPoint(point);
 		
@@ -139,7 +150,8 @@ public abstract class AbstractDecoratorElement implements DecoratorElement {
 	 * Delegate to the wrapped element
 	 */
 	@Override
-	public Rectangle getRectangle() {
+	public Rectangle getRectangle()
+	{
 		return wrapped.getRectangle();
 	}
 
@@ -147,7 +159,8 @@ public abstract class AbstractDecoratorElement implements DecoratorElement {
 	 * Delegate to the wrapped element
 	 */
 	@Override
-	public void setRectangle(Rectangle r) {
+	public void setRectangle(Rectangle r)
+	{
 		wrapped.setRectangle(r);
 	}
 
@@ -155,7 +168,8 @@ public abstract class AbstractDecoratorElement implements DecoratorElement {
 	 * Delegate to the wrapped element
 	 */
 	@Override
-	public int getX() {
+	public int getX()
+	{
 		return wrapped.getX();
 	}
 
@@ -163,7 +177,8 @@ public abstract class AbstractDecoratorElement implements DecoratorElement {
 	 * Delegate to the wrapped element
 	 */
 	@Override
-	public void setX(int x) {
+	public void setX(int x)
+	{
 		wrapped.setX(x);
 	}
 
@@ -171,7 +186,8 @@ public abstract class AbstractDecoratorElement implements DecoratorElement {
 	 * Delegate to the wrapped element
 	 */
 	@Override
-	public int getY() {
+	public int getY()
+	{
 		return wrapped.getY();
 	}
 
@@ -179,7 +195,8 @@ public abstract class AbstractDecoratorElement implements DecoratorElement {
 	 * Delegate to the wrapped element
 	 */
 	@Override
-	public void setY(int y) {
+	public void setY(int y)
+	{
 		wrapped.setY(y);
 	}
 
@@ -187,7 +204,8 @@ public abstract class AbstractDecoratorElement implements DecoratorElement {
 	 * Delegate to the wrapped element
 	 */
 	@Override
-	public int getPriority() {
+	public int getPriority()
+	{
 		return wrapped.getPriority();
 	}
 
@@ -195,7 +213,8 @@ public abstract class AbstractDecoratorElement implements DecoratorElement {
 	 * Delegate to the wrapped element
 	 */
 	@Override
-	public void setPriority(int priority) {
+	public void setPriority(int priority)
+	{
 		wrapped.setPriority(priority);
 	}
 
@@ -203,7 +222,8 @@ public abstract class AbstractDecoratorElement implements DecoratorElement {
 	 * Delegate to the wrapped element
 	 */
 	@Override
-	public int getWidth() {
+	public int getWidth()
+	{
 		return wrapped.getWidth();
 	}
 
@@ -211,7 +231,8 @@ public abstract class AbstractDecoratorElement implements DecoratorElement {
 	 * Delegate to the wrapped element
 	 */
 	@Override
-	public void setWidth(int width) {
+	public void setWidth(int width)
+	{
 		wrapped.setWidth(width);
 	}
 
@@ -219,7 +240,8 @@ public abstract class AbstractDecoratorElement implements DecoratorElement {
 	 * Delegate to the wrapped element
 	 */
 	@Override
-	public int getHeight() {
+	public int getHeight()
+	{
 		return wrapped.getHeight();
 	}
 
@@ -227,7 +249,8 @@ public abstract class AbstractDecoratorElement implements DecoratorElement {
 	 * Delegate to the wrapped element
 	 */
 	@Override
-	public void setHeight(int height) {
+	public void setHeight(int height)
+	{
 		wrapped.setHeight(height);
 	}
 
@@ -235,7 +258,8 @@ public abstract class AbstractDecoratorElement implements DecoratorElement {
 	 * Delegate to the wrapped element
 	 */
 	@Override
-	public FocusHandler getFocusHandler() {
+	public FocusHandler getFocusHandler()
+	{
 		return wrapped.getFocusHandler();
 	}
 
@@ -243,7 +267,8 @@ public abstract class AbstractDecoratorElement implements DecoratorElement {
 	 * Delegate to the wrapped element
 	 */
 	@Override
-	public void setFocusHandler(FocusHandler focusHandler) {
+	public void setFocusHandler(FocusHandler focusHandler)
+	{
 		wrapped.setFocusHandler(focusHandler);
 	}
 
@@ -251,7 +276,8 @@ public abstract class AbstractDecoratorElement implements DecoratorElement {
 	 * Delegate to the wrapped element
 	 */
 	@Override
-	public boolean isPressedDown() {
+	public boolean isPressedDown()
+	{
 		return wrapped.isPressedDown();
 	}
 
@@ -259,7 +285,8 @@ public abstract class AbstractDecoratorElement implements DecoratorElement {
 	 * Delegate to the wrapped element
 	 */
 	@Override
-	public void setPressedDown(boolean isPressedDown) {
+	public void setPressedDown(boolean isPressedDown)
+	{
 		wrapped.setPressedDown(isPressedDown);
 	}
 
@@ -267,7 +294,8 @@ public abstract class AbstractDecoratorElement implements DecoratorElement {
 	 * Delegate to the wrapped element
 	 */
 	@Override
-	public Optional<ParentElement> getParent() {
+	public Optional<ParentElement> getParent()
+	{
 		return wrapped.getParent();
 	}
 
@@ -275,7 +303,8 @@ public abstract class AbstractDecoratorElement implements DecoratorElement {
 	 * Delegate to the wrapped element
 	 */
 	@Override
-	public void setParent(ParentElement parent) {
+	public void setParent(ParentElement parent)
+	{
 		wrapped.setParent(parent);
 	}
 
@@ -283,7 +312,8 @@ public abstract class AbstractDecoratorElement implements DecoratorElement {
 	 * Delegate to the wrapped element
 	 */
 	@Override
-	public void linkNextFocusable(Focusable current, Focusable next) {
+	public void linkNextFocusable(Focusable current, Focusable next)
+	{
 		wrapped.linkNextFocusable(current, next);
 	}
 
@@ -291,7 +321,8 @@ public abstract class AbstractDecoratorElement implements DecoratorElement {
 	 * Delegate to the wrapped element
 	 */
 	@Override
-	public void linkPreviousFocusable(Focusable current, Focusable previous) {
+	public void linkPreviousFocusable(Focusable current, Focusable previous)
+	{
 		wrapped.linkPreviousFocusable(current, previous);
 	}
 
@@ -299,7 +330,8 @@ public abstract class AbstractDecoratorElement implements DecoratorElement {
 	 * Delegate to the wrapped element
 	 */
 	@Override
-	public void unlink(Focusable current) {
+	public void unlink(Focusable current)
+	{
 		wrapped.unlink(current);
 	}
 

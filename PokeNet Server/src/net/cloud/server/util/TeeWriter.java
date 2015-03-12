@@ -54,43 +54,50 @@ public class TeeWriter extends Writer {
 	}
 	
 	@Override
-	public void close() throws IOException {
+	public void close() throws IOException
+	{
 		one.close();
 		two.close();
 	}
 	
 	@Override
-	public void flush() throws IOException {
+	public void flush() throws IOException
+	{
 		one.flush();
 		two.flush();
 	}
 	
 	@Override
-	public void write(char[] cbuf) throws IOException {
+	public void write(char[] cbuf) throws IOException
+	{
 		one.write(cbuf);
 		two.write(cbuf);
 	}
 
 	@Override
-	public void write(char[] cbuf, int off, int len) throws IOException {
+	public void write(char[] cbuf, int off, int len) throws IOException
+	{
 		one.write(cbuf, off, len);
 		two.write(cbuf, off, len);
 	}
 	
 	@Override
-	public void write(int c) throws IOException {
+	public void write(int c) throws IOException
+	{
 		one.write(c);
 		two.write(c);
 	}
 
 	@Override
-	public void write(String str) throws IOException {
+	public void write(String str) throws IOException
+	{
 		one.write(str);
 		two.write(str);
 	}
 
 	@Override
-	public void write(String str, int off, int len) throws IOException {
+	public void write(String str, int off, int len) throws IOException
+	{
 		one.write(str, off, len);
 		two.write(str, off, len);
 	}

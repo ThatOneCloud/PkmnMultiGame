@@ -40,7 +40,8 @@ public class LoadRequestHandler {
 	 * notify the Request object that it is ready or that an exception occurred.
 	 * @param req The request to fulfill
 	 */
-	public void handleRequest(BufferedReaderRequest req) {
+	public void handleRequest(BufferedReaderRequest req)
+	{
 		// Going to create a BufferedReader with lots of wrappers. Here goes
 		try {
 			BufferedReader br = IOUtil.streamToReader(new FileInputStream(req.address().getPathString()));

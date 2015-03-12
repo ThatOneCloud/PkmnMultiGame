@@ -36,7 +36,8 @@ public class ContainerFocusHandler implements FocusHandler {
 	 * There will be no previous, next, first, or last Focusable. These must be linked and set 
 	 * externally like with SingleFocusHandler. 
 	 */
-	public ContainerFocusHandler() {
+	public ContainerFocusHandler()
+	{
 		this.hasFocus = false;
 		
 		this.previous = null;
@@ -48,14 +49,16 @@ public class ContainerFocusHandler implements FocusHandler {
 
 	/** Called when this handler has gained focus. Has no bearing on any contained handlers */
 	@Override
-	public void focusGained() {
+	public void focusGained()
+	{
 		// Set the focus flag. Can be checked on demand by hasFocus()
 		this.hasFocus = true;
 	}
 
 	/** Called when this handler has lost focus. Has no bearing on any contained handlers */
 	@Override
-	public void focusLost() {
+	public void focusLost()
+	{
 		// Clear the focus flag
 		this.hasFocus = false;
 	}
@@ -65,7 +68,8 @@ public class ContainerFocusHandler implements FocusHandler {
 	 * Otherwise, to prevent interruptions in traversal, the Focusable which we are linked to will be used (if present). 
 	 */
 	@Override
-	public void traverseNext() {
+	public void traverseNext()
+	{
 		// Primarily we want to move to the first child, even though we're linked to a different Focusable
 		if(first != null)
 		{
@@ -83,7 +87,8 @@ public class ContainerFocusHandler implements FocusHandler {
 	 * So unlike traverseNext() which goes to a child Focusable, this will just go to the linked Focusable. 
 	 */
 	@Override
-	public void traversePrevious() {
+	public void traversePrevious()
+	{
 		// Transfer focus over if there's a handler behind this one
 		if(previous != null)
 		{
@@ -97,7 +102,8 @@ public class ContainerFocusHandler implements FocusHandler {
 	 * @return True if this handler alone has focus. 
 	 */
 	@Override
-	public boolean hasFocus() {
+	public boolean hasFocus()
+	{
 		return hasFocus;
 	}
 
@@ -107,50 +113,58 @@ public class ContainerFocusHandler implements FocusHandler {
 	 * @return The Focusable linked next to this one
 	 */
 	@Override
-	public Focusable getNext() {
+	public Focusable getNext()
+	{
 		return next;
 	}
 
 	@Override
-	public void setNext(Focusable next) {
+	public void setNext(Focusable next)
+	{
 		this.next = next;
 	}
 
 	@Override
-	public Focusable getPrevious() {
+	public Focusable getPrevious()
+	{
 		return previous;
 	}
 
 	@Override
-	public void setPrevious(Focusable previous) {
+	public void setPrevious(Focusable previous)
+	{
 		this.previous = previous;
 	}
 	
 	/**
 	 * @return The first Focusable in the container's traversal chain
 	 */
-	public Focusable getFirst() {
+	public Focusable getFirst()
+	{
 		return first;
 	}
 	
 	/**
 	 * @param first The first Focusable in the container's traversal chain
 	 */
-	public void setFirst(Focusable first) {
+	public void setFirst(Focusable first)
+	{
 		this.first = first;
 	}
 	
 	/**
 	 * @return The last Focusable in the container's traversal chain
 	 */
-	public Focusable getLast() {
+	public Focusable getLast()
+	{
 		return last;
 	}
 	
 	/**
 	 * @param last The last Focusable in the container's traversal chain
 	 */
-	public void setLast(Focusable last) {
+	public void setLast(Focusable last)
+	{
 		this.last = last;
 	}
 

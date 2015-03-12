@@ -60,7 +60,8 @@ public class LoggerService implements Runnable {
 	 * Each cycle of it will save all pending file changes
 	 */
 	@Override
-	public void run() {
+	public void run()
+	{
 		running = true;
 		
 		// Go for as long as we're set to be running
@@ -135,7 +136,8 @@ public class LoggerService implements Runnable {
 	 * Initialize the log file for writing a log of standard output
 	 * If the file cannot be opened, an error message will be printed and the Optional will be empty
 	 */
-	private void initLogFile() {
+	private void initLogFile()
+	{
 		// Obtain a PrintWriter to a file to use for logging
 		PrintWriterRequest fileRequest = new PrintWriterRequest(FileAddressBuilder.createLogFileAddress("std_out"));
 		
@@ -153,13 +155,15 @@ public class LoggerService implements Runnable {
 	 * Initialize the Writer which will write through to both standard output 
 	 * and the log file.  (This writer will only go to standard out if the file isn't open)
 	 */
-	private void initLogWriter() {
+	private void initLogWriter()
+	{
 		// Now the writer to be used for logging depends on if the file opened		
 		if(logFile.isPresent())
 		{
 			// The writer will go to both SYS_OUT and the log file
 			logWriter = new PrintWriter(new LoggingTeeWriter(IOUtil.SYS_OUT, logFile.get()));
-		} else {
+		} 
+		else {
 			// The writer will only go to SYS_OUT
 			logWriter = IOUtil.SYS_OUT;
 		}
@@ -169,7 +173,8 @@ public class LoggerService implements Runnable {
 	 * For every LogReport currently queued, remove if from the queue 
 	 * and have it save itself to the correct log file.
 	 */
-	private void processQueue() {
+	private void processQueue()
+	{
 		while(!reportQueue.isEmpty())
 		{
 			// We know the queue will have something there. Grab it.
@@ -184,7 +189,8 @@ public class LoggerService implements Runnable {
 	 * Check to see if the loop should continue running. 
 	 * If not, the running flag will be set to false
 	 */
-	private void updateRunningFlag() {
+	private void updateRunningFlag()
+	{
 		// We know it's time to stop when we're no longer accepting reports
 		if(!accepting)
 		{

@@ -24,7 +24,8 @@ public class CommandServiceShutdownHook implements ShutdownHook {
 	 * @param cmdSvcThread The Runnable object doing the io loop
 	 * @param serviceThread The Thread the service is being run on
 	 */
-	public CommandServiceShutdownHook(CommandServiceThread cmdSvcThread, Thread serviceThread) {
+	public CommandServiceShutdownHook(CommandServiceThread cmdSvcThread, Thread serviceThread)
+	{
 		this.cmdSvcThread = cmdSvcThread;
 		this.serviceThread = serviceThread;
 	}
@@ -36,7 +37,8 @@ public class CommandServiceShutdownHook implements ShutdownHook {
 	 * @throws ShutdownException If the service could not be stopped
 	 */
 	@Override
-	public void shutdown(PrintWriter out) throws ShutdownException {
+	public void shutdown(PrintWriter out) throws ShutdownException
+	{
 		out.println("Shutting down command service");
 		out.flush();
 		

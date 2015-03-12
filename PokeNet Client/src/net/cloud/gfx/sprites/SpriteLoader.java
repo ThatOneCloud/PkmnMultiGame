@@ -153,7 +153,8 @@ public class SpriteLoader {
 				pendingRequest.address());
 		
 		// Now, that request will be let to run on the file server we need a listener to act when its ready
-		BlockLoadRequestHandler handler = new BlockLoadRequestHandler(collection, collection.firstSpriteInBlock(collection.blockIndexWithSprite(spriteID)));
+		int firstSpriteID = collection.firstSpriteInBlock(collection.blockIndexWithSprite(spriteID));
+		BlockLoadRequestHandler handler = new BlockLoadRequestHandler(collection, firstSpriteID);
 		blockReq.attachListener(handler);
 		
 		// Submit the block request. It'll happen when it happens. Hopefully pretty soon.

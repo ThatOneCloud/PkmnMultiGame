@@ -8,10 +8,10 @@ import java.io.PrintWriter;
 public class ExceptionLogReport extends LogReport {
 	
 	/** A possibly redundant message about what went on */
-	private String message;
+	private final String message;
 	
 	/** The exception we're going to tattle on */
-	private Throwable exception;
+	private final Throwable exception;
 	
 	/**
 	 * Create a LogReport which will detail an exception that occurred 
@@ -20,7 +20,8 @@ public class ExceptionLogReport extends LogReport {
 	 * @param message A brief message about the problem
 	 * @param exception The exception this report is all about
 	 */
-	public ExceptionLogReport(String message, Throwable exception) {
+	public ExceptionLogReport(String message, Throwable exception)
+	{
 		super();
 		this.message = message;
 		this.exception = exception;
@@ -34,7 +35,8 @@ public class ExceptionLogReport extends LogReport {
 	 * @param exception The exception this report is all about
 	 * @param section Where to file this report
 	 */
-	public ExceptionLogReport(String msg, Throwable ex, LogSection section) {
+	public ExceptionLogReport(String msg, Throwable ex, LogSection section)
+	{
 		super(section);
 		this.message = msg;
 		this.exception = ex;
@@ -45,7 +47,8 @@ public class ExceptionLogReport extends LogReport {
 	 * message about what happened and the stack trace of the exception.
 	 */
 	@Override
-	public void logReport(PrintWriter out) {
+	public void logReport(PrintWriter out)
+	{
 		// The message is first
 		out.println(message);
 

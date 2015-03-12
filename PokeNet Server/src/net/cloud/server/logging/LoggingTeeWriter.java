@@ -19,7 +19,8 @@ public class LoggingTeeWriter extends TeeWriter {
 	 * @param stdOut Writer intended to be console output
 	 * @param logOut Writer intended to write to the log file
 	 */
-	public LoggingTeeWriter(Writer stdOut, Writer logOut) {
+	public LoggingTeeWriter(Writer stdOut, Writer logOut)
+	{
 		super(stdOut, logOut);
 	}
 	

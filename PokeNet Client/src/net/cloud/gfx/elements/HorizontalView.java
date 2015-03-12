@@ -725,7 +725,8 @@ public class HorizontalView extends AbstractElement implements Container<Element
 		}
 		else {
 			// For each child, attempt to remove them. If removal was successful, nullify their parent.
-			children.forEach((child) -> {
+			children.forEach((child) ->
+			{
 				if(children.remove(child))
 				{
 					child.setParent(null);

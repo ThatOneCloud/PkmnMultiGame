@@ -34,7 +34,8 @@ public class MouseDragHandler implements MouseMotionListener {
 	 * @param relativeStart Location of the mouse press relative to the element itself
 	 * @param withinStart Location of the mouse press relative to within the element
 	 */
-	public MouseDragHandler(Element element, Point absoluteStart, Point relativeStart, Point withinStart) {
+	public MouseDragHandler(Element element, Point absoluteStart, Point relativeStart, Point withinStart)
+	{
 		this.element = element;
 		this.absoluteStart = absoluteStart;
 		this.relativeStart = relativeStart;
@@ -47,7 +48,8 @@ public class MouseDragHandler implements MouseMotionListener {
 	 * The starting and current event point. 
 	 */
 	@Override
-	public void mouseDragged(MouseEvent e) {
+	public void mouseDragged(MouseEvent e)
+	{
 		// Determine the relative point of the mouse drag event. RC = RS + (AC - AS). 
 		int curRelX = relativeStart.x + e.getX() - absoluteStart.x;
 		int curRelY = relativeStart.y + e.getY() - absoluteStart.y;

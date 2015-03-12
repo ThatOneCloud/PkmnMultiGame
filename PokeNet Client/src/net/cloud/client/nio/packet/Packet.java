@@ -4,6 +4,11 @@ import net.cloud.client.entity.player.Player;
 import net.cloud.client.nio.bufferable.BufferableException;
 import io.netty.buffer.ByteBuf;
 
+/**
+ * Interface defining a packet. This is the data type for objects sent between the client 
+ * and server for communication purposes. Each packet has on opcode defining which packet 
+ * it is, like a GUID. Each packet also knows how to encode, decode, and handle itself.
+ */
 public interface Packet {
 	
 	/**

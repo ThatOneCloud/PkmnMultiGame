@@ -54,7 +54,7 @@ public class LoginHandler {
 		World.instance().getPlayer().getPacketSender().sendLogin();
 		
 		// Prepare a task which will time-out and abort login if we're still just CONNECTED (server never replied...)
-		TaskEngine.instance().submitDelayed(() ->
+		TaskEngine.instance().submitDelayed(TIMEOUT, () ->
 		{
 			// This is the body of the task. If we've moved past connected, assume we're good to go
 			if(World.instance().getPlayer().getLoginState() != LoginState.CONNECTED)
@@ -64,7 +64,7 @@ public class LoginHandler {
 			
 			// Still connected, we need to abort.
 			abortWaitingForVerification();
-		}, TIMEOUT);
+		});
 	}
 	
 	/**

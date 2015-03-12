@@ -16,7 +16,8 @@ public abstract class SaveRequest<T> extends FileRequest<T> {
 	 * Simply calls the super constructor. See {@link FileRequest#FileRequest(FileAddress)}
 	 * @param address The location of the file we want to request
 	 */
-	public SaveRequest(FileAddress address) {
+	public SaveRequest(FileAddress address)
+	{
 		super(address);
 	}
 

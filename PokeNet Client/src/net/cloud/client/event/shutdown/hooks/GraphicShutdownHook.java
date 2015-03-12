@@ -35,7 +35,8 @@ public class GraphicShutdownHook implements ShutdownHook {
 	 * This method will return immediately.
 	 */
 	@Override
-	public void shutdown(PrintWriter out) throws ShutdownException {
+	public void shutdown(PrintWriter out) throws ShutdownException
+	{
 		out.println("Shutting down graphics");
 		out.flush();
 		

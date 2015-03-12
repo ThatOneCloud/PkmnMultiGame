@@ -6,10 +6,19 @@ package net.cloud.gfx.elements;
  */
 public enum Alignment {
 	
+	/** Aligned on center lines, vertical and/or horizontal depending on the context */
 	CENTER,
+	
+	/** Aligned on the left edge */
 	LEFT,
+	
+	/** Aligned on the right edge */
 	RIGHT,
+	
+	/** Aligned on the top edge */
 	TOP,
+	
+	/** Aligned on the bottom edge */
 	BOTTOM;
 
 }

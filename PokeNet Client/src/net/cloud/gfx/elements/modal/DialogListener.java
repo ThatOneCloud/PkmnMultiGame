@@ -74,22 +74,26 @@ public abstract class DialogListener<T> {
 	}
 
 	/** @return The singular value representing the result of interaction with the dialog */
-	public T getValue() {
+	public T getValue()
+	{
 		return value;
 	}
 
 	/** @param The value given back from dialog */
-	public void setValue(T value) {
+	public void setValue(T value)
+	{
 		this.value = value;
 	}
 
 	/** @return True only once the value is ready */
-	public boolean isValueReady() {
+	public boolean isValueReady()
+	{
 		return valueReady;
 	}
 
 	/** @param valueReady True once the value is ready */
-	public void setValueReady(boolean valueReady) {
+	public void setValueReady(boolean valueReady)
+	{
 		this.valueReady = valueReady;
 	}
 	

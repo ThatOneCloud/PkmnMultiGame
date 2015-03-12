@@ -32,7 +32,8 @@ public class TaskEngineShutdownHook implements ShutdownHook {
 	 * @param out A PrintWriter to which status information will be output
 	 */
 	@Override
-	public void shutdown(PrintWriter out) throws ShutdownException {
+	public void shutdown(PrintWriter out) throws ShutdownException
+	{
 		out.println("Shutting down Task Engine");
 		out.flush();
 		

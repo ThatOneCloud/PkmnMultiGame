@@ -24,7 +24,8 @@ public class LoggerShutdownHook implements ShutdownHook {
 	 * @param loggingThread The thread the service is running on
 	 * @param service The service itself
 	 */
-	public LoggerShutdownHook(Thread loggingThread, LoggerService service) {
+	public LoggerShutdownHook(Thread loggingThread, LoggerService service)
+	{
 		this.loggingThread = loggingThread;
 		this.service = service;
 	}
@@ -35,7 +36,8 @@ public class LoggerShutdownHook implements ShutdownHook {
 	 * no more queued.
 	 */
 	@Override
-	public void shutdown(PrintWriter out) throws ShutdownException {
+	public void shutdown(PrintWriter out) throws ShutdownException
+	{
 		// It is important that stop() is called before interrupt()
 		service.stop();
 		loggingThread.interrupt();

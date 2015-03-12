@@ -217,7 +217,8 @@ public class CacheTable {
 		{
 			// So since the last in the region is last in the file, it's the end of the file for end position
 			regionData[arrayIndex] = new byte[(int) (cache.length() - startPosition)];
-		} else {
+		}
+		else {
 			// Nope, same as before. End position is the start of the next file.
 			regionData[arrayIndex] = new byte[(int) (table.readLong() - startPosition)];
 		}

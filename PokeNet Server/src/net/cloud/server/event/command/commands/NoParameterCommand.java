@@ -15,7 +15,8 @@ public abstract class NoParameterCommand extends AbstractCommand {
 	 * @return null
 	 */
 	@Override
-	protected OptionalParameter<?>[] getAllOptionalParameters() {
+	protected OptionalParameter<?>[] getAllOptionalParameters()
+	{
 		return null;
 	}
 
@@ -24,7 +25,8 @@ public abstract class NoParameterCommand extends AbstractCommand {
 	 * @return null
 	 */
 	@Override
-	protected RequiredParameter<?>[] getAllRequiredParameters() {
+	protected RequiredParameter<?>[] getAllRequiredParameters()
+	{
 		return null;
 	}
 

@@ -25,7 +25,8 @@ public class BlockSpriteCollection extends SpriteCollection {
 	 * @param size The number of sprites in the collection
 	 * @param blockSize The number of sprites that are grouped into each block
 	 */
-	public BlockSpriteCollection(int size, int blockSize) {
+	public BlockSpriteCollection(int size, int blockSize)
+	{
 		super(size);
 		
 		this.blockSize = blockSize;
@@ -63,7 +64,8 @@ public class BlockSpriteCollection extends SpriteCollection {
 	 * Release a lock which has been obtained for the block the specified sprite is a member of
 	 */
 	@Override
-	public void unlock(int spriteIndex) {
+	public void unlock(int spriteIndex)
+	{
 		// Release the lock. This could actually be done by a non-owning thread... weird right
 		locks[blockIndexWithSprite(spriteIndex)].release();
 	}
@@ -73,7 +75,8 @@ public class BlockSpriteCollection extends SpriteCollection {
 			SpriteLoader loader, 
 			SpriteSet set, 
 			int spriteID, 
-			CachedFileRequest pendingRequest) throws FileRequestException, IOException {
+			CachedFileRequest pendingRequest) throws FileRequestException, IOException
+	{
 		return loader.finishLoading(set, this, spriteID, pendingRequest);
 	}
 	

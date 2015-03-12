@@ -19,7 +19,8 @@ public class ShutdownCommand extends NoParameterCommand {
 	 * @return A ShutdownCommand instance to build up
 	 */
 	@Override
-	public Command newPrototypedInstance() {
+	public Command newPrototypedInstance()
+	{
 		return new ShutdownCommand();
 	}
 
@@ -28,7 +29,8 @@ public class ShutdownCommand extends NoParameterCommand {
 	 * @return A message saying shutdown is starting
 	 */
 	@Override
-	public String doCommand() {
+	public String doCommand()
+	{
 		// Tell the server it's time to shutdown
 		Server.getInstance().shutdown();
 		

@@ -85,14 +85,16 @@ public class ReferenceText extends Text {
 	/**
 	 * @return The Function that is providing new strings
 	 */
-	public Function<String, String> getReference() {
+	public Function<String, String> getReference()
+	{
 		return reference;
 	}
 
 	/**
 	 * @param reference A new Function to provide text strings
 	 */
-	public void setReference(Function<String, String> reference) {
+	public void setReference(Function<String, String> reference)
+	{
 		this.reference = reference;
 	}
 

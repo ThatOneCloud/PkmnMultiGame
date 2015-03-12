@@ -27,7 +27,8 @@ public class StringArgument extends CommandArgument<String> {
 	 * @param valueString The value - used directly
 	 */
 	@Override
-	public StringArgument newParsedInstance(String valueString) {
+	public StringArgument newParsedInstance(String valueString)
+	{
 		// Well, it's already a String...
 		return new StringArgument(valueString.toString());
 	}

@@ -77,34 +77,34 @@ public class TaskEngine implements ShutdownService {
 	
 	/**
 	 * Submit a VoidTask to run after waiting some amount of time
-	 * @param task The task containing the code to run on the TaskEngine
 	 * @param delay The amount of time to wait before executing the task
+	 * @param task The task containing the code to run on the TaskEngine
 	 * @return A Future to determine when the task completes. A VoidTask will return null from the Future.
 	 */
-	public Future<?> submitDelayed(VoidTask task, long delay)
+	public Future<?> submitDelayed(long delay, VoidTask task)
 	{
 		return task.submitDelayed(taskExecutor::schedule, delay);
 	}
 	
 	/**
 	 * Submit a VoidTask to run as soon as possible, and run it repeatedly
-	 * @param task The task containing the code to run on the TaskEngine
 	 * @param period The amount of time between each execution
+	 * @param task The task containing the code to run on the TaskEngine
 	 * @return A Future to determine when the task completes. A VoidTask will return null from the Future.
 	 */
-	public Future<?> scheduleImmediate(VoidTask task, long period)
+	public Future<?> scheduleImmediate(long period, VoidTask task)
 	{
 		return task.scheduleImmediate(taskExecutor::scheduleAtFixedRate, period);
 	}
 	
 	/**
 	 * Submit a VoidTask to run after waiting some amount of time, and run it repeatedly
-	 * @param task The task containing the code to run on the TaskEngine
 	 * @param delay The amount of time to wait before executing the task
 	 * @param period The amount of time between each execution
+	 * @param task The task containing the code to run on the TaskEngine
 	 * @return A Future to determine when the task completes. A VoidTask will return null from the Future.
 	 */
-	public Future<?> scheduleDelayed(VoidTask task, long delay, long period)
+	public Future<?> scheduleDelayed(long delay, long period, VoidTask task)
 	{
 		return task.scheduleDelayed(taskExecutor::scheduleAtFixedRate, delay, period);
 	}
@@ -122,34 +122,34 @@ public class TaskEngine implements ShutdownService {
 	
 	/**
 	 * Submit a Task to run after waiting some amount of time
-	 * @param task The task containing the code to run on the TaskEngine
 	 * @param delay The amount of time to wait before executing the task
+	 * @param task The task containing the code to run on the TaskEngine
 	 * @return A Future to determine when the task completes. Contains a value returned from the task
 	 */
-	public <V> Future<V> submitDelayed(Task<V> task, long delay)
+	public <V> Future<V> submitDelayed(long delay, Task<V> task)
 	{
 		return task.submitDelayed(taskExecutor::schedule, delay);
 	}
 	
 	/**
 	 * Submit a Task to run as soon as possible, and run it repeatedly
-	 * @param task The task containing the code to run on the TaskEngine
 	 * @param period The amount of time between each execution
+	 * @param task The task containing the code to run on the TaskEngine
 	 * @return A Future to determine when the task completes. Contains a value returned from the task
 	 */
-	public Future<?> scheduleImmediate(Task<?> task, long period)
+	public Future<?> scheduleImmediate(long period, Task<?> task)
 	{
 		return task.scheduleImmediate(taskExecutor::scheduleAtFixedRate, period);
 	}
 	
 	/**
 	 * Submit a Task to run after waiting some amount of time, and run it repeatedly
-	 * @param task The task containing the code to run on the TaskEngine
 	 * @param delay The amount of time to wait before executing the task
 	 * @param period The amount of time between each execution
+	 * @param task The task containing the code to run on the TaskEngine
 	 * @return A Future to determine when the task completes. Contains a value returned from the task
 	 */
-	public Future<?> scheduleDelayed(Task<?> task, long delay, long period)
+	public Future<?> scheduleDelayed(long delay, long period, Task<?> task)
 	{
 		return task.scheduleDelayed(taskExecutor::scheduleAtFixedRate, delay, period);
 	}
@@ -161,7 +161,8 @@ public class TaskEngine implements ShutdownService {
 	 * to allow all currently running tasks to complete.
 	 */
 	@Override
-	public ShutdownHook getShutdownHook() throws NullPointerException {
+	public ShutdownHook getShutdownHook() throws NullPointerException
+	{
 		return shutdownHook;
 	}
 

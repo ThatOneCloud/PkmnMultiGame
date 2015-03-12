@@ -104,7 +104,8 @@ public class SpriteManager {
 		{
 			// Since it has, we can just return it. Yay!
 			return spriteMap.get(set).getSprite(spriteID);
-		} else {
+		}
+		else {
 			// Nope. We'll need to load it before we can return it. The SpriteLoader will take care of this bundle of work. 
 			try {
 				return spriteLoader.loadSprite(set, spriteMap.get(set), spriteID);

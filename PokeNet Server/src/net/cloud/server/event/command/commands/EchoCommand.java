@@ -15,12 +15,14 @@ import net.cloud.server.event.command.parameter.RequiredParameter;
 public class EchoCommand extends AbstractCommand {
 	
 	/** The optional parameters this command could possibly accept */
-	private static OptionalParameter<?>[] allOptParams = {
+	private static OptionalParameter<?>[] allOptParams = 
+	{
 		new OptionalParameter<String>("c", "concat", ArgumentPrototypes.STRING)
 	};
 
 	/** The parameters this command must have provided to it */
-	private static RequiredParameter<?>[] allReqParams = {
+	private static RequiredParameter<?>[] allReqParams =
+	{
 		new RequiredParameter<String>(ArgumentPrototypes.STRING)
 	};
 	
@@ -32,13 +34,15 @@ public class EchoCommand extends AbstractCommand {
 
 	/** Create a new dynamically binded instance */
 	@Override
-	public Command newPrototypedInstance() {
+	public Command newPrototypedInstance()
+	{
 		return new EchoCommand();
 	}
 
 	/** @return An echo of the parameters - the optional parameter is concatenated at the end */
 	@Override
-	public String doCommand() {
+	public String doCommand()
+	{
 		// Start with the required parameter
 		String echo = super.<String>getReqParam(0).getArgValue();
 
@@ -53,12 +57,14 @@ public class EchoCommand extends AbstractCommand {
 	}
 
 	@Override
-	protected OptionalParameter<?>[] getAllOptionalParameters() {
+	protected OptionalParameter<?>[] getAllOptionalParameters()
+	{
 		return allOptParams;
 	}
 
 	@Override
-	protected RequiredParameter<?>[] getAllRequiredParameters() {
+	protected RequiredParameter<?>[] getAllRequiredParameters()
+	{
 		return allReqParams;
 	}
 

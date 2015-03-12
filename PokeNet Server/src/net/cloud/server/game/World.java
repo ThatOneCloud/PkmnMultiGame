@@ -22,7 +22,7 @@ public class World {
 		playerMap = new WorldPlayerMap();
 		
 		// Now that we have the list of players, can safely kick off the saving task
-		TaskEngine.getInstance().scheduleImmediate(new PlayerSaveTask(), ConfigConstants.SAVE_INTERVAL);
+		TaskEngine.getInstance().scheduleImmediate(ConfigConstants.SAVE_INTERVAL, new PlayerSaveTask());
 	}
 	
 	/**
@@ -49,7 +49,8 @@ public class World {
 	 * Obtain a means of accessing and interacting with all of the players in the world
 	 * @return A map of all players in the world
 	 */
-	public WorldPlayerMap getPlayerMap() {
+	public WorldPlayerMap getPlayerMap()
+	{
 		return playerMap;
 	}
 

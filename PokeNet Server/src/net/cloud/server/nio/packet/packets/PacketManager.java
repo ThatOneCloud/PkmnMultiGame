@@ -39,7 +39,8 @@ public class PacketManager {
 	public static Packet decodeCopy(short opcode, ByteBuf data) throws IllegalArgumentException, BufferableException
 	{
 		// Make sure the opcode is valid
-		if(opcode < 0 || opcode >= packets.length) {
+		if(opcode < 0 || opcode >= packets.length)
+		{
 			throw new IllegalArgumentException("Packet opcode out of range: " + opcode);
 		}
 		

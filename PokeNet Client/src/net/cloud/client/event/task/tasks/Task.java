@@ -54,7 +54,8 @@ public interface Task<V> {
 	public default Future<V> applyTri(
 			TriFunction<Callable<V>, Long, TimeUnit, Future<V>> func,
 			Callable<V> executeMethod,
-			long delay) {
+			long delay)
+	{
 		return func.apply(executeMethod, delay, TimeUnit.MILLISECONDS);
 	}
 	

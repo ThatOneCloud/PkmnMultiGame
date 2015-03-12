@@ -28,7 +28,8 @@ public class CachedFileRequest extends LoadRequest<CachedFile> {
 	 * @param indexInCache The index of the file within the cache
 	 * @param cacheAddress The location of the cache file itself
 	 */
-	public CachedFileRequest(int indexInCache, FileAddress cacheAddress) {
+	public CachedFileRequest(int indexInCache, FileAddress cacheAddress)
+	{
 		super(cacheAddress);
 		
 		this.indexInCache = indexInCache;
@@ -47,7 +48,8 @@ public class CachedFileRequest extends LoadRequest<CachedFile> {
 	 * @param tableAddress The location of the cache table file
 	 * @param cacheAddress The location of the cache file itself
 	 */
-	public CachedFileRequest(int indexInCache, FileAddress tableAddress, FileAddress cacheAddress) {
+	public CachedFileRequest(int indexInCache, FileAddress tableAddress, FileAddress cacheAddress)
+	{
 		super(cacheAddress);
 		
 		this.indexInCache = indexInCache;
@@ -55,7 +57,8 @@ public class CachedFileRequest extends LoadRequest<CachedFile> {
 	}
 
 	@Override
-	public void handle(RequestHandler handler) {
+	public void handle(RequestHandler handler)
+	{
 		// Double dispatch off to the handler
 		handler.handleRequest(this);
 	}
@@ -63,7 +66,8 @@ public class CachedFileRequest extends LoadRequest<CachedFile> {
 	/**
 	 * @return The index of the file within the cache
 	 */
-	public int getIndexInCache() {
+	public int getIndexInCache()
+	{
 		return indexInCache;
 	}
 
@@ -72,7 +76,8 @@ public class CachedFileRequest extends LoadRequest<CachedFile> {
 	 * To obtain the address of the cache file itself, use {@link #address()}
 	 * @return The address to the cache table file
 	 */
-	public FileAddress getTableAddress() {
+	public FileAddress getTableAddress()
+	{
 		return tableAddress;
 	}
 

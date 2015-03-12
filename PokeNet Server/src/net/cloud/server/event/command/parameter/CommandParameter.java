@@ -40,7 +40,8 @@ public abstract class CommandParameter<V> {
 	/**
 	 * @return The underlying argument - which holds the value
 	 */
-	public CommandArgument<V> getArgument() {
+	public CommandArgument<V> getArgument()
+	{
 		return argument;
 	}
 	
@@ -48,7 +49,8 @@ public abstract class CommandParameter<V> {
 	 * A convenience method to <code>getArgument().getValue()</code>
 	 * @return The value held by the argument
 	 */
-	public V getArgValue() {
+	public V getArgValue()
+	{
 		return argument.getArgValue();
 	}
 	

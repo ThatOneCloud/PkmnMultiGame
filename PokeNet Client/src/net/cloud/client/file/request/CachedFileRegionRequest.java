@@ -32,7 +32,8 @@ public class CachedFileRegionRequest extends LoadRequest<CachedFileRegion> {
 	 * @param endIndex The index of the last file we want
 	 * @param cacheAddress The location of the cache file itself
 	 */
-	public CachedFileRegionRequest(int startIndex, int endIndex, FileAddress cacheAddress) {
+	public CachedFileRegionRequest(int startIndex, int endIndex, FileAddress cacheAddress)
+	{
 		super(cacheAddress);
 		
 		this.startIndex = startIndex;
@@ -53,7 +54,8 @@ public class CachedFileRegionRequest extends LoadRequest<CachedFileRegion> {
 	 * @param tableAddress The location of the cache table file
 	 * @param cacheAddress The location of the cache file itself
 	 */
-	public CachedFileRegionRequest(int startIndex, int endIndex, FileAddress tableAddress, FileAddress cacheAddress) {
+	public CachedFileRegionRequest(int startIndex, int endIndex, FileAddress tableAddress, FileAddress cacheAddress)
+	{
 		super(cacheAddress);
 		
 		this.startIndex = startIndex;
@@ -62,7 +64,8 @@ public class CachedFileRegionRequest extends LoadRequest<CachedFileRegion> {
 	}
 
 	@Override
-	public void handle(RequestHandler handler) {
+	public void handle(RequestHandler handler)
+	{
 		// Double dispatch off to the handler
 		handler.handleRequest(this);
 	}
@@ -70,14 +73,16 @@ public class CachedFileRegionRequest extends LoadRequest<CachedFileRegion> {
 	/**
 	 * @return The index of the first file we want
 	 */
-	public int getStartIndex() {
+	public int getStartIndex()
+	{
 		return startIndex;
 	}
 	
 	/**
 	 * @return The index of the last file we want
 	 */
-	public int getEndIndex() {
+	public int getEndIndex()
+	{
 		return endIndex;
 	}
 
@@ -86,7 +91,8 @@ public class CachedFileRegionRequest extends LoadRequest<CachedFileRegion> {
 	 * To obtain the address of the cache file itself, use {@link #address()}
 	 * @return The address to the cache table file
 	 */
-	public FileAddress getTableAddress() {
+	public FileAddress getTableAddress()
+	{
 		return tableAddress;
 	}
 

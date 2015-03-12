@@ -18,7 +18,8 @@ public class SimpleSpriteCollection extends SpriteCollection {
 	 * behavior found in {@link SpriteCollection}
 	 * @param size The number of sprites in the collection
 	 */
-	public SimpleSpriteCollection(int size) {
+	public SimpleSpriteCollection(int size)
+	{
 		super(size);
 	}
 
@@ -27,14 +28,16 @@ public class SimpleSpriteCollection extends SpriteCollection {
 	 * and so this method will return immediately. 
 	 */
 	@Override
-	public void lock(int spriteIndex) {
+	public void lock(int spriteIndex)
+	{
 	}
 
 	/**
 	 * Does nothing. Since you cannot acquire a lock, you cannot unlock.
 	 */
 	@Override
-	public void unlock(int spriteIndex) {
+	public void unlock(int spriteIndex)
+	{
 	}
 
 	@Override
@@ -42,7 +45,8 @@ public class SimpleSpriteCollection extends SpriteCollection {
 			SpriteLoader loader, 
 			SpriteSet set, 
 			int spriteID, 
-			CachedFileRequest pendingRequest) throws FileRequestException, IOException {
+			CachedFileRequest pendingRequest) throws FileRequestException, IOException
+	{
 		return loader.finishLoading(set, this, spriteID, pendingRequest);
 	}
 

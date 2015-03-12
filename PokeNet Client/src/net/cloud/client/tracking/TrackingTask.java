@@ -13,7 +13,8 @@ public class TrackingTask extends CancellableVoidTask {
 	 * Upon execution, this task will pass the Logger a copy of the current system status. 
 	 */
 	@Override
-	public void execute() {
+	public void execute()
+	{
 		try {
 			// Contact logger with a static copy of current stats
 			Logger.instance().logStats(StatTracker.instance().getStats().clone());

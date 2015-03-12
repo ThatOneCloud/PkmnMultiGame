@@ -67,7 +67,8 @@ public abstract class AbstractCommand implements Command {
 			{
 				// Dealing with what should be an optional parameter
 				parseOptParam(argBuilder);
-			} else {
+			}
+			else {
 				// Dealing with what should be a required parameter
 				parseReqParam(argBuilder, reqParamIdx);
 				

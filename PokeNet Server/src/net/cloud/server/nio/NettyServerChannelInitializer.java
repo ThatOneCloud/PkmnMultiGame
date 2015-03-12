@@ -41,7 +41,7 @@ public class NettyServerChannelInitializer extends ChannelInitializer<SocketChan
 		
 		// At this point, state is CONNECTED. They should be following up to become VERIFIED soon.
 		// so we use a task to time-out and abort the player if they fail to do so
-		TaskEngine.getInstance().submitDelayed(() ->
+		TaskEngine.getInstance().submitDelayed(TIMEOUT, () ->
 		{
 			// Body of the task. Is the player still sitting in the CONNECTED state?
 			if(newPlayer.getLoginState() != LoginState.CONNECTED)
@@ -52,7 +52,7 @@ public class NettyServerChannelInitializer extends ChannelInitializer<SocketChan
 			
 			// They are stuck in CONNECTED... terminate the connection
 			abortConnection(newPlayer, channel);
-		}, TIMEOUT);
+		});
 		
 		// Inbound handlers
 		channel.pipeline().addLast(new LengthFieldBasedFrameDecoder(

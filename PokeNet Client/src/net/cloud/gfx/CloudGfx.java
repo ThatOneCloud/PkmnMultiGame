@@ -56,7 +56,8 @@ public class CloudGfx implements ShutdownService {
 	 * @return The hook to stop the graphics loop
 	 */
 	@Override
-	public ShutdownHook getShutdownHook() throws NullPointerException {
+	public ShutdownHook getShutdownHook() throws NullPointerException
+	{
 		return shutdownHook;
 	}
 	

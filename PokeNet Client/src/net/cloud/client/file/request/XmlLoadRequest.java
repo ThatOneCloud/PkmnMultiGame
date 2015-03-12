@@ -16,12 +16,14 @@ public class XmlLoadRequest<T> extends LoadRequest<T> {
 	 * Simply calls the super constructor. See {@link LoadRequest#LoadRequest(FileAddress)}
 	 * @param address The location of the file
 	 */
-	public XmlLoadRequest(FileAddress address) {
+	public XmlLoadRequest(FileAddress address)
+	{
 		super(address);
 	}
 
 	@Override
-	public void handle(RequestHandler handler) {
+	public void handle(RequestHandler handler)
+	{
 		// Double dispatch off to the handler
 		handler.handleRequest(this);
 	}

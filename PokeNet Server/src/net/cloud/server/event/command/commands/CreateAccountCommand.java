@@ -15,7 +15,8 @@ import net.cloud.server.event.command.parameter.RequiredParameter;
 public class CreateAccountCommand extends AbstractCommand {
 	
 	/** The parameters this command must have provided to it */
-	private static RequiredParameter<?>[] allReqParams = {
+	private static RequiredParameter<?>[] allReqParams =
+	{
 		new RequiredParameter<String>(ArgumentPrototypes.STRING),
 		new RequiredParameter<String>(ArgumentPrototypes.STRING)
 	};

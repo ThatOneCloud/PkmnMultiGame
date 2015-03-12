@@ -10,14 +10,15 @@ import java.io.PrintWriter;
 public class MessageLogReport extends LogReport {
 	
 	/** The message this report will print out, as is */
-	String message;
+	private final String message;
 	
 	/**
 	 * A MessageLogReport which will just print the message to the 
 	 * default log file. 
 	 * @param message The message to report as-is
 	 */
-	public MessageLogReport(String message) {
+	public MessageLogReport(String message)
+	{
 		super();
 		this.message = message;
 	}
@@ -28,14 +29,16 @@ public class MessageLogReport extends LogReport {
 	 * @param msg The message to report as-is
 	 * @param section Which file to write the report to
 	 */
-	public MessageLogReport(String msg, LogSection section) {
+	public MessageLogReport(String msg, LogSection section)
+	{
 		super(section);
 		this.message = msg;
 	}
 
 	/** Write this reports message to the PrintWriter */
 	@Override
-	public void logReport(PrintWriter out) {
+	public void logReport(PrintWriter out)
+	{
 		out.println(message);
 	}
 

@@ -19,18 +19,19 @@ public class PacketDecoder extends ByteToMessageDecoder {
 	 * then pass it off to the PacketManager
 	 */
 	@Override
-	protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
+	protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception
+	{
 		// Before this in the pipeline was a length based decoder, so now we need to figure out which Packet 
 		// to create, create it, and pass it on to the PacketHandler, which is next in the pipeline.
 		
 		// This method occasionally has an empty buffer provided to it.  Need at least the opcode.
-		if(in.readableBytes() <= PacketConstants.OPCODE_LENGTH) {
+		if(in.readableBytes() <= PacketConstants.OPCODE_LENGTH)
+		{
 			return;
 		}
 		
 		// Read the opcode of the Packet
 		short opcode = in.readShort();
-System.out.println("got packet " + opcode);
 		
 		// Now that we have the opcode, we can create a specific instance of a Packet
 		out.add(PacketManager.decodeCopy(opcode, in));

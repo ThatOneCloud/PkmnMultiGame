@@ -5,8 +5,9 @@ import net.cloud.server.nio.bufferable.BufferableException;
 import io.netty.buffer.ByteBuf;
 
 /**
- * Common methods each Packet must implement. 
- * Each Packet is a unit of information, capable of encoding/decoding itself and acting on its information.
+ * Interface defining a packet. This is the data type for objects sent between the client 
+ * and server for communication purposes. Each packet has on opcode defining which packet 
+ * it is, like a GUID. Each packet also knows how to encode, decode, and handle itself.
  */
 public interface Packet {
 	

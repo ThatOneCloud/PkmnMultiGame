@@ -263,7 +263,8 @@ public class TextArea extends AbstractElement {
 	 * Update the line height variable to reflect the current maximum height of a line of text
 	 * @param g2d The graphics object currently being used to draw with
 	 */
-	private void updateLineHeight(Graphics2D g2d) {
+	private void updateLineHeight(Graphics2D g2d)
+	{
 		// Ascent + Descent make up the full extent from baseline to baseline
 		this.lineHeight = g2d.getFontMetrics().getMaxAscent() + g2d.getFontMetrics().getMaxDescent();
 	}

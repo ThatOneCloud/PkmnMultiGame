@@ -18,7 +18,8 @@ public class NettyShutdownHook implements ShutdownHook {
 	/** The EventLoopGroup responsible for handling established connections */
 	private EventLoopGroup workerGroup;
 
-	public NettyShutdownHook(ChannelFuture future, EventLoopGroup bossGroup, EventLoopGroup workerGroup) {
+	public NettyShutdownHook(ChannelFuture future, EventLoopGroup bossGroup, EventLoopGroup workerGroup)
+	{
 		this.channelFuture = future;
 		this.bossGroup = bossGroup;
 		this.workerGroup = workerGroup;
@@ -30,7 +31,8 @@ public class NettyShutdownHook implements ShutdownHook {
 	 * where I/O must be silent for some time in order to assure a graceful shutdown.
 	 */
 	@Override
-	public void shutdown(PrintWriter out) throws ShutdownException {
+	public void shutdown(PrintWriter out) throws ShutdownException
+	{
 		out.println("Shutting down Netty Server");
 		out.flush();
 		

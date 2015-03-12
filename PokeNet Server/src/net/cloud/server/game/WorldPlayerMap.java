@@ -58,7 +58,8 @@ public class WorldPlayerMap {
 	 * @param channel The Channel linking the player and server
 	 * @param player The new Player that just connected
 	 */
-	public void place(Channel channel, Player player) {
+	public void place(Channel channel, Player player)
+	{
 		players.put(channel, player);
 		
 		// Report that the number of players online has changed.
@@ -111,7 +112,8 @@ public class WorldPlayerMap {
 		 * the player is logged in. 
 		 * @param consumer The composed consumer
 		 */
-		public LoggedInFilter(Consumer<Player> consumer) {
+		public LoggedInFilter(Consumer<Player> consumer)
+		{
 			super(consumer);
 		}
 
@@ -120,7 +122,8 @@ public class WorldPlayerMap {
 		 * @param p The player to apply the accept method to
 		 */
 		@Override
-		public void accept(Player p) {
+		public void accept(Player p)
+		{
 			if(p.getLoginState() == LoginState.LOGGED_IN)
 			{
 				passFilter(p);

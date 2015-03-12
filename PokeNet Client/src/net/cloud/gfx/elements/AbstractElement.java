@@ -71,7 +71,8 @@ public abstract class AbstractElement implements Element {
 			int x, 
 			int y, 
 			int width, 
-			int height) {
+			int height)
+	{
 		this.parent = Optional.empty();
 		this.priority = priority;
 		this.rectangle = new Rectangle(x, y, width, height);
@@ -160,72 +161,86 @@ public abstract class AbstractElement implements Element {
 	}
 	
 	@Override
-	public Rectangle getRectangle() {
+	public Rectangle getRectangle()
+	{
 		return rectangle;
 	}
 	
 	@Override
-	public void setRectangle(Rectangle r) {
+	public void setRectangle(Rectangle r)
+	{
 		this.rectangle = r;
 	}
 
 	@Override
-	public int getX() {
+	public int getX()
+	{
 		return rectangle.x;
 	}
 
 	@Override
-	public void setX(int x) {
+	public void setX(int x)
+	{
 		rectangle.x = x;
 	}
 
 	@Override
-	public int getY() {
+	public int getY()
+	{
 		return rectangle.y;
 	}
 
 	@Override
-	public void setY(int y) {
+	public void setY(int y)
+	{
 		rectangle.y = y;
 	}
 	
 	@Override
-	public int getPriority() {
+	public int getPriority()
+	{
 		return priority;
 	}
 	
 	@Override
-	public void setPriority(int priority) {
+	public void setPriority(int priority)
+	{
 		this.priority = priority;
 	}
 
 	@Override
-	public int getWidth() {
+	public int getWidth()
+	{
 		return rectangle.width;
 	}
 
 	@Override
-	public void setWidth(int width) {
+	public void setWidth(int width)
+	{
 		rectangle.width = width;
 	}
 
 	@Override
-	public int getHeight() {
+	public int getHeight()
+	{
 		return rectangle.height;
 	}
 
 	@Override
-	public void setHeight(int height) {
+	public void setHeight(int height)
+	{
 		rectangle.height = height;
 	}
 
 	@Override
-	public FocusHandler getFocusHandler() {
+	public FocusHandler getFocusHandler()
+	{
 		return focusHandler;
 	}
 	
 	@Override
-	public void setFocusHandler(FocusHandler focusHandler) {
+	public void setFocusHandler(FocusHandler focusHandler)
+	{
 		this.focusHandler = focusHandler;
 	}
 	

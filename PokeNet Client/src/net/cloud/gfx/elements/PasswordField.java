@@ -17,7 +17,8 @@ public class PasswordField extends TextField {
 	 * @param x The x-coordinate
 	 * @param y The y-coordinate
 	 */
-	public PasswordField(int x, int y) {
+	public PasswordField(int x, int y)
+	{
 		super(x, y);
 		
 		// Use our own displayable text which swaps in the asterisks
@@ -31,7 +32,8 @@ public class PasswordField extends TextField {
 	 * @param width The width of the text area itself
 	 * @param height The height of the text area itself
 	 */
-	public PasswordField(int x, int y, int width, int height) {
+	public PasswordField(int x, int y, int width, int height)
+	{
 		// Password is the hint text we go with
 		super(x, y, width, height, "Password");
 		
@@ -48,7 +50,8 @@ public class PasswordField extends TextField {
 	 * @param firstSpriteID The ID of the first sprite in the set of text field sprites
 	 * @param bgSpriteID The ID of the background, from the BACKGROUND set
 	 */
-	public PasswordField(int x, int y, int width, int height, int firstSpriteID, int bgSpriteID) {
+	public PasswordField(int x, int y, int width, int height, int firstSpriteID, int bgSpriteID)
+	{
 		// Password is the hint text we go with
 		super(x, y, width, height, "Password", firstSpriteID, bgSpriteID);
 		
@@ -66,7 +69,8 @@ public class PasswordField extends TextField {
 	 * @param firstSpriteID The ID of the first sprite in the set of text field sprites
 	 * @param bgSpriteID The ID of the background, from the BACKGROUND set
 	 */
-	public PasswordField(int x, int y, int width, int height, String hintText, int firstSpriteID, int bgSpriteID) {
+	public PasswordField(int x, int y, int width, int height, String hintText, int firstSpriteID, int bgSpriteID)
+	{
 		super(x, y, width, height, hintText, firstSpriteID, bgSpriteID);
 		
 		// Use our own displayable text which swaps in the asterisks
@@ -160,7 +164,8 @@ public class PasswordField extends TextField {
 				{
 					endIdx++;
 					break;
-				} else {
+				}
+				else {
 					endIdx--;
 				}
 			}
@@ -193,7 +198,8 @@ public class PasswordField extends TextField {
 				{
 					endIdx--;
 					break;
-				} else {
+				}
+				else {
 					endIdx++;
 				}
 			}

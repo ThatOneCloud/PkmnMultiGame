@@ -16,7 +16,8 @@ import net.cloud.server.util.IOUtil;
 public class CmdScriptCommand extends AbstractCommand {
 	
 	/** Only one parameter - the name of the script */
-	private static RequiredParameter<?>[] allReqParams = {
+	private static RequiredParameter<?>[] allReqParams =
+	{
 		new RequiredParameter<String>(ArgumentPrototypes.STRING)
 	};
 
@@ -27,7 +28,8 @@ public class CmdScriptCommand extends AbstractCommand {
 	}
 	
 	@Override
-	public Command newPrototypedInstance() {
+	public Command newPrototypedInstance()
+	{
 		return new CmdScriptCommand();
 	}
 
@@ -36,7 +38,8 @@ public class CmdScriptCommand extends AbstractCommand {
 	 * @return The results of running the script
 	 */
 	@Override
-	public String doCommand() {
+	public String doCommand()
+	{
 		// A StringWriter collects what is written to it into a String. Handy for getting results
 		StringWriter results = new StringWriter();
 		
@@ -51,12 +54,14 @@ public class CmdScriptCommand extends AbstractCommand {
 	}
 
 	@Override
-	protected OptionalParameter<?>[] getAllOptionalParameters() {
+	protected OptionalParameter<?>[] getAllOptionalParameters()
+	{
 		return null;
 	}
 
 	@Override
-	protected RequiredParameter<?>[] getAllRequiredParameters() {
+	protected RequiredParameter<?>[] getAllRequiredParameters()
+	{
 		return allReqParams;
 	}
 

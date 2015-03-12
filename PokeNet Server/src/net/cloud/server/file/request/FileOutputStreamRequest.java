@@ -16,12 +16,14 @@ public class FileOutputStreamRequest extends SaveRequest<FileOutputStream> {
 	 * Simply calls the super constructor. See {@link LoadRequest#LoadRequest(FileAddress)}
 	 * @param address The location of the file
 	 */
-	public FileOutputStreamRequest(FileAddress address) {
+	public FileOutputStreamRequest(FileAddress address)
+	{
 		super(address);
 	}
 
 	@Override
-	public void handle(RequestHandler handler) {
+	public void handle(RequestHandler handler)
+	{
 		// Double dispatch off to the handler
 		handler.handleRequest(this);
 	}

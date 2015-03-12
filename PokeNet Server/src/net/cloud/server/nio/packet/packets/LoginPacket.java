@@ -82,7 +82,8 @@ System.out.println("decoding login packet");
 			// The password matched! Tell them they're good to go
 			player.setLoginState(LoginState.VERIFIED);
 			player.getPacketSender().sendCompositePacket(player.getPacketSender().createLoginReponse(LoginResponse.VALID));
-		} else {
+		}
+		else {
 			// Uh-oh, wrong password. Send back a packet letting them know
 			player.getPacketSender().sendLoginReponse(LoginResponse.INVALID_PASSWORD);
 		}
