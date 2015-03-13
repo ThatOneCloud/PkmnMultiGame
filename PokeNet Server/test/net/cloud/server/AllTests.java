@@ -2,6 +2,7 @@ package net.cloud.server;
 
 import net.cloud.server.command.CommandSuite;
 import net.cloud.server.file.FileSuite;
+import net.cloud.server.game.WorldPlayerMapTest;
 import net.cloud.server.task.TaskSuite;
 import net.cloud.server.util.UtilSuite;
 
@@ -14,7 +15,9 @@ import org.junit.runners.Suite.SuiteClasses;
 	UtilSuite.class,
 	TaskSuite.class,
 	CommandSuite.class,
-	FileSuite.class
+	FileSuite.class,
+	
+	WorldPlayerMapTest.class
 })
 public class AllTests {
 	// Nothing goes here. Annotations are all we need

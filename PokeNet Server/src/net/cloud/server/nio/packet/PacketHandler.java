@@ -1,9 +1,6 @@
 package net.cloud.server.nio.packet;
 
-import java.util.Optional;
-
 import net.cloud.server.entity.player.Player;
-import net.cloud.server.game.World;
 import net.cloud.server.logging.Logger;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -14,6 +11,19 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
  */
 public class PacketHandler extends ChannelInboundHandlerAdapter {
 	
+	/** The player object these packets are coming from */
+	private final Player player;
+	
+	/**
+	 * Create a packet handler linked to the given player. This is like a state variable, 
+	 * so this handler cannot be used in multiple pipelines.
+	 * @param player The player
+	 */
+	public PacketHandler(Player player)
+	{
+		this.player = player;
+	}
+	
 	/**
 	 * Take a constructed packet from the pipeline, and then have it handle itself
 	 */
@@ -23,12 +33,8 @@ public class PacketHandler extends ChannelInboundHandlerAdapter {
 		// The object has been decoded into a Packet. Grab it
 		Packet packet = (Packet) msg;
 		
-		// Channel context provides a Channel - which is how we find the Player that sent the packet
-		Optional<Player> player = Optional.ofNullable(World.instance().getPlayerMap().get(ctx.channel()));
-
-		// Handle the packet, or throw an exception if the Player came back null from World
-		String nullMsg = "Error: No Player in World associated with Channel";
-		packet.handlePacket(player.orElseThrow(() -> new NullPointerException(nullMsg)));
+		// Then have it handle itself, giving it the player that sent it
+		packet.handlePacket(player);
 	}
 
 	/**

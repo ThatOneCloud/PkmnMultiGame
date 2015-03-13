@@ -15,6 +15,9 @@ public enum LoginState {
 	VERIFIED,
 	
 	/** They're logged into the game */
-	LOGGED_IN
+	LOGGED_IN,
+	
+	/** Login has - somewhere along the line - failed */
+	FAILED;
 
 }

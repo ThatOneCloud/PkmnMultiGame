@@ -1,8 +1,11 @@
 package net.cloud.server.nio.packet.packets;
 
 import io.netty.buffer.ByteBuf;
+import net.cloud.server.entity.player.LoginHandler;
+import net.cloud.server.entity.player.LoginResponse;
 import net.cloud.server.entity.player.LoginState;
 import net.cloud.server.entity.player.Player;
+import net.cloud.server.event.task.TaskEngine;
 import net.cloud.server.nio.bufferable.BufferableException;
 import net.cloud.server.nio.packet.Packet;
 import net.cloud.server.nio.packet.PacketConstants;
@@ -14,12 +17,9 @@ import net.cloud.server.util.StringUtil;
 /**
  * Deals with the login process. 
  * Receives username and password from the client. 
- * Then validates the login information, before responding back to the client.
+ * Then validates the login information, before responding back to the client. 
  */
 public class LoginPacket extends ReceiveOnlyPacket {
-	
-	/** Possible values a response to a login request may have */
-	public enum LoginResponse {VALID, INVALID_USERNAME, INVALID_PASSWORD};
 	
 	/** Username of the player trying to login */
 	private String username;
@@ -40,13 +40,12 @@ public class LoginPacket extends ReceiveOnlyPacket {
 	@Override
 	public short getOpcode()
 	{
-		return PacketConstants.LOGIN_PACKET;
+		return PacketConstants.LOGIN;
 	}
 
 	@Override
 	public Packet decode(ByteBuf data) throws BufferableException
 	{
-System.out.println("decoding login packet");
 		// Pull the username & password from the buffer
 		String user = StringUtil.getFromBuffer(data);
 		HashObj pass = HashObj.createFrom(data);
@@ -55,51 +54,63 @@ System.out.println("decoding login packet");
 		return new LoginPacket(user, pass);
 	}
 
+	/**
+	 * Takes the request to login, and determines what the correct response is. 
+	 * Then replies by sending that response.
+	 */
 	@Override
 	public void handlePacket(Player player)
 	{
-		// TODO: Remove this short-circuit
-		System.out.println("Login Packet, user: " + username);
-		System.out.println("Login Packet, pass: " + password);
-		int i = 1;
-		if(i < 2)
+		// What is our response going to be?
+		LoginResponse response = LoginHandler.validationResponseFor(player, username, password);
+		
+		if(response == LoginResponse.OKAY)
 		{
-			return;
-		}
-		
-		// We need to verify the correctness of the user & pass.
-		// First - check for a player with the given username
-		// TODO: Well.. without actual player saving.. can't do this.
-		
-		
-		// player.setUsername(username) would normally be done here (and other data or whatever)
-		
-		
-		// Now that we've found the requested player & loaded login data, compare the passwords
-		// TODO: Use a hash of the password, stored that way and all
-		if(player.getPassword().equals(password))
-		{
-			// The password matched! Tell them they're good to go
+			// Move the player's login state up
 			player.setLoginState(LoginState.VERIFIED);
-			player.getPacketSender().sendCompositePacket(player.getPacketSender().createLoginReponse(LoginResponse.VALID));
+			
+			// Reply to the client telling them they should proceed with login
+			player.getPacketSender().sendLoginResponse(response);
+			
+			// We expect that soon the client will request login data. Time out on that action
+			TaskEngine.getInstance().submitDelayed(LoginHandler.TIMEOUT, () ->
+			{
+				// Body of the task. Is the player still sitting in the VERIFIED state?
+				if(player.getLoginState() == LoginState.VERIFIED)
+				{
+					// Since they are, we never got a login data request from the client
+					LoginHandler.abortConnection(player);
+System.out.println("aborting after still in verified");
+				}
+			});
 		}
 		else {
-			// Uh-oh, wrong password. Send back a packet letting them know
-			player.getPacketSender().sendLoginReponse(LoginResponse.INVALID_PASSWORD);
+			// Flag login as failed
+			player.setLoginState(LoginState.FAILED);
+			
+			// Reply to the client telling them not to proceed
+			player.getPacketSender().sendLoginResponse(response);
+			
+			// Sever the connection, as login has failed
+			LoginHandler.abortConnection(player);
 		}
 	}
 	
-	/** A packet for the response to a login request - telling if it was valid or not */
+	/**
+	 * A packet which the server sends as a response to the LoginPacket (a response 
+	 * to a client's request to login)
+	 */
 	public static class LoginResponsePacket extends SendOnlyPacket {
 		
 		/** The response we're going to send */
 		private LoginResponse response;
 		
-		/** Default constructor leaves all data fields default or null */
+		/** For prototype */
 		public LoginResponsePacket() {}
 		
 		/**
-		 * @param response What we'll tell the server about their login request
+		 * Create a new LoginResponsePacket that will send the given response
+		 * @param response The response
 		 */
 		public LoginResponsePacket(LoginResponse response)
 		{
@@ -109,13 +120,13 @@ System.out.println("decoding login packet");
 		@Override
 		public short getOpcode()
 		{
-			return PacketConstants.LOGIN_RESPONSE_PACKET;
+			return PacketConstants.LOGIN_RESPONSE;
 		}
 
 		@Override
-		public void encode(ByteBuf buffer)
+		public void encode(ByteBuf buffer) throws BufferableException
 		{
-			// Put the response in the buffer. (via its index - I know, dangerous-ish)
+			// To keep it simple, we'll use the ordinal of the enum value this time
 			buffer.writeInt(response.ordinal());
 		}
 		

@@ -1,9 +1,7 @@
 package net.cloud.client.nio.packet.packets;
 
 import io.netty.buffer.ByteBuf;
-import net.cloud.client.entity.player.LoginState;
 import net.cloud.client.entity.player.Player;
-import net.cloud.client.logging.Logger;
 import net.cloud.client.nio.bufferable.BufferableException;
 import net.cloud.client.nio.packet.Packet;
 import net.cloud.client.nio.packet.PacketConstants;
@@ -11,16 +9,14 @@ import net.cloud.client.nio.packet.ReceiveOnlyPacket;
 import net.cloud.client.nio.packet.SendOnlyPacket;
 import net.cloud.client.util.HashObj;
 import net.cloud.client.util.StringUtil;
+import net.cloud.client.entity.player.LoginResponse;
 
 /**
  * Deals with the login process. 
  * Sends username/password to the server - 
- * which then responds with whether or not the credentials were valid
+ * which then responds with whether or not the credentials were valid. 
  */
 public class LoginPacket extends SendOnlyPacket {
-	
-	/** Possible values a response to a login request may have */
-	public enum LoginResponse {VALID, INVALID_USERNAME, INVALID_PASSWORD};
 	
 	/** Username of the player trying to login */
 	private String username;
@@ -41,7 +37,7 @@ public class LoginPacket extends SendOnlyPacket {
 	@Override
 	public short getOpcode()
 	{
-		return PacketConstants.LOGIN_PACKET;
+		return PacketConstants.LOGIN;
 	}
 
 	@Override
@@ -52,20 +48,22 @@ public class LoginPacket extends SendOnlyPacket {
 		
 		password.save(buffer);
 	}
-
+	
 	/**
-	 * A packet to deal with the server's response to our request to login
+	 * This packet is received by the client after we request to login. 
+	 * This is the server's response to that request.
 	 */
 	public static class LoginResponsePacket extends ReceiveOnlyPacket {
 		
 		/** The response we're going to send */
 		private LoginResponse response;
 		
-		/** Default constructor leaves all data fields default or null */
+		/** For prototype */
 		public LoginResponsePacket() {}
 		
 		/**
-		 * @param response What we'll tell the server about their login request
+		 * Create a new LoginResponsePacket that will send the given response
+		 * @param response The response
 		 */
 		public LoginResponsePacket(LoginResponse response)
 		{
@@ -75,41 +73,26 @@ public class LoginPacket extends SendOnlyPacket {
 		@Override
 		public short getOpcode()
 		{
-			return PacketConstants.LOGIN_RESPONSE_PACKET;
+			return PacketConstants.LOGIN_RESPONSE;
 		}
 
 		@Override
-		public Packet decode(ByteBuf data)
+		public Packet decode(ByteBuf data) throws BufferableException
 		{
-			// The packet has a response in it - from the enum
-			LoginResponse response = LoginResponse.values()[data.readInt()];
-			
-			return new LoginResponsePacket(response);
+			// The response was encoded as its ordinal
+			return new LoginResponsePacket(LoginResponse.values()[data.readInt()]);
 		}
 
+		/**
+		 * Takes action according to the server's response. 
+		 * If we cannot login, then a message is shown and the connection is dropped. 
+		 * If we can, then we'll follow up by requesting login data.
+		 */
 		@Override
 		public void handlePacket(Player player)
 		{
-			// TODO Take real action based on the response, but no GUI yet
-			switch(response) {
-			
-			case VALID:
-				// Yay, we can login!
-				player.setLoginState(LoginState.VERIFIED);
-				Logger.writer().println("Got login validation from server");
-				break;
-				
-			case INVALID_PASSWORD:
-				Logger.writer().println("Invalid password");
-				break;
-				
-			case INVALID_USERNAME:
-				Logger.writer().println("Invalid username");
-				break;
-				
-			}
-			
-			Logger.writer().flush();
+			// TODO Actual implementation
+			System.out.println("got login response: " + response.name());
 		}
 		
 	}

@@ -28,7 +28,7 @@ public class TestPacket implements Packet {
 	@Override
 	public short getOpcode()
 	{
-		return PacketConstants.TEST_PACKET;
+		return PacketConstants.TEST;
 	}
 
 	@Override

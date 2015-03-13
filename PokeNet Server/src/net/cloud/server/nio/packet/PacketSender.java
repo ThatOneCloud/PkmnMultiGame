@@ -1,7 +1,7 @@
 package net.cloud.server.nio.packet;
 
+import net.cloud.server.entity.player.LoginResponse;
 import io.netty.channel.Channel;
-import net.cloud.server.nio.packet.packets.LoginPacket.LoginResponse;
 
 /**
  * Each Player will have their own PacketSender.  It holds a reference to the connection 
@@ -34,6 +34,8 @@ public class PacketSender {
 	/**
 	 * Only creates and returns a Packet. For a description of the packet, see<br>
 	 * {@link PacketFactory#createTestPacket(int)}
+	 * @param value The test value
+	 * @return The packet
 	 */
 	public Packet createTestPacket(int value)
 	{
@@ -57,6 +59,7 @@ public class PacketSender {
 	 * {@link PacketFactory#createCompositePacket(Packet, Packet...)}
 	 * @param first The first packet that the composite will consist of
 	 * @param others Any other packets the new packet will consist of
+	 * @return The packet
 	 */
 	public Packet createCompositePacket(Packet first, Packet... others)
 	{
@@ -76,25 +79,34 @@ public class PacketSender {
 	}
 	
 	/**
-	 * Only creates and returns a Packet. For a description of the packet, see<br>
-	 * {@link PacketFactory#createLoginResponse(LoginResponse)}
-	 * @param response The response (to the credentials the client sent)
+	 * Only creates and returns a packet. For a description of the packet, see <br>
+	 * {@link PacketFactory#createLoginResponsePacket(LoginResponse)}
+	 * @param response The response to encode in the packet
+	 * @return The packet
 	 */
-	public Packet createLoginReponse(LoginResponse response)
+	public Packet createLoginResponse(LoginResponse response)
 	{
-		return packetFactory.createLoginResponse(response);
+		return packetFactory.createLoginResponsePacket(response);
 	}
 	/** Writes, but does not send a packet. <br>See {@link PacketFactory#createLoginResponse(LoginResponse)} */
-	public PacketSender writeLoginReponse(LoginResponse response)
+	public PacketSender writeLoginResponse(LoginResponse response)
 	{
-		write(createLoginReponse(response));
+		write(createLoginResponse(response));
 		
 		return this;
 	}
 	/** Writes and sends a packet.  <br>See {@link PacketFactory#createLoginResponse(LoginResponse)} */
-	public void sendLoginReponse(LoginResponse response)
+	public void sendLoginResponse(LoginResponse response)
 	{
-		this.writeLoginReponse(response).send();
+		this.writeLoginResponse(response).send();
+	}
+	
+	/**
+	 * @return The channel this PacketSender is working on (the one the player is connected with)
+	 */
+	public Channel channel()
+	{
+		return channel;
 	}
 	
 	/**

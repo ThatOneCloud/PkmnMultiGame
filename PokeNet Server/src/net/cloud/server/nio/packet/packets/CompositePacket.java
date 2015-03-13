@@ -41,7 +41,7 @@ public class CompositePacket implements Packet {
 	public short getOpcode()
 	{
 		// Not entirely opaque - this packet has its own opcode
-		return PacketConstants.COMPOSITE_PACKET;
+		return PacketConstants.COMPOSITE;
 	}
 
 	/** 

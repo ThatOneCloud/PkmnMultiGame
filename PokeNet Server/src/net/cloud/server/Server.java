@@ -15,6 +15,9 @@ import net.cloud.server.util.IOUtil;
  */
 public class Server {
 	
+	// TODO: Known bugs before framework release:
+	// gracefully handle abrupt disconnect (tasks may need to gracefully skirt around this, too)
+	
 	/** The single instance of the Server class */
 	private static Server instance;
 	

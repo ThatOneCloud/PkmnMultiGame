@@ -1,7 +1,7 @@
 package net.cloud.server.nio.packet;
 
+import net.cloud.server.entity.player.LoginResponse;
 import net.cloud.server.nio.packet.packets.*;
-import net.cloud.server.nio.packet.packets.LoginPacket.LoginResponse;
 import net.cloud.server.nio.packet.packets.LoginPacket.LoginResponsePacket;
 
 /**
@@ -28,6 +28,7 @@ public class PacketFactory {
 	 * and dealt with in a precise order.
 	 * @param first The first packet that the composite will consist of
 	 * @param others Any other packets the new packet will consist of
+	 * @return A packet consisting of the given packets
 	 */
 	public Packet createCompositePacket(Packet first, Packet... others)
 	{
@@ -35,10 +36,11 @@ public class PacketFactory {
 	}
 	
 	/**
-	 * Create a response to a client which requested to login.
-	 * @param response The response (to the credentials they sent)
+	 * Create a LoginResponsePacket with the given response. 
+	 * @param response The response
+	 * @return A packet to respond to a login request for
 	 */
-	public Packet createLoginResponse(LoginResponse response)
+	public Packet createLoginResponsePacket(LoginResponse response)
 	{
 		return new LoginResponsePacket(response);
 	}

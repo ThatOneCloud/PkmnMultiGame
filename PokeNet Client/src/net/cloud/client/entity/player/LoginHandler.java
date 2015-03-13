@@ -12,7 +12,7 @@ import net.cloud.client.game.World;
 public class LoginHandler {
 	
 	/** How long will we wait for the server to reply before giving up */
-	private static long TIMEOUT = 5000;
+	public static final long TIMEOUT = 5000;
 	
 	/**
 	 * Attempt the beginning of the login process. This involves connecting to the server, and 
@@ -57,13 +57,10 @@ public class LoginHandler {
 		TaskEngine.instance().submitDelayed(TIMEOUT, () ->
 		{
 			// This is the body of the task. If we've moved past connected, assume we're good to go
-			if(World.instance().getPlayer().getLoginState() != LoginState.CONNECTED)
+			if(World.instance().getPlayer().getLoginState() == LoginState.CONNECTED)
 			{
-				return;
+				abortWaitingForVerification();
 			}
-			
-			// Still connected, we need to abort.
-			abortWaitingForVerification();
 		});
 	}
 	

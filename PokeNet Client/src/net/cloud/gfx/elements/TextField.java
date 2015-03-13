@@ -267,9 +267,12 @@ public class TextField extends AbstractElement {
 		g2d.setColor(hintText == null ? textColor : hintTextColor);
 		
 		// Draw text to the screen
-		FontMetrics metrics = g2d.getFontMetrics();
-		int maxTextHeight = metrics.getAscent() + metrics.getDescent();
-		g2d.drawGlyphVector(glyphVector, offsetX + 3, offsetY + (maxTextHeight / 2) + (getHeight() / 2) - 3);
+		if(glyphVector != null)
+		{
+			FontMetrics metrics = g2d.getFontMetrics();
+			int maxTextHeight = metrics.getAscent() + metrics.getDescent();
+			g2d.drawGlyphVector(glyphVector, offsetX + 3, offsetY + (maxTextHeight / 2) + (getHeight() / 2) - 3);
+		}
 		
 		// Draw the cursor on top of the text (when this field has focus)
 		if(getFocusHandler().hasFocus())

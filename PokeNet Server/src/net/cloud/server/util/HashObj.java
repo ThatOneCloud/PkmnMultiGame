@@ -2,6 +2,8 @@ package net.cloud.server.util;
 
 import io.netty.buffer.ByteBuf;
 
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
@@ -9,7 +11,6 @@ import java.util.Arrays;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 import net.cloud.server.logging.Logger;
-import net.cloud.server.nio.bufferable.BufferableException;
 import net.cloud.server.nio.bufferable.Bufferable;
 
 /**
@@ -54,12 +55,23 @@ public final class HashObj implements Bufferable {
 	 * Create a new HashObj by deserializing it from the given buffer
 	 * @param buffer The buffer the data is in
 	 * @return A new HashObj
-	 * @throws BufferableException Shouldn't be thrown
 	 */
-	public static HashObj createFrom(ByteBuf buffer) throws BufferableException
+	public static HashObj createFrom(ByteBuf buffer)
 	{
 		HashObj newObj = new HashObj();
 		newObj.restore(buffer);
+		return newObj;
+	}
+	
+	/**
+	 * Create a new HashObj by deserializing it from the given file directly
+	 * @param raf The file the data is in
+	 * @return A new HashObj
+	 */
+	public static HashObj createFrom(RandomAccessFile raf) throws IOException
+	{
+		HashObj newObj = new HashObj();
+		newObj.restoreFromRAF(raf);
 		return newObj;
 	}
 	
@@ -87,7 +99,7 @@ public final class HashObj implements Bufferable {
 	 * Saves this hash's data to the buffer. Will not throw BufferableException
 	 */
 	@Override
-	public void save(ByteBuf buffer) throws BufferableException
+	public void save(ByteBuf buffer)
 	{
 		// Only have the bytes to store, need to know how many we write out
 		buffer.writeInt(hash.length);
@@ -99,12 +111,25 @@ public final class HashObj implements Bufferable {
 	 * Will not throw BufferableException
 	 */
 	@Override
-	public void restore(ByteBuf buffer) throws BufferableException
+	public void restore(ByteBuf buffer)
 	{
 		// Read how long the array is (although... this is constant for SHA-1 isn't it?)
 		int size = buffer.readInt();
 		hash = new byte[size];
 		buffer.readBytes(hash);
+	}
+	
+	/**
+	 * Restored hash data from the file
+	 * @param raf The file to load from
+	 * @throws IOException If the file could not be read
+	 */
+	public void restoreFromRAF(RandomAccessFile raf) throws IOException
+	{
+		// Read how long the array is (although... this is constant for SHA-1 isn't it?)
+		int size = raf.readInt();
+		hash = new byte[size];
+		raf.read(hash);
 	}
 
 }

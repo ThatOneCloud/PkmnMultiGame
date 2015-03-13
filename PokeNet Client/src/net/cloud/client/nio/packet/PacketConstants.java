@@ -9,10 +9,10 @@ public class PacketConstants {
 	public static final int NUM_PACKETS = 4;
 	
 	// Begin Packet Opcodes //
-	public static final short TEST_PACKET = 0;
-	public static final short COMPOSITE_PACKET = 1;
-	public static final short LOGIN_PACKET = 2;
-	public static final short LOGIN_RESPONSE_PACKET = 3;
+	public static final short TEST = 0;
+	public static final short COMPOSITE = 1;
+	public static final short LOGIN = 2;
+	public static final short LOGIN_RESPONSE = 3;
 	// End Packet Opcodes //
 	
 	/** Max bytes that can be in a single packet */

@@ -7,6 +7,7 @@ import java.util.Optional;
 import net.cloud.client.nio.bufferable.BufferableException;
 import net.cloud.client.nio.packet.Packet;
 import net.cloud.client.nio.packet.PacketConstants;
+import net.cloud.client.nio.packet.packets.LoginPacket.LoginResponsePacket;
 
 /**
  * In short, keeps a record of the different packets. 
@@ -22,10 +23,10 @@ public class PacketManager {
 	// Static initializer block, to instantiate each default packet
 	static
 	{
-		packets[PacketConstants.TEST_PACKET] = new TestPacket();
-		packets[PacketConstants.COMPOSITE_PACKET] = new CompositePacket();
-		packets[PacketConstants.LOGIN_PACKET] = new LoginPacket();
-		packets[PacketConstants.LOGIN_RESPONSE_PACKET] = new LoginPacket.LoginResponsePacket();
+		packets[PacketConstants.TEST] = new TestPacket();
+		packets[PacketConstants.COMPOSITE] = new CompositePacket();
+		packets[PacketConstants.LOGIN] = new LoginPacket();
+		packets[PacketConstants.LOGIN_RESPONSE] = new LoginResponsePacket();
 	}
 	
 	/**

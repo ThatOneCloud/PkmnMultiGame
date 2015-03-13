@@ -2,6 +2,7 @@ package net.cloud.client.nio;
 
 import java.util.Optional;
 
+import net.cloud.client.Client;
 import net.cloud.client.entity.player.PlayerFactory;
 import net.cloud.client.event.shutdown.ShutdownHook;
 import net.cloud.client.event.shutdown.ShutdownService;
@@ -82,8 +83,13 @@ public class NettyClient implements ShutdownService {
 			Logger.writer().flush();
 
 			// Create the ShutdownHook now
+			if(shutdownHook != null)
+			{
+				Client.instance().shutdownHandler().removeHook(shutdownHook);
+			}
 			shutdownHook = new NettyShutdownHook(connectFuture, bootstrap.group());
-
+			Client.instance().shutdownHandler().addHook(shutdownHook);
+			
 			// A PacketSender is made based on the channel that was returned
 			PacketSender packetSender = new PacketSender(connectFuture.channel());
 

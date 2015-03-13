@@ -1,5 +1,7 @@
 package net.cloud.server.util;
 
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.text.ParseException;
 import java.util.regex.Pattern;
@@ -90,6 +92,23 @@ public class StringUtil {
 		while(c != TERMINATOR) {
 			builder.append(c);
 			c = (char) buffer.readByte();
+		}
+		
+		return builder.toString();
+	}
+	
+	/** 
+	 * A variant that uses a RandomAccessFile directly rather than a memory mapped buffer 
+	 * @throws IOException If could not read from file
+	 */
+	public static String getFromRAF(RandomAccessFile raf) throws IOException
+	{
+		StringBuilder builder = new StringBuilder();
+		char c = (char) raf.readByte();
+		
+		while(c != TERMINATOR) {
+			builder.append(c);
+			c = (char) raf.readByte();
 		}
 		
 		return builder.toString();

@@ -27,7 +27,7 @@ public class PacketHandler extends ChannelInboundHandlerAdapter {
 		Optional<Player> player = Optional.ofNullable(World.instance().getPlayer());
 
 		// Handle the packet, or throw an exception if the Player came back null from World
-		String nullMsg = "Error: No Player in World associated with Channel";
+		String nullMsg = "Error: Player is currently null - cannot receive packets";
 		packet.handlePacket(player.orElseThrow(() -> new NullPointerException(nullMsg)));
 	}
 

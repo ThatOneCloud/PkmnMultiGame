@@ -56,7 +56,7 @@ public class PlayerLoadHandler {
 	public void loadFromFile() throws PlayerLoadException
 	{
 		// Try-with-resources to the File Server. Neat. So the all important file will be closed when we're done
-		try (RandomAccessFile dataFile = getSaveFile()) 
+		try (RandomAccessFile dataFile = getSaveFile(player.getUsername())) 
 		{
 			loadFromFile(dataFile);
 		} 
@@ -92,14 +92,62 @@ public class PlayerLoadHandler {
 	}
 	
 	/**
+	 * The player this handler is created for will have its username and password set from the data in the data 
+	 * file for the player with the given username. Only the username and password are set. 
+	 * If there is no such player save matching the username, then an IO exception is thrown immediately - 
+	 * no file is opened and nothing is read.
+	 * Regardless of the exception, assume it is unsafe to proceed. It is unknown whether the username and/or/neither 
+	 * password have actually been set.
+	 * @throws PlayerLoadException Save file could not be found
+	 * @throws IOException Save file did not exist, could not be read from, or could not be closed
+	 */
+	public void loadUserAndPass(String username) throws PlayerLoadException, IOException
+	{
+		// Check to see if there is save data for the requested player
+		if(!saveFileExists(username))
+		{
+			// Since it does not exist, we don't want to proceed. Rather than return false, make it easy on the caller
+			throw new IOException("No player save file for: " + username);
+		}
+		
+		// Try-with-resources to the File Server. Neat. So the all important file will be closed when we're done
+		try (RandomAccessFile dataFile = getSaveFile(username)) 
+		{
+			loadUserAndPass(dataFile);
+		}
+	}
+	
+	/**
+	 * The player this handler is created for will have its username and password set from the data in the file. 
+	 * This assumes the file has just been opened and the pointer is at the beginning.
+	 * @param dataFile The player data
+	 * @throws IOException If the file could not be read
+	 */
+	public void loadUserAndPass(RandomAccessFile dataFile) throws IOException
+	{
+		// We'll have the player only load its username and password
+		player.restoreUserAndPass(dataFile);
+	}
+	
+	/**
+	 * Check to see if there is a save file matching the given username
+	 * @param username The player data to look for
+	 * @return True if there is a save file
+	 */
+	private boolean saveFileExists(String username)
+	{
+		return FileServer.instance().fileExists(FileAddressBuilder.createPlayerDataAddress(username));
+	}
+	
+	/**
 	 * Obtain a RAF from the File Server for the player's save data. Waits until the request has been served. 
 	 * @return A RAF from the File Server for the player's save data
 	 * @throws PlayerLoadException If the request could not be served
 	 */
-	private RandomAccessFile getSaveFile() throws PlayerLoadException
+	private RandomAccessFile getSaveFile(String username) throws PlayerLoadException
 	{
 		// Get a RAF to the save data
-		RandomAccessFileLoadRequest req = new RandomAccessFileLoadRequest(FileAddressBuilder.createPlayerDataAddress(player));
+		RandomAccessFileLoadRequest req = new RandomAccessFileLoadRequest(FileAddressBuilder.createPlayerDataAddress(username));
 		try {
 			return FileServer.instance().submitAndWaitForDescriptor(req);
 		} catch (FileRequestException e) {

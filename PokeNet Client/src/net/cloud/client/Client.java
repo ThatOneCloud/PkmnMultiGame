@@ -144,6 +144,14 @@ public class Client {
 	}
 	
 	/**
+	 * @return The shutdown handler the client is using to stop global services
+	 */
+	public ShutdownHandler shutdownHandler()
+	{
+		return shutdownHandler;
+	}
+	
+	/**
 	 * @return The NettyClient object acting as an entry point to the network code
 	 */
 	public NettyClient nettyClient()

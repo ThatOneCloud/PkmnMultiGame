@@ -1,5 +1,7 @@
 package net.cloud.server.entity.player;
 
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.Optional;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -9,7 +11,6 @@ import net.cloud.server.entity.Entity;
 import net.cloud.server.entity.player.save.PlayerSaveException;
 import net.cloud.server.entity.player.save.PlayerSaveHandler;
 import net.cloud.server.nio.bufferable.Bufferable;
-import net.cloud.server.nio.bufferable.BufferableException;
 import net.cloud.server.nio.packet.PacketSender;
 import net.cloud.server.util.HashObj;
 import net.cloud.server.util.StringUtil;
@@ -124,7 +125,7 @@ public class Player extends Entity implements Bufferable {
 	 * Save all of the non-transient player data to the buffer
 	 */
 	@Override
-	public void save(ByteBuf buffer) throws BufferableException
+	public void save(ByteBuf buffer)
 	{
 		// Well for now all we have is the username & password
 		StringUtil.writeStringToBuffer(getUsername(), buffer);
@@ -136,12 +137,28 @@ public class Player extends Entity implements Bufferable {
 	 * Restore all of the non-transient player data from the buffer
 	 */
 	@Override
-	public void restore(ByteBuf buffer) throws BufferableException
+	public void restore(ByteBuf buffer)
 	{
 		// And for now, restore the user & pass just to verify it
 		username = StringUtil.getFromBuffer(buffer);
 		
 		password = HashObj.createFrom(buffer);
+	}
+	
+	/**
+	 * Restore only the username and password from the player save file. 
+	 * This assumes the file has just been opened, and the pointer is at the 
+	 * beginning of the file. 
+	 * After this method returns, only the username and password fields will have been set.
+	 * @param raf The file to read the username and password from
+	 * @throws IOException If the file could not be read from
+	 */
+	public void restoreUserAndPass(RandomAccessFile raf) throws IOException
+	{
+		// Use variants that operate directly on the RAF
+		username = StringUtil.getFromRAF(raf);
+		
+		password = HashObj.createFrom(raf);
 	}
 
 }

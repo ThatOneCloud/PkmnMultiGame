@@ -4,6 +4,7 @@ import io.netty.channel.Channel;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import net.cloud.server.entity.player.LoginState;
 import net.cloud.server.entity.player.Player;
@@ -50,6 +51,35 @@ public class WorldPlayerMap {
 	{
 		// I did my research. The Channel deep down has its own hash function, great for map use
 		return players.get(channel);
+	}
+	
+	/**
+	 * Search for a player in this map based on the given predicate condition. This will look through all 
+	 * of the players in the world until a match is found. If no match is found, null is returned. If a match 
+	 * is found, that matching player is returned.
+	 * @param condition The condition with which to match players
+	 * @return The first Player matching the condition, or null if none were found
+	 */
+	public Player search(Predicate<Player> condition)
+	{
+		// Search through all players
+		return players.searchValues(PARALLELISM_THRESHOLD, (p) ->
+		{
+			// Checking to see if a player matches the condition
+			return condition.test(p) ? p : null;
+		});
+	}
+	
+	/**
+	 * Check to see if the condition matches any player in the world. This will become true and return as soon 
+	 * as the first match is found.
+	 * @param condition The condition with which to match players
+	 * @return True if a player in the world matches the condition, false if not
+	 */
+	public boolean hasMatchingPlayer(Predicate<Player> condition)
+	{
+		// null means no match was found during the search
+		return null != search(condition);
 	}
 	
 	/**
