@@ -15,7 +15,7 @@ public abstract class SendOnlyPacket implements Packet {
 	@Override
 	public Packet decode(ByteBuf data) throws UnsupportedOperationException
 	{
-		throw new UnsupportedOperationException("A SendOnlyPacket does not support receiving and therefore decoding");
+		throw new UnsupportedOperationException("Packet " + getOpcode() + " is SendOnly. Does not support decoding");
 	}
 
 	/**
@@ -24,7 +24,7 @@ public abstract class SendOnlyPacket implements Packet {
 	@Override
 	public void handlePacket(Player player) throws UnsupportedOperationException
 	{
-		throw new UnsupportedOperationException("A SendOnlyPacket does not support receiving and therefore handling");
+		throw new UnsupportedOperationException("Packet " + getOpcode() + " is SendOnly. Does not support handling");
 	}
 
 }

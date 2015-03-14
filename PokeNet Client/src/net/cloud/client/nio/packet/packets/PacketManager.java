@@ -1,13 +1,13 @@
 package net.cloud.client.nio.packet.packets;
 
 import io.netty.buffer.ByteBuf;
-
-import java.util.Optional;
-
 import net.cloud.client.nio.bufferable.BufferableException;
 import net.cloud.client.nio.packet.Packet;
 import net.cloud.client.nio.packet.PacketConstants;
 import net.cloud.client.nio.packet.packets.LoginPacket.LoginResponsePacket;
+import net.cloud.client.nio.packet.packets.LoginPacket.LoginDataRequestPacket;
+import net.cloud.client.nio.packet.packets.LoginPacket.LoginDataResponsePacket;
+import net.cloud.client.nio.packet.packets.ShowMessageDialogPacket;
 
 /**
  * In short, keeps a record of the different packets. 
@@ -27,6 +27,9 @@ public class PacketManager {
 		packets[PacketConstants.COMPOSITE] = new CompositePacket();
 		packets[PacketConstants.LOGIN] = new LoginPacket();
 		packets[PacketConstants.LOGIN_RESPONSE] = new LoginResponsePacket();
+		packets[PacketConstants.LOGIN_DATA_REQUEST] = new LoginDataRequestPacket();
+		packets[PacketConstants.LOGIN_DATA_RESPONSE] = new LoginDataResponsePacket();
+		packets[PacketConstants.SHOW_MSG_DIALOG] = new ShowMessageDialogPacket();
 	}
 	
 	/**
@@ -45,10 +48,16 @@ public class PacketManager {
 			throw new IllegalArgumentException("Packet opcode out of range: " + opcode);
 		}
 		
-		// My first lambda!
-		// Have a packet decoded if it exists, or throw exception if it's null
-		String nullMsg = "Packet " + opcode + " does not exist.";
-		return Optional.ofNullable(packets[opcode]).orElseThrow(() -> new IllegalArgumentException(nullMsg)).decode(data);
+		// Get a decoded packet using the existing prototype
+		if(packets[opcode] != null)
+		{
+			return packets[opcode].decode(data);
+		}
+		else {
+			throw new IllegalArgumentException("Packet " + opcode + " does not exist");
+		}
+		
+		
 	}
 
 }

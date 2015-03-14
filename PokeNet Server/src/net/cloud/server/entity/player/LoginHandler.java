@@ -44,6 +44,15 @@ public class LoginHandler {
 			return LoginResponse.INVALID_CREDENTIALS;
 		}
 		
+		// We're going to need to load this player's data, do it now so if it goes wrong we can respond
+		try {
+			loader.loadFromFile();
+		} catch (PlayerLoadException e) {
+			// This is not a happy thing. The player's data couldn't be loaded. Worth a global notice
+			Logger.instance().logException("Player load failed during login", e);
+			return LoginResponse.BAD_DATA;
+		}
+		
 		// So far so good, but is the account already logged in?
 		if(World.instance().getPlayerMap().hasMatchingPlayer((p) -> p.getUsername().equalsIgnoreCase(username)))
 		{

@@ -1,7 +1,5 @@
 package net.cloud.client.nio.packet;
 
-import java.util.Optional;
-
 import net.cloud.client.entity.player.Player;
 import net.cloud.client.game.World;
 import net.cloud.client.logging.Logger;
@@ -23,12 +21,15 @@ public class PacketHandler extends ChannelInboundHandlerAdapter {
 		// The object has been decoded into a Packet. Grab it
 		Packet packet = (Packet) msg;
 
-		// Channel context provides a Channel - which is how we find the Player that sent the packet
-		Optional<Player> player = Optional.ofNullable(World.instance().getPlayer());
-
-		// Handle the packet, or throw an exception if the Player came back null from World
-		String nullMsg = "Error: Player is currently null - cannot receive packets";
-		packet.handlePacket(player.orElseThrow(() -> new NullPointerException(nullMsg)));
+		// Pass off to the packet for handling
+		Player player = World.instance().getPlayer();
+		if(player != null)
+		{
+			packet.handlePacket(player);
+		}
+		else {
+			throw new NullPointerException("Error: Player is currently null - cannot receive packets");
+		}
 	}
 
 	/**

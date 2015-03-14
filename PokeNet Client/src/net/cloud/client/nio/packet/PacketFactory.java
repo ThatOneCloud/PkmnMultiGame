@@ -3,6 +3,7 @@ package net.cloud.client.nio.packet;
 import net.cloud.client.entity.player.Player;
 import net.cloud.client.game.World;
 import net.cloud.client.nio.packet.packets.*;
+import net.cloud.client.nio.packet.packets.LoginPacket.LoginDataRequestPacket;
 
 /**
  * Typical factory class, meant to create Packets. 
@@ -16,7 +17,7 @@ public class PacketFactory {
 	/**
 	 * Creates a TestPacket, which is just an integer of the given value
 	 */
-	public Packet createTestPacket(int value)
+	public TestPacket createTestPacket(int value)
 	{
 		return new TestPacket(value);
 	}
@@ -28,8 +29,9 @@ public class PacketFactory {
 	 * and dealt with in a precise order.
 	 * @param first The first packet that the composite will consist of
 	 * @param others Any other packets the new packet will consist of
+	 * @return A packet consisting of the other packets
 	 */
-	public Packet createCompositePacket(Packet first, Packet... others)
+	public CompositePacket createCompositePacket(Packet first, Packet... others)
 	{
 		return new CompositePacket(first, others);
 	}
@@ -37,13 +39,23 @@ public class PacketFactory {
 	/**
 	 * Create a LoginPacket, requesting the server validate our login information. 
 	 * Uses the credentials from the World Player. 
+	 * @return A login packet
 	 */
-	public Packet createLogin()
+	public LoginPacket createLogin()
 	{
 		Player p = World.instance().getPlayer();
 		LoginPacket loginPacket = new LoginPacket(p.getUsername(), p.getPassword());
 		
 		return loginPacket;
+	}
+	
+	/**
+	 * Create a login data request packet
+	 * @return A login data request packet
+	 */
+	public LoginDataRequestPacket createLoginDataRequest()
+	{
+		return new LoginDataRequestPacket();
 	}
 
 }

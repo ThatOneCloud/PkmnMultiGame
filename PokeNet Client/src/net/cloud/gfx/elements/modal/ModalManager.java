@@ -225,6 +225,26 @@ public class ModalManager {
 	}
 	
 	/**
+	 * Display the given dialog in a draggable frame with the given title. 
+	 * No listener will be attached to the dialog, so any various listeners must manually be attached 
+	 * (this means closing behavior must be manually handled outside of this call)
+	 * @param title The title to put on the frame
+	 * @param parent The parent to add the dialog to
+	 * @param dialog The dialog to display
+	 * @throws ModalException If the dialog could not be reliably shown
+	 */
+	public void displayDialog(String title, Container<? super Element> parent, AbstractModalDialog dialog) throws ModalException
+	{
+		// Our steps are similar to generic stuff. First we wrap the dialog in decorators
+		DraggableElement dragFrame = decoratedDialog(title, dialog);
+		
+		// Show and register the dialog
+		showDialog(parent, dialog, dragFrame);
+		
+		// This is where we don't do more, we don't wait for any value or remove the dialog
+	}
+	
+	/**
 	 * I seriously could not think of a name for this one. It takes the various generic steps needed for showing a dialogue. 
 	 * It will wrap the dialog in a draggable frame, put the dialog on screen, block until results are available, 
 	 * remove the dialog from the screen, and then return the result from the dialog.

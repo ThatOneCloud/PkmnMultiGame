@@ -96,6 +96,27 @@ public class PacketSender {
 	}
 	
 	/**
+	 * Only creates and returns a Packet. For a description of the packet, see<br>
+	 * {@link PacketFactory#createLoginDataRequest()}
+	 */
+	public Packet createLoginDataRequest()
+	{
+		return packetFactory.createLoginDataRequest();
+	}
+	/** Writes, but does not send a packet. <br>See {@link PacketFactory#createLoginDataRequest()} */
+	public PacketSender writeLoginDataRequest()
+	{
+		write(createLoginDataRequest());
+		
+		return this;
+	}
+	/** Writes and sends a packet.  <br>See {@link PacketFactory#createLoginDataRequest()} */
+	public void sendLoginDataRequest()
+	{
+		this.writeLoginDataRequest().send();
+	}
+	
+	/**
 	 * Send all packets that have been created but not yet sent 
 	 */
 	public void send()

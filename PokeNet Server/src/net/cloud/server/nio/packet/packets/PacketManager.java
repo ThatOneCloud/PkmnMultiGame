@@ -1,12 +1,12 @@
 package net.cloud.server.nio.packet.packets;
 
-import java.util.Optional;
-
 import io.netty.buffer.ByteBuf;
 import net.cloud.server.nio.bufferable.BufferableException;
 import net.cloud.server.nio.packet.Packet;
 import net.cloud.server.nio.packet.PacketConstants;
 import net.cloud.server.nio.packet.packets.LoginPacket.LoginResponsePacket;
+import net.cloud.server.nio.packet.packets.LoginPacket.LoginDataRequestPacket;
+import net.cloud.server.nio.packet.packets.LoginPacket.LoginDataResponsePacket;
 
 /**
  * In short, keeps a record of the different packets. 
@@ -26,6 +26,9 @@ public class PacketManager {
 		packets[PacketConstants.COMPOSITE] = new CompositePacket();
 		packets[PacketConstants.LOGIN] = new LoginPacket();
 		packets[PacketConstants.LOGIN_RESPONSE] = new LoginResponsePacket();
+		packets[PacketConstants.LOGIN_DATA_REQUEST] = new LoginDataRequestPacket();
+		packets[PacketConstants.LOGIN_DATA_RESPONSE] = new LoginDataResponsePacket();
+		packets[PacketConstants.SHOW_MSG_DIALOG] = new ShowMessageDialogPacket();
 	}
 	
 	/**
@@ -44,11 +47,16 @@ public class PacketManager {
 		{
 			throw new IllegalArgumentException("Packet opcode out of range: " + opcode);
 		}
+
+		// Get a decoded copy using the existing prototype
+		if(packets[opcode] != null)
+		{
+			return packets[opcode].decode(data);
+		}
+		else {
+			throw new IllegalArgumentException("Packet " + opcode + " does not exist");
+		}
 		
-		// My first lambda!
-		// Have a packet decoded if it exists, or throw exception if it's null
-		String nullMsg = "Packet " + opcode + " does not exist.";
-		return Optional.ofNullable(packets[opcode]).orElseThrow(() -> new IllegalArgumentException(nullMsg)).decode(data);
 	}
 
 }

@@ -17,6 +17,8 @@ public class Server {
 	
 	// TODO: Known bugs before framework release:
 	// gracefully handle abrupt disconnect (tasks may need to gracefully skirt around this, too)
+	// player save task seems broken
+	// don't get bad data message with alice_5
 	
 	/** The single instance of the Server class */
 	private static Server instance;

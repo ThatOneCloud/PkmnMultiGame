@@ -6,6 +6,7 @@ import net.cloud.server.entity.player.LoginResponse;
 import net.cloud.server.entity.player.LoginState;
 import net.cloud.server.entity.player.Player;
 import net.cloud.server.event.task.TaskEngine;
+import net.cloud.server.game.World;
 import net.cloud.server.nio.bufferable.BufferableException;
 import net.cloud.server.nio.packet.Packet;
 import net.cloud.server.nio.packet.PacketConstants;
@@ -80,7 +81,6 @@ public class LoginPacket extends ReceiveOnlyPacket {
 				{
 					// Since they are, we never got a login data request from the client
 					LoginHandler.abortConnection(player);
-System.out.println("aborting after still in verified");
 				}
 			});
 		}
@@ -95,6 +95,7 @@ System.out.println("aborting after still in verified");
 			LoginHandler.abortConnection(player);
 		}
 	}
+	
 	
 	/**
 	 * A packet which the server sends as a response to the LoginPacket (a response 
@@ -128,6 +129,86 @@ System.out.println("aborting after still in verified");
 		{
 			// To keep it simple, we'll use the ordinal of the enum value this time
 			buffer.writeInt(response.ordinal());
+		}
+		
+	}
+	
+	
+	/**
+	 * A symbolic packet that the client sends us to indicate that we should now send the login data to it
+	 */
+	public static class LoginDataRequestPacket extends ReceiveOnlyPacket {
+
+		/** Prototype constructor */
+		public LoginDataRequestPacket() {}
+		
+		@Override
+		public short getOpcode()
+		{
+			return PacketConstants.LOGIN_DATA_REQUEST;
+		}
+
+		@Override
+		public Packet decode(ByteBuf data) throws BufferableException
+		{
+			// There's really nothing to read, but we have a dummy integer to burn
+			data.readInt();
+			
+			return new LoginDataRequestPacket();
+		}
+
+		@Override
+		public void handlePacket(Player player)
+		{
+			// Getting this request signifies the player finally being totally logged in
+			player.setLoginState(LoginState.LOGGED_IN);
+			
+			// Place the player in the world, now that we consider them logged in
+			World.instance().getPlayerMap().place(player.getPacketSender().channel(), player);
+			
+			// Reply back with the data
+			// TODO: combine into composite packet
+			player.getPacketSender().sendLoginDataResponse(player);
+			player.getPacketSender().sendShowMessageDialog("login", "login success");
+		}
+		
+	}
+	
+	
+	/**
+	 * A sizable packet. We send this to the client in the final stage of logging in, to send the client all of the 
+	 * data that it needs on initialization to get the player in the game. 
+	 */
+	public static class LoginDataResponsePacket extends SendOnlyPacket {
+		
+		/** The player that is logging in. We're going to send them all of their data */
+		private Player player;
+		
+		// In the future, expect additions here. There will be map data and more to send as well.
+		
+		/** Prototype constructor */
+		public LoginDataResponsePacket() {}
+		
+		/**
+		 * Create a login data response that will send the given data
+		 * @param player The player that is about to login
+		 */
+		public LoginDataResponsePacket(Player player)
+		{
+			this.player = player;
+		}
+
+		@Override
+		public short getOpcode()
+		{
+			return PacketConstants.LOGIN_DATA_RESPONSE;
+		}
+
+		@Override
+		public void encode(ByteBuf buffer) throws BufferableException
+		{
+			// Pack the player data into the buffer (its data should already be loaded from file)
+			player.save(buffer);
 		}
 		
 	}

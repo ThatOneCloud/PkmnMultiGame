@@ -5,6 +5,7 @@ import java.awt.Graphics;
 
 import net.cloud.client.util.IteratorException;
 import net.cloud.gfx.elements.Interface;
+import net.cloud.gfx.focus.FocusController;
 import net.cloud.gfx.focus.Focusable;
 import net.cloud.gfx.sprites.SpriteSet;
 
@@ -21,12 +22,16 @@ public abstract class AbstractModalDialog extends Interface {
 	/** Default priority of a modal dialog. Cannot be beat. */
 	public static final int PRIORITY = Integer.MAX_VALUE;
 	
+	/** Starting transparency value for the alert value */
 	private static final int START_ALPHA = 125;
 	
+	/** How much to change transparency on the focus alert each time */
 	private static final int ALPHA_STEP = 10;
 	
+	/** Highlight for the focus alert */
 	private static final Color INITIAL_HIGHLIGHT_COLOR = new Color(50, 50, 200, START_ALPHA);
 	
+	/** Which color are we currently on for the focus alert */
 	private Color currentHighlightColor;
 	
 	/**
@@ -150,6 +155,17 @@ public abstract class AbstractModalDialog extends Interface {
 	{
 		// Even if the highlight color is currently fading, we'll change it back to the starting color
 		currentHighlightColor = INITIAL_HIGHLIGHT_COLOR;
+	}
+
+	/**
+	 * Remove the dialog from its parent and deregister it
+	 */
+	public void removeDialog()
+	{
+		// Same steps as from ModalManager
+		getParent().ifPresent((parent) -> parent.removeChild(this));
+		FocusController.instance().deregister();
+		ModalManager.instance().deregister();
 	}
 
 }

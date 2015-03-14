@@ -1,6 +1,7 @@
 package net.cloud.server.nio.packet;
 
 import net.cloud.server.entity.player.LoginResponse;
+import net.cloud.server.entity.player.Player;
 import io.netty.channel.Channel;
 
 /**
@@ -99,6 +100,53 @@ public class PacketSender {
 	public void sendLoginResponse(LoginResponse response)
 	{
 		this.writeLoginResponse(response).send();
+	}
+	
+	/**
+	 * Only creates and returns a packet. For a description of the packet, see <br>
+	 * {@link PacketFactory#createLoginDataResponsePacket(Player)}
+	 * @param player The player that is about to login
+	 * @return The packet
+	 */
+	public Packet createLoginDataResponse(Player player)
+	{
+		return packetFactory.createLoginDataResponsePacket(player);
+	}
+	/** Writes, but does not send a packet. <br>See {@link PacketFactory#createLoginDataResponse(Player)} */
+	public PacketSender writeLoginDataResponse(Player player)
+	{
+		write(createLoginDataResponse(player));
+		
+		return this;
+	}
+	/** Writes and sends a packet.  <br>See {@link PacketFactory#createLoginDataResponse(Player)} */
+	public void sendLoginDataResponse(Player player)
+	{
+		this.writeLoginDataResponse(player).send();
+	}
+	
+	/**
+	 * Only creates and returns a packet. For a description of the packet, see <br>
+	 * {@link PacketFactory#createShowMessageDialogPacket(String)}
+	 * @param title The title to put on the dialog's frame
+	 * @param message The message to show
+	 * @return The packet
+	 */
+	public Packet createShowMessageDialog(String title, String message)
+	{
+		return packetFactory.createShowMessageDialogPacket(title, message);
+	}
+	/** Writes, but does not send a packet. <br>See {@link PacketFactory#createShowMessageDialogPacket(String)} */
+	public PacketSender writeShowMessageDialog(String title, String message)
+	{
+		write(createShowMessageDialog(title, message));
+		
+		return this;
+	}
+	/** Writes and sends a packet.  <br>See {@link PacketFactory#createShowMessageDialogPacket(String)} */
+	public void sendShowMessageDialog(String title, String message)
+	{
+		this.writeShowMessageDialog(title, message).send();
 	}
 	
 	/**

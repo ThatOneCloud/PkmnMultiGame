@@ -1,8 +1,10 @@
 package net.cloud.server.nio.packet;
 
 import net.cloud.server.entity.player.LoginResponse;
+import net.cloud.server.entity.player.Player;
 import net.cloud.server.nio.packet.packets.*;
 import net.cloud.server.nio.packet.packets.LoginPacket.LoginResponsePacket;
+import net.cloud.server.nio.packet.packets.LoginPacket.LoginDataResponsePacket;
 
 /**
  * Typical factory class, meant to create Packets. 
@@ -16,7 +18,7 @@ public class PacketFactory {
 	/**
 	 * Creates a TestPacket, which is just an integer of the given value
 	 */
-	public Packet createTestPacket(int value)
+	public TestPacket createTestPacket(int value)
 	{
 		return new TestPacket(value);
 	}
@@ -30,7 +32,7 @@ public class PacketFactory {
 	 * @param others Any other packets the new packet will consist of
 	 * @return A packet consisting of the given packets
 	 */
-	public Packet createCompositePacket(Packet first, Packet... others)
+	public CompositePacket createCompositePacket(Packet first, Packet... others)
 	{
 		return new CompositePacket(first, others);
 	}
@@ -38,11 +40,32 @@ public class PacketFactory {
 	/**
 	 * Create a LoginResponsePacket with the given response. 
 	 * @param response The response
-	 * @return A packet to respond to a login request for
+	 * @return A packet to respond to a login request with
 	 */
-	public Packet createLoginResponsePacket(LoginResponse response)
+	public LoginResponsePacket createLoginResponsePacket(LoginResponse response)
 	{
 		return new LoginResponsePacket(response);
+	}
+	
+	/**
+	 * Create a LoginDataResponsePacket with the given data in it
+	 * @param player The player that is logging in
+	 * @return A packet to respond to a login data request with
+	 */
+	public LoginDataResponsePacket createLoginDataResponsePacket(Player player)
+	{
+		return new LoginDataResponsePacket(player);
+	}
+	
+	/**
+	 * Create a packet to show a modal message dialog
+	 * @para title The title to put on the dialog's frame
+	 * @param message The message to show
+	 * @return A packet to show a modal message dialog with
+	 */
+	public ShowMessageDialogPacket createShowMessageDialogPacket(String title, String message)
+	{
+		return new ShowMessageDialogPacket(title, message);
 	}
 
 }

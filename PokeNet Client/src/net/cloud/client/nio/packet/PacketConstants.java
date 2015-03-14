@@ -5,15 +5,18 @@ package net.cloud.client.nio.packet;
  */
 public class PacketConstants {
 	
-	/** The number of packets (Ie the limit on the op code) */
-	public static final int NUM_PACKETS = 4;
-	
 	// Begin Packet Opcodes //
 	public static final short TEST = 0;
 	public static final short COMPOSITE = 1;
 	public static final short LOGIN = 2;
 	public static final short LOGIN_RESPONSE = 3;
+	public static final short LOGIN_DATA_REQUEST = 4;
+	public static final short LOGIN_DATA_RESPONSE = 5;
+	public static final short SHOW_MSG_DIALOG = 6;
 	// End Packet Opcodes //
+	
+	/** The number of packets (Ie the limit on the op code) */
+	public static final int NUM_PACKETS = 7;
 	
 	/** Max bytes that can be in a single packet */
 	public static final int MAX_PACKET_LENGTH = 4096;

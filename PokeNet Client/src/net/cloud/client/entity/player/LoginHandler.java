@@ -1,5 +1,6 @@
 package net.cloud.client.entity.player;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import net.cloud.client.Client;
@@ -14,6 +15,9 @@ public class LoginHandler {
 	/** How long will we wait for the server to reply before giving up */
 	public static final long TIMEOUT = 5000;
 	
+	/** The most recently passed in callback function for showing a message regarding login */
+	private static Optional<Consumer<String>> currentMessageCallback = Optional.empty();
+	
 	/**
 	 * Attempt the beginning of the login process. This involves connecting to the server, and 
 	 * sending the login credentials. From there, the server should reply with whether or not 
@@ -26,10 +30,13 @@ public class LoginHandler {
 	 */
 	public static void startLogin(String username, String password, Consumer<String> messageCallback)
 	{
+		// Update the callback function - we have a new one to use
+		currentMessageCallback = Optional.ofNullable(messageCallback);
+		
 		// A null player indicates we're still in the initial state
 		if(World.instance().getPlayer() != null)
 		{
-			messageCallback.accept("Client is not in initial state.");
+			message("Client is not in initial state.");
 			
 			return;
 		}
@@ -38,7 +45,7 @@ public class LoginHandler {
 		if(!Client.instance().nettyClient().connectToServer())
 		{
 			// Connecting failed. Let the player know, our process stops here.
-			messageCallback.accept("Could not connect to server.");
+			message("Could not connect to server.");
 			
 			return;
 		}
@@ -62,6 +69,17 @@ public class LoginHandler {
 				abortWaitingForVerification();
 			}
 		});
+	}
+	
+	/**
+	 * Displays the message in some way. This is the most recent way defined by graphical code, which informs 
+	 * this handler how to display login response messages... if that makes any sense. 
+	 * In other words, a decoupled means of showing some login related message
+	 * @param message The messages to show
+	 */
+	public static void message(String message)
+	{
+		currentMessageCallback.ifPresent((func) -> func.accept(message));
 	}
 	
 	/**

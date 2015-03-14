@@ -14,7 +14,7 @@ public abstract class ReceiveOnlyPacket implements Packet {
 	@Override
 	public void encode(ByteBuf buffer) throws UnsupportedOperationException
 	{
-		throw new UnsupportedOperationException("ReceiveOnlyPacket does not support sending and therefore encoding");
+		throw new UnsupportedOperationException("Packet " + getOpcode() + " is ReceiveOnly. Does not support encoding");
 	}
 
 }

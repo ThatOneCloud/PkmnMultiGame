@@ -59,6 +59,9 @@ public class TextField extends AbstractElement {
 	/** Has all the information for drawing the text. Supposed to be the fastest method. */
 	private GlyphVector glyphVector;
 	
+	/** Flag to indicate the glyph vector needs to be updated - rather than nullifying it */
+	private volatile boolean glyphUpdateNeeded;
+	
 	/** A cursor to show where text input will be at. */
 	private Cursor cursor;
 	
@@ -199,6 +202,7 @@ public class TextField extends AbstractElement {
 		
 		// Null to mark it as dirty. Must be recreated on text changes and via a Graphics2D
 		this.glyphVector = null;
+		this.glyphUpdateNeeded = true;
 		
 		// The cursor starts off at the very beginning not blinking or showing
 		this.cursor = new Cursor();
@@ -267,12 +271,9 @@ public class TextField extends AbstractElement {
 		g2d.setColor(hintText == null ? textColor : hintTextColor);
 		
 		// Draw text to the screen
-		if(glyphVector != null)
-		{
-			FontMetrics metrics = g2d.getFontMetrics();
-			int maxTextHeight = metrics.getAscent() + metrics.getDescent();
-			g2d.drawGlyphVector(glyphVector, offsetX + 3, offsetY + (maxTextHeight / 2) + (getHeight() / 2) - 3);
-		}
+		FontMetrics metrics = g2d.getFontMetrics();
+		int maxTextHeight = metrics.getAscent() + metrics.getDescent();
+		g2d.drawGlyphVector(glyphVector, offsetX + 3, offsetY + (maxTextHeight / 2) + (getHeight() / 2) - 3);
 		
 		// Draw the cursor on top of the text (when this field has focus)
 		if(getFocusHandler().hasFocus())
@@ -383,13 +384,16 @@ public class TextField extends AbstractElement {
 	 */
 	private void updateGlyphVector(Graphics2D g2d)
 	{
-		if(glyphVector == null)
+		if(glyphVector == null || glyphUpdateNeeded)
 		{
 			// Figure out what text should be displayed now
 			displayText.updateDisplay(g2d);
 			
 			// The font, current graphics, and text determine the glyphs
 			glyphVector = font.createGlyphVector(g2d.getFontRenderContext(), displayText.displayed);
+			
+			// All good, we can clear the update flag
+			glyphUpdateNeeded = false;
 		}
 	}
 
@@ -406,7 +410,7 @@ public class TextField extends AbstractElement {
 		// Scale the sprites again
 		reInitSprites();
 		
-		glyphVector = null;
+		glyphUpdateNeeded = true;
 	}
 	
 	/**
@@ -422,7 +426,7 @@ public class TextField extends AbstractElement {
 		// Scale the sprites again
 		reInitSprites();
 		
-		glyphVector = null;
+		glyphUpdateNeeded = true;
 	}
 	
 	/**
@@ -447,7 +451,7 @@ public class TextField extends AbstractElement {
 		cursor.move(0);
 		
 		// And invalidate the glyph vector so new text is drawn
-		glyphVector = null;
+		glyphUpdateNeeded = true;
 	}
 	
 	/**
@@ -472,7 +476,7 @@ public class TextField extends AbstractElement {
 		this.font = font;
 		
 		// Invalidate glyph vector so text will be drawn in new font next time
-		glyphVector = null;
+		glyphUpdateNeeded = true;
 	}
 	
 	/** @return The current color of the input text */
@@ -658,7 +662,7 @@ public class TextField extends AbstractElement {
 		}
 		
 		// The change invalidates the glyphs
-		glyphVector = null;
+		glyphUpdateNeeded = true;
 		
 		// As a result, the cursor moves forward
 		cursor.moveRight();
@@ -685,7 +689,7 @@ public class TextField extends AbstractElement {
 		displayText.hintLeft = false;
 		
 		// The change invalidates the glyphs
-		glyphVector = null;
+		glyphUpdateNeeded = true;
 		
 		// As a result, the cursor moves backward
 		cursor.moveLeft();
@@ -715,7 +719,7 @@ public class TextField extends AbstractElement {
 		}
 		
 		// The change invalidates the glyphs
-		glyphVector = null;
+		glyphUpdateNeeded = true;
 	}
 	
 	/**
@@ -735,7 +739,7 @@ public class TextField extends AbstractElement {
 		displayText.reset();
 		
 		// Of course, invalidates the glyph vector
-		glyphVector = null;
+		glyphUpdateNeeded = true;
 	}
 	
 	/**
@@ -752,7 +756,7 @@ public class TextField extends AbstractElement {
 				displayText.leftIdx--;
 				displayText.hintLeft = true;
 				
-				glyphVector = null;
+				glyphUpdateNeeded = true;
 			}
 		}
 	}
@@ -771,7 +775,7 @@ public class TextField extends AbstractElement {
 				displayText.rightIdx++;
 				displayText.hintLeft = false;
 				
-				glyphVector = null;
+				glyphUpdateNeeded = true;
 			}
 		}
 	}
