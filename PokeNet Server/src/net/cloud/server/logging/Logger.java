@@ -97,8 +97,13 @@ public class Logger implements ShutdownService {
 	public void logException(String msg, Throwable ex)
 	{
 		// For exceptions, throw out a notice in the console as well
-		this.logWriter().println("[EXCEPTION]" + msg);
+		this.logWriter().println("[EXCEPTION] " + msg);
 		this.logWriter().flush();
+		if(ConfigConstants.VERBOSE_EXCEPTIONS)
+		{
+			ex.printStackTrace();
+		}
+		
 		submit(new ExceptionLogReport(msg, ex));
 	}
 	
@@ -112,8 +117,13 @@ public class Logger implements ShutdownService {
 	public void logException(String msg, Throwable ex, LogSection section)
 	{
 		// For exceptions, throw out a notice in the console as well
-		this.logWriter().println("[EXCEPTION]" + msg);
+		this.logWriter().println("[EXCEPTION] " + msg);
 		this.logWriter().flush();
+		if(ConfigConstants.VERBOSE_EXCEPTIONS)
+		{
+			ex.printStackTrace();
+		}
+		
 		submit(new ExceptionLogReport(msg, ex, section));
 	}
 	

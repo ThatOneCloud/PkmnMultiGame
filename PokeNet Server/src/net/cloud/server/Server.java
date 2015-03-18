@@ -4,9 +4,9 @@ import net.cloud.server.event.command.CommandService;
 import net.cloud.server.event.shutdown.ShutdownHandler;
 import net.cloud.server.event.task.TaskEngine;
 import net.cloud.server.file.FileServer;
+import net.cloud.server.game.action.ActionManager;
 import net.cloud.server.logging.Logger;
 import net.cloud.server.nio.NettyServer;
-import net.cloud.server.tracking.StatTracker;
 import net.cloud.server.util.IOUtil;
 
 /**
@@ -18,7 +18,8 @@ public class Server {
 	// TODO: Known bugs before framework release:
 	// gracefully handle abrupt disconnect (tasks may need to gracefully skirt around this, too)
 	// player save task seems broken
-	// don't get bad data message with alice_5
+	// don't get bad data message with alice_5 (ofc, with a bad password, that comes first)
+	// update players online in StatTracker
 	
 	/** The single instance of the Server class */
 	private static Server instance;
@@ -69,23 +70,31 @@ public class Server {
 	{
 		// Initialize the shutdown handler
 		shutdownHandler = new ShutdownHandler();
+		
+		// Get all of the actions loaded up-front
+		loadActions();
 
 		// Start up the various sub-systems and services in the server
 		startServices();
 
 		// Sit back, wait for someone to tell us it's shutdown time
-		try {
-			shutdownHandler.waitForShutdown(Logger.writer());
-			
-			Logger.writer().println("Shutdown complete");
-			Logger.writer().flush();
-		} catch (Exception e) {
-			// Something went wrong with the shutdown process.. not much we can do.
-			// Just won't be a graceful shutdown.
-			Logger.instance().logException("Could not gracefully shutdown", e);
-		}
+		awaitShutdown();
 	}
 	
+	/**
+	 * Load all of the actions via the ActionManager
+	 */
+	private void loadActions()
+	{
+		try {
+			// ActionManager is the facade of sorts we communicate through
+			ActionManager.instance().loadAllActions(Logger.writer());
+		} catch (Exception e) {
+			// One or more things failed to load, it gives us an exception with a nice message
+			Logger.instance().logException("Exception loading Actions on startup", e);
+		}
+	}
+
 	/**
 	 * Start the sub-services the main thread is responsible for. 
 	 * These include the Netty Server, a CommandService listening on the console, 
@@ -123,7 +132,23 @@ public class Server {
 		{
 			shutdownHandler.addHook(Logger.instance().getShutdownHook());
 		}
-		StatTracker.instance().updatePlayersOnline(5);
+	}
+	
+	/**
+	 * Waits until the shutdown handler has its shutdown method called. 
+	 * Blocks the main thread until it's time to shut the server down
+	 */
+	private void awaitShutdown() {
+		try {
+			shutdownHandler.waitForShutdown(Logger.writer());
+			
+			Logger.writer().println("Shutdown complete");
+			Logger.writer().flush();
+		} catch (Exception e) {
+			// Something went wrong with the shutdown process.. not much we can do.
+			// Just won't be a graceful shutdown.
+			Logger.instance().logException("Could not gracefully shutdown", e);
+		}
 	}
 	
 	/**

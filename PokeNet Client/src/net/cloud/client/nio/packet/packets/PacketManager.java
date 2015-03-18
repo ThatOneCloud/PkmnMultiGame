@@ -30,6 +30,7 @@ public class PacketManager {
 		packets[PacketConstants.LOGIN_DATA_REQUEST] = new LoginDataRequestPacket();
 		packets[PacketConstants.LOGIN_DATA_RESPONSE] = new LoginDataResponsePacket();
 		packets[PacketConstants.SHOW_MSG_DIALOG] = new ShowMessageDialogPacket();
+		packets[PacketConstants.BUTTON_ACTION] = new ButtonActionPacket();
 	}
 	
 	/**

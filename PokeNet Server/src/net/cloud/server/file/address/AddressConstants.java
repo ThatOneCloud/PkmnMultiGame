@@ -8,6 +8,9 @@ package net.cloud.server.file.address;
  */
 public class AddressConstants {
 	
+	/** Location of button action script files */
+	public static final String SPACE_BUTTON_ACTIONS = "./data/scripts/actions/buttons/";
+	
 	/** Location of command script files */
 	public static final String SPACE_COMMAND_SCRIPTS = "./data/scripts/commands/";
 	
@@ -20,14 +23,17 @@ public class AddressConstants {
 	/** Location of XML data files */
 	public static final String SPACE_XML_DATA = "./data/resources/xml/";
 	
-	/** Text file extension */
-	public static final String EXT_TEXT = "txt";
-	
 	/** Extension used for cache files */
 	public static final String EXT_CACHE = "dat";
 	
+	/** Extension used for Groovy files */
+	public static final String EXT_GROOVY = "groovy";
+	
 	/** Extension use for player data files */
 	public static final String EXT_P_DATA = "dat";
+	
+	/** Text file extension */
+	public static final String EXT_TEXT = "txt";
 	
 	/** Extension for XML files. Go figure. */
 	public static final String EXT_XML = "xml";

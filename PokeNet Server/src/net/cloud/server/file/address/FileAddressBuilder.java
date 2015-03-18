@@ -184,5 +184,14 @@ public class FileAddressBuilder {
 		// For now, it's string concatenation. Something mutable would be nice, if the need arises
 		return new FileAddress(space + name + "." + extension);
 	}
+	
+	/**
+	 * Obtain a String rather than a FileAddress
+	 * @return A string for the address, reflecting this builder's current state
+	 */
+	public String createString()
+	{
+		return space + name + "." + extension;
+	}
 
 }

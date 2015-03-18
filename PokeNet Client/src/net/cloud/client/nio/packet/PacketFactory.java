@@ -2,6 +2,8 @@ package net.cloud.client.nio.packet;
 
 import net.cloud.client.entity.player.Player;
 import net.cloud.client.game.World;
+import net.cloud.client.game.action.ButtonActionID;
+import net.cloud.client.nio.bufferable.Bufferable;
 import net.cloud.client.nio.packet.packets.*;
 import net.cloud.client.nio.packet.packets.LoginPacket.LoginDataRequestPacket;
 
@@ -56,6 +58,25 @@ public class PacketFactory {
 	public LoginDataRequestPacket createLoginDataRequest()
 	{
 		return new LoginDataRequestPacket();
+	}
+	
+	/**
+	 * Create a new button action packet
+	 * @param buttonID The action ID of the button that was pressed
+	 * @param args Optional context arguments
+	 * @return A button action packet
+	 */
+	public ButtonActionPacket createButtonActionPacket(ButtonActionID buttonID, Bufferable... args)
+	{
+		// Use a stripped down constructor since there aren't any arguments
+		if(args == null || args.length == 0)
+		{
+			return new ButtonActionPacket(buttonID);
+		}
+		// Use the full constructor
+		else {
+			return new ButtonActionPacket(buttonID, args);
+		}
 	}
 
 }

@@ -13,6 +13,12 @@ public class ConfigConstants {
 	 */
 	public static final boolean LOGGING_ENABLED = false;
 	
+	/**
+	 * Flag indicating whether or not to be verbose about exceptions that are logged. 
+	 * This just means the message and stack trace will be displayed to standard out rather than just the message
+	 */
+	public static final boolean VERBOSE_EXCEPTIONS = true;
+	
 	/** Amount of time in milliseconds between each save of queued log reports */
 	public static final int LOG_CYCLE_TIME = 5000;
 	

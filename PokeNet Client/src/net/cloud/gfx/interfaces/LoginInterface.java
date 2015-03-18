@@ -55,7 +55,7 @@ public class LoginInterface extends Interface {
 		
 		// Add a button to logout, for testing stuff
 		Button logoutButton = new Button("Log Out", CENTER_X + GAP, CENTER_Y + GAP, 75, 25);
-		// TODO: Action handler
+		logoutButton.setActionHandler(this::logoutViaButtonAction);
 		add(logoutButton);
 		
 		// Prep the feedback message, although there will not be any text to start
@@ -76,10 +76,23 @@ public class LoginInterface extends Interface {
 		doLogin();
 	}
 	
+	/**
+	 * Comparable to loginViaFieldAction
+	 * @param button The button that was clicked
+	 */
 	private void loginViaButtonAction(Button button)
 	{
 		// Like above, don't really need info on the button itself
 		doLogin();
+	}
+	
+	/**
+	 * A method to call when the log out button is clicked. Does the log out process
+	 * @param button The button that was clicked
+	 */
+	private void logoutViaButtonAction(Button button)
+	{
+		doLogout();
 	}
 	
 	/**
@@ -100,6 +113,15 @@ public class LoginInterface extends Interface {
 		
 		// Call on the login handler to take the wheel (again - functional programming - cool!)
 		LoginHandler.startLogin(usernameField.getText(), passwordField.getText(), messageLabel::setText);
+	}
+	
+	/**
+	 * Kick off the logout process, by calling on the LoginHandler to do so. 
+	 * Yeah, it's got multiple talents
+	 */
+	private void doLogout()
+	{
+		LoginHandler.startLogout(messageLabel::setText);
 	}
 
 }

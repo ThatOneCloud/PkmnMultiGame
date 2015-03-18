@@ -38,7 +38,18 @@ public class NettyClient implements ShutdownService {
 	
 	/** The channel future obtained from connecting to the server */
 	private ChannelFuture connectFuture;
-
+	
+	/** Flag to indicate whether we are connected to the server or not */
+	private volatile boolean connected;
+	
+	/**
+	 * Initialize to an unconnected state
+	 */
+	public NettyClient()
+	{
+		this.connected = false;
+	}
+	
 	/**
 	 * Startup procedure for the client's network communication.
 	 * Sets up Netty, but will not attempt connecting yet
@@ -96,6 +107,7 @@ public class NettyClient implements ShutdownService {
 			// A new Player object is created and given the PacketSender
 			World.instance().setPlayer(PlayerFactory.createOnNewConnection(packetSender));
 			
+			this.connected = true;
 			return true;
 		} catch(Exception e) {
 			Logger.instance().logException("Could not connect to server.", e);
@@ -126,7 +138,16 @@ public class NettyClient implements ShutdownService {
 			return false;
 		}
 		
+		this.connected = false;
 		return true;
+	}
+	
+	/**
+	 * @return True if the client is currently connected to the server
+	 */
+	public boolean isConnected()
+	{
+		return connected;
 	}
 	
 	/** 

@@ -1,5 +1,7 @@
 package net.cloud.client.nio.packet;
 
+import net.cloud.client.game.action.ButtonActionID;
+import net.cloud.client.nio.bufferable.Bufferable;
 import io.netty.channel.Channel;
 
 /**
@@ -115,6 +117,53 @@ public class PacketSender {
 	{
 		this.writeLoginDataRequest().send();
 	}
+	
+	/**
+	 * Only creates and returns a Packet. For a description of the packet, see<br>
+	 * {@link PacketFactory#createButtonActionPacket()}
+	 */
+	public Packet createButtonActionPacket(ButtonActionID buttonID, Bufferable... args)
+	{
+		return packetFactory.createButtonActionPacket(buttonID, args);
+	}
+	/** Writes, but does not send a packet. <br>See {@link PacketFactory#createButtonActionPacket()} */
+	public PacketSender writeButtonActionPacket(ButtonActionID buttonID, Bufferable... args)
+	{
+		write(createButtonActionPacket(buttonID, args));
+		
+		return this;
+	}
+	/** Writes and sends a packet.  <br>See {@link PacketFactory#createButtonActionPacket()} */
+	public void sendButtonActionPacket(ButtonActionID buttonID, Bufferable... args)
+	{
+		this.writeButtonActionPacket(buttonID, args).send();
+	}
+	
+	
+	
+//	TEMPLATE FOR NEW PACKETS
+//	/**
+//	 * Only creates and returns a Packet. For a description of the packet, see<br>
+//	 * {@link PacketFactory#create()}
+//	 */
+//	public Packet create()
+//	{
+//		return packetFactory.create();
+//	}
+//	/** Writes, but does not send a packet. <br>See {@link PacketFactory#create()} */
+//	public PacketSender write()
+//	{
+//		write(create());
+//		
+//		return this;
+//	}
+//	/** Writes and sends a packet.  <br>See {@link PacketFactory#create()} */
+//	public void send()
+//	{
+//		this.write().send();
+//	}
+//	TEMPLATE FOR NEW PACKETS
+	
 	
 	/**
 	 * Send all packets that have been created but not yet sent 

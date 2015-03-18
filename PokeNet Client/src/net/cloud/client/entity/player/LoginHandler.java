@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 import net.cloud.client.Client;
 import net.cloud.client.event.task.TaskEngine;
 import net.cloud.client.game.World;
+import net.cloud.client.game.action.ButtonActionID;
 
 /**
  * Good old fashioned static handler class, to encapsulate the logic for the login process.
@@ -69,6 +70,40 @@ public class LoginHandler {
 				abortWaitingForVerification();
 			}
 		});
+	}
+	
+	/**
+	 * Attempt to logout from the game (SAO fans, anyone?)
+	 */
+	public static void startLogout(Consumer<String> messageCallback)
+	{
+		// Update the callback function - we have a new one to use
+		currentMessageCallback = Optional.ofNullable(messageCallback);
+
+		// We need to be connected in general for this to work
+		if(!Client.instance().nettyClient().isConnected())
+		{
+			// We are not, so we can't contact the server
+			message("Cannot logout: Not connected to server");
+			
+			return;
+		}
+		
+		// We also need to currently be logged in
+		if(World.instance().getPlayer() != null && World.instance().getPlayer().getLoginState() != LoginState.LOGGED_IN)
+		{
+			// We are not, so there wouldn't be much point in trying to log out
+			message("Cannot logout: Not logged in");
+			
+			return;
+		}
+		
+		// Then to start we just tell the server we want to log out
+		// TODO: Send a packet to the server (time out like with login? On what check condition?)
+		// Server gets request, does its own safety checks.
+		//  Replies, tells us to log out (or no, with an error response) and then runs through its end of logout
+		// We get response, run through our end of logout (or show error response)
+		World.instance().getPlayer().getPacketSender().sendButtonActionPacket(ButtonActionID.LOGOUT);
 	}
 	
 	/**
