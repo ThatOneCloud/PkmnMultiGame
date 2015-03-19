@@ -65,6 +65,15 @@ public class LoginInterface extends Interface {
 	}
 	
 	/**
+	 * Show a message on the interface, for player feedback
+	 * @param message The message
+	 */
+	public void message(String message)
+	{
+		messageLabel.setText(message);
+	}
+	
+	/**
 	 * A method to call when either of the text fields are acted on. 
 	 * If both are filled out, then try the login process
 	 * @param field Text field
@@ -112,7 +121,7 @@ public class LoginInterface extends Interface {
 		}
 		
 		// Call on the login handler to take the wheel (again - functional programming - cool!)
-		LoginHandler.startLogin(usernameField.getText(), passwordField.getText(), messageLabel::setText);
+		LoginHandler.startLogin(usernameField.getText(), passwordField.getText(), this::message);
 	}
 	
 	/**
@@ -121,7 +130,7 @@ public class LoginInterface extends Interface {
 	 */
 	private void doLogout()
 	{
-		LoginHandler.startLogout(messageLabel::setText);
+		LoginHandler.startLogout(this::message);
 	}
 
 }

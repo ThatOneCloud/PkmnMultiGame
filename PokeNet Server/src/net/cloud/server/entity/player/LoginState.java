@@ -18,6 +18,9 @@ public enum LoginState {
 	LOGGED_IN,
 	
 	/** Login has - somewhere along the line - failed */
-	FAILED;
+	FAILED,
+	
+	/** After a successful login, the player has later disconnected */
+	DISCONNECTED;
 
 }

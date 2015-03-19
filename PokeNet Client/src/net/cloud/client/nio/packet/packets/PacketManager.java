@@ -31,6 +31,7 @@ public class PacketManager {
 		packets[PacketConstants.LOGIN_DATA_RESPONSE] = new LoginDataResponsePacket();
 		packets[PacketConstants.SHOW_MSG_DIALOG] = new ShowMessageDialogPacket();
 		packets[PacketConstants.BUTTON_ACTION] = new ButtonActionPacket();
+		packets[PacketConstants.LOGOUT] = new LogoutPacket();
 	}
 	
 	/**

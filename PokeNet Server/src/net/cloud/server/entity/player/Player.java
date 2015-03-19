@@ -99,6 +99,14 @@ public class Player extends Entity implements Bufferable {
 	}
 	
 	/**
+	 * Request that this player be logged out from the game
+	 */
+	public void logout()
+	{
+		LoginHandler.doLogout(this);
+	}
+	
+	/**
 	 * Tell this player that its data has been loaded and it's time for it to be able to save data
 	 */
 	public void finishedLoading()

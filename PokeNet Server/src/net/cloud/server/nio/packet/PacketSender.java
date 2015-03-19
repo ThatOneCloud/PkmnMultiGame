@@ -1,5 +1,7 @@
 package net.cloud.server.nio.packet;
 
+import java.util.function.Consumer;
+
 import net.cloud.server.entity.player.LoginResponse;
 import net.cloud.server.entity.player.Player;
 import io.netty.channel.Channel;
@@ -147,6 +149,15 @@ public class PacketSender {
 	public void sendShowMessageDialog(String title, String message)
 	{
 		this.writeShowMessageDialog(title, message).send();
+	}
+	
+	/**
+	 * Writes and sends a logout packet. When this operation completes, the onSend function will be called
+	 */
+	public void sendLogout(Player player, Consumer<Player> onSend)
+	{
+		// Normally would use write().send(), but we need something other than a VoidPromise
+		channel.writeAndFlush(packetFactory.createLogoutPacket()).addListener((f) -> onSend.accept(player));
 	}
 	
 	/**

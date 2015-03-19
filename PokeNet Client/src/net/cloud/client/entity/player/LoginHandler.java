@@ -7,6 +7,9 @@ import net.cloud.client.Client;
 import net.cloud.client.event.task.TaskEngine;
 import net.cloud.client.game.World;
 import net.cloud.client.game.action.ButtonActionID;
+import net.cloud.gfx.Mainframe;
+import net.cloud.gfx.elements.modal.ModalManager;
+import net.cloud.gfx.interfaces.LoginInterface;
 
 /**
  * Good old fashioned static handler class, to encapsulate the logic for the login process.
@@ -99,11 +102,32 @@ public class LoginHandler {
 		}
 		
 		// Then to start we just tell the server we want to log out
-		// TODO: Send a packet to the server (time out like with login? On what check condition?)
-		// Server gets request, does its own safety checks.
-		//  Replies, tells us to log out (or no, with an error response) and then runs through its end of logout
-		// We get response, run through our end of logout (or show error response)
 		World.instance().getPlayer().getPacketSender().sendButtonActionPacket(ButtonActionID.LOGOUT);
+	}
+	
+	/**
+	 * Actually does the logout process, rather than requesting that we start it. 
+	 * Disconnects us and returns us to the login interface
+	 */
+	public static void doLogout()
+	{
+		// Are we even connected
+		if(!Client.instance().nettyClient().isConnected())
+		{
+			return;
+		}
+		
+		// Close the connection
+		Client.instance().nettyClient().disconnect();
+		
+		// Show the login interface, just like when the client starts
+		LoginInterface intf = new LoginInterface();
+		Mainframe.root().removeAllChildren();
+		Mainframe.root().add(intf);
+		
+		// May as well show a message
+		intf.message("Logout Successful");
+		ModalManager.instance().displayMessage("Logout", "You are now logged out");
 	}
 	
 	/**

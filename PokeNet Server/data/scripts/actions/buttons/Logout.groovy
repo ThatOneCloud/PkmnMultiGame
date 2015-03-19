@@ -1,30 +1,28 @@
-import io.netty.buffer.ByteBuf;
 import net.cloud.server.entity.player.Player;
 import net.cloud.server.game.action.ButtonAction;
 import net.cloud.server.game.action.ButtonActionID;
 import net.cloud.server.nio.bufferable.Bufferable;
-import net.cloud.server.nio.bufferable.BufferableException;
-import net.cloud.server.nio.bufferable.BufferableInteger;
-import net.cloud.server.nio.bufferable.BufferableString;
 
+import net.cloud.server.entity.player.LoginHandler;
+
+/**
+ * An action which moves a log out request to the LoginHandler (Yes, the LoginHandler)
+ */
 public class LogoutButtonAction extends ButtonAction {
 	
+	/** Calls the super constructor */
 	public LogoutButtonAction(ButtonActionID id)
 	{
 		super(id);
-		println("created logout button action with id " + id);
 	}
 	
-	public void decodeArgs(Bufferable[] args, ByteBuf data) throws BufferableException
-	{
-		args[0] = BufferableString.createFrom(data);
-		args[1] = BufferableInteger.createFrom(data);
-	}
-	
+	/**
+	 * Pass the request off to the LoginHandler. There are no expected arguments
+	 */
 	@Override
 	public void handle(Player player, Bufferable[] args) throws Exception
 	{
-		println("logout button action groovy file handle method");
+		LoginHandler.doLogout(player);
 	}
 	
 }

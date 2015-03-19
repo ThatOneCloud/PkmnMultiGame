@@ -59,13 +59,22 @@ public class PacketFactory {
 	
 	/**
 	 * Create a packet to show a modal message dialog
-	 * @para title The title to put on the dialog's frame
+	 * @param title The title to put on the dialog's frame
 	 * @param message The message to show
 	 * @return A packet to show a modal message dialog with
 	 */
 	public ShowMessageDialogPacket createShowMessageDialogPacket(String title, String message)
 	{
 		return new ShowMessageDialogPacket(title, message);
+	}
+	
+	/**
+	 * Create a packet to make the client log out
+	 * @return A packet to show a modal message dialog with
+	 */
+	public LogoutPacket createLogoutPacket()
+	{
+		return new LogoutPacket();
 	}
 
 }

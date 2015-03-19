@@ -88,7 +88,7 @@ public class Client {
 		startServices();
 		
 		// It may seem odd to do this here rather than during construction of the Quasi-root, but show the login interface
-		Mainframe.instance().gfx().rootPanel().getQuasiRoot().add(new LoginInterface());
+		Mainframe.root().add(new LoginInterface());
 
 		// Sit back, wait for someone to tell us it's shutdown time
 		try {

@@ -2,6 +2,7 @@ package net.cloud.gfx.elements.modal;
 
 import java.util.Optional;
 
+import net.cloud.client.logging.Logger;
 import net.cloud.client.util.function.InputValidator;
 import net.cloud.gfx.Mainframe;
 import net.cloud.gfx.elements.Container;
@@ -10,6 +11,7 @@ import net.cloud.gfx.elements.Interface;
 import net.cloud.gfx.elements.decorator.DraggableElement;
 import net.cloud.gfx.elements.decorator.FramedElement;
 import net.cloud.gfx.focus.FocusController;
+import net.cloud.gfx.interfaces.QuasiRoot;
 
 /**
  * The front-end and work center for modal dialog creation. Offers quick and easy ways of creating 
@@ -242,6 +244,30 @@ public class ModalManager {
 		showDialog(parent, dialog, dragFrame);
 		
 		// This is where we don't do more, we don't wait for any value or remove the dialog
+	}
+	
+	/**
+	 * Uses displayDialog to show a nonblocking message dialog on the root. 
+	 * If the call fails, a simple exception message will be logged.
+	 * @param title The title to put on the frame
+	 * @param message The message to display
+	 */
+	public void displayMessage(String title, String message)
+	{
+		// The modal manager would block, we need to create our own dialog
+		QuasiRoot root = Mainframe.root();
+		MessageDialog dialog = ModalFactory.newFactory().createMessageDialog(root, message);
+		
+		// We're also going to need our own listener on it (tell it to close itself)
+		dialog.setConfirmListener(dialog::removeDialog);
+		
+		try {
+			// Now display the dialog
+			displayDialog(title, root, dialog);
+		} catch (ModalException e) {
+			// It would appear we can't show the dialog. Not a lot of effect, beyond the message not showing
+			Logger.instance().logException("Could not display message titled " + title, e);
+		}
 	}
 	
 	/**

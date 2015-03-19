@@ -66,6 +66,9 @@ public class ButtonActionPacket extends ReceiveOnlyPacket {
 		return packet;
 	}
 
+	/**
+	 * Ships the action off to the ActionManager
+	 */
 	@Override
 	public void handlePacket(Player player)
 	{

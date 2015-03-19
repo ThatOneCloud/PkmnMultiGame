@@ -14,10 +14,11 @@ public class PacketConstants {
 	public static final short LOGIN_DATA_RESPONSE = 5;
 	public static final short SHOW_MSG_DIALOG = 6;
 	public static final short BUTTON_ACTION = 7;
+	public static final short LOGOUT = 8;
 	// End Packet Opcodes //
 	
 	/** The number of packets (Ie the limit on the op code) */
-	public static final int NUM_PACKETS = 8;
+	public static final int NUM_PACKETS = 9;
 	
 	/** Max bytes that can be in a single packet */
 	public static final int MAX_PACKET_LENGTH = 4096;

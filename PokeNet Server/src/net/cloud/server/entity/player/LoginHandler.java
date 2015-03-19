@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import net.cloud.server.entity.player.save.PlayerLoadException;
 import net.cloud.server.entity.player.save.PlayerLoadHandler;
+import net.cloud.server.entity.player.save.PlayerSaveException;
 import net.cloud.server.game.World;
 import net.cloud.server.logging.Logger;
 import net.cloud.server.util.HashObj;
@@ -81,6 +82,46 @@ public class LoginHandler {
 			// There's not much we can do if the channel does not close, except shout about it
 			Logger.instance().logException("Could not close channel while aborting newly connected player.", e);
 		}
+	}
+	
+	/**
+	 * Do the log out process for a player. This will actually run through the actions needed 
+	 * to log a player out of the game
+	 * @param player The player that is about to leave the game
+	 */
+	public static void doLogout(Player player)
+	{
+		// We should probably make sure the player is actually logged in
+		if(player.getLoginState() != LoginState.LOGGED_IN)
+		{
+			return;
+		}
+		
+		// So we're going to proceed. Tell the client to run its end of the logout procedure
+		// Once this packet actually sends, we'll resume the process
+		player.getPacketSender().sendLogout(player, LoginHandler::resumeLogout);
+	}
+	
+	/**
+	 * Pick up where doLogout left off, wrapping up the server side end of logging out
+	 * @param player The player that was just told to log out
+	 */
+	private static void resumeLogout(Player player)
+	{
+		// Channel is closed, consider now the time to wrap up our end of logout
+		// We'll move into the "trap" LoginState
+		player.setLoginState(LoginState.DISCONNECTED);
+		
+		// Save the data
+		try {
+			player.saveToFile();
+		} catch (PlayerSaveException e) {
+			// Darn, they're logging out but we can't assure data integrity. Sad day for this player.
+			Logger.instance().logException("Player data not saved at logout", e);
+		}
+		
+		// No need to have them in the world anymore. Make this come last so they can't log back in before this is complete
+		World.instance().getPlayerMap().remove(player.getPacketSender().channel());
 	}
 
 }

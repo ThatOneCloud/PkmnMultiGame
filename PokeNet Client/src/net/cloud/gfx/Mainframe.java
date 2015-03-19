@@ -3,6 +3,7 @@ package net.cloud.gfx;
 import javax.swing.JFrame;
 
 import net.cloud.gfx.handlers.WindowEventHandler;
+import net.cloud.gfx.interfaces.QuasiRoot;
 
 /**
  * The application frame.  Within this frame is the panel containing the game graphics. 
@@ -63,6 +64,16 @@ public class Mainframe extends JFrame {
 		}
 		
 		return instance;
+	}
+	
+	/**
+	 * Way shorter access to the QuasiRoot, because yeesh would that get old. <br>
+	 * Equivalent to <code>instance().gfx().rootPanel().getQuasiRoot()</code>
+	 * @return The graphic element root
+	 */
+	public static QuasiRoot root()
+	{
+		return instance().gfx().rootPanel().getQuasiRoot();
 	}
 	
 	/**
