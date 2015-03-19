@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import net.cloud.server.event.command.Command;
 import net.cloud.server.event.command.CommandException;
+import net.cloud.server.event.command.argument.FlagArgument;
 import net.cloud.server.event.command.parameter.OptionalParameter;
 import net.cloud.server.event.command.parameter.RequiredParameter;
 import net.cloud.server.util.StringUtil;
@@ -120,27 +121,38 @@ public abstract class AbstractCommand implements Command {
 			throw new CommandException("Invalid command formatting", e);
 		}
 		
-		// The name was removed during extractCommandToken. Now let it find the value
-		String paramValue;
-		try {
-			paramValue = StringUtil.extractCommandToken(argBuilder);
-		} catch (ParseException e) {
-			throw new CommandException("Optional argument has no value", e);
+		// We're going to look into parsing parameters - these are the prototype and actual parameters
+		OptionalParameter<?> protoOptParam = findProtoOptParam(longForm, paramName);
+		OptionalParameter<?> newParam = null;
+		
+		// We make a concession for FlagArguments, they do not need a value
+		if(protoOptParam.getArgument() instanceof FlagArgument)
+		{
+			newParam = protoOptParam.newParsedInstance(null);
+		}
+		// Other parameters require a value
+		else {
+			String paramValue;
+			try {
+				paramValue = StringUtil.extractCommandToken(argBuilder);
+			} catch (ParseException e) {
+				throw new CommandException("Optional argument has no value", e);
+			}
+			newParam = protoOptParam.newParsedInstance(paramValue);
 		}
 		
-		// Finds a matching parameter, attempts to parse, and then add to the list of parameters
-		findAndAddOptParam(longForm, paramName, paramValue);
+		// Now that we have a parsed parameter ready to go, add it to our list
+		this.provideOptionalParameter(newParam);
 	}
-
+	
 	/**
 	 * Determine which of the optional parameters - if any - match the one provided. 
-	 * When done, the parameter is added to the list
+	 * Simple finds and returns the prototype parameter, does not attempt parsing
 	 * @param longForm True if the name is the long name
 	 * @param paramName The name of the optional parameter
-	 * @param paramValue The value to be given to the parameter
-	 * @throws CommandException If the parameter could not be added
+	 * @throws CommandException If the parameter could not be found
 	 */
-	private void findAndAddOptParam(boolean longForm, String paramName, String paramValue) throws CommandException {
+	private OptionalParameter<?> findProtoOptParam(boolean longForm, String paramName) throws CommandException {
 		// Some variables we'll need now
 		OptionalParameter<?> newParam = null;
 		boolean foundMatch = false;
@@ -160,7 +172,7 @@ public abstract class AbstractCommand implements Command {
 				
 				// Found one that matches - let it try to parse itself
 				// If it fails, it will throw a CommandException - which we just let get re-thrown
-				newParam = p.newParsedInstance(paramValue);
+				newParam = p;
 				
 				// No need to continue looking
 				break;
@@ -175,7 +187,7 @@ public abstract class AbstractCommand implements Command {
 		}
 		
 		// So now we have a parameter object parsed and ready to add
-		this.provideOptionalParameter(newParam);
+		return newParam;
 	}
 	
 	/**
@@ -255,6 +267,17 @@ public abstract class AbstractCommand implements Command {
 		
 		// No match. Which is fine, its existence is optional. However, there will be no value.
 		return Optional.empty();
+	}
+	
+	/**
+	 * Check to see if an optional parameter has been provided. 
+	 * This will check via getOptParam(name). 
+	 * @param name The name of the parameter. Short or long form. Case sensitive.
+	 * @return True if the parameter with the given name has been provided
+	 */
+	public boolean hasOptParam(String name)
+	{
+		return getOptParam(name).isPresent();
 	}
 	
 	/**

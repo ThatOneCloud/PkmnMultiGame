@@ -8,5 +8,8 @@ public class ArgumentPrototypes {
 	
 	/** A StringArgument prototype */
 	public static final StringArgument STRING = new StringArgument();
+	
+	/** Prototype for a FlagArgument */
+	public static final FlagArgument FLAG = new FlagArgument();
 
 }

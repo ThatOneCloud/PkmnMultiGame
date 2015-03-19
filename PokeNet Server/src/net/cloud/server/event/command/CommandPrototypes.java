@@ -22,6 +22,7 @@ public class CommandPrototypes {
 		prototypes.put("cmdscript", new CmdScriptCommand());
 		prototypes.put("create_account", new CreateAccountCommand());
 		prototypes.put("echo", new EchoCommand());
+		prototypes.put("load_action", new LoadActionCommand());
 		prototypes.put("shutdown", new ShutdownCommand());
 		prototypes.put("test", new TestCommand());
 		prototypes.put("track_stats", new ToggleStatTrackingCommand());
