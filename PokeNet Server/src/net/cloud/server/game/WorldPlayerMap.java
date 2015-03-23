@@ -93,7 +93,7 @@ public class WorldPlayerMap {
 		players.put(channel, player);
 		
 		// Report that the number of players online has changed.
-		StatTracker.instance().updatePlayersOnline(players.size());
+		StatTracker.instance().updatePlayersOnline(+1);
 	}
 	
 	/**
@@ -107,7 +107,7 @@ public class WorldPlayerMap {
 		players.remove(channel);
 		
 		// Report that the number of players online has changed.
-		StatTracker.instance().updatePlayersOnline(players.size());
+		StatTracker.instance().updatePlayersOnline(-1);
 	}
 	
 	/**

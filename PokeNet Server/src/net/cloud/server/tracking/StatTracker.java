@@ -135,9 +135,9 @@ public class StatTracker {
 	
 	/**
 	 * Update statistics on the players that are currently online
-	 * @param currentlyOnline The number of players that are currently online
+	 * @param currentlyOnline Typically +1 or -1, the change since the last update
 	 */
-	public void updatePlayersOnline(int currentlyOnline)
+	public void updatePlayersOnline(int change)
 	{
 		if(!tracking())
 		{
@@ -145,7 +145,7 @@ public class StatTracker {
 		}
 		
 		// Just tell it like it is, no figurin' to do
-		stats.updatePlayersOnline(currentlyOnline);
+		stats.updatePlayersOnline(change);
 	}
 	
 	/**

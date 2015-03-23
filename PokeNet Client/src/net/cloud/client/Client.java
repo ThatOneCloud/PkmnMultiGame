@@ -1,5 +1,8 @@
 package net.cloud.client;
 
+import java.time.Clock;
+import java.time.ZoneId;
+
 import net.cloud.client.event.shutdown.ShutdownHandler;
 import net.cloud.client.event.task.TaskEngine;
 import net.cloud.client.file.FileServer;
@@ -14,6 +17,9 @@ import net.cloud.gfx.interfaces.LoginInterface;
  * Can also act as a central point for subsystems if need be.
  */
 public class Client {
+	
+	/** A Clock for the game to standardize on. All timing operations can then rely on this clock */
+	public static final Clock CLOCK = Clock.system(ZoneId.of("UTC-5"));
 	
 	/** The single instance of the Client class */
 	private static Client instance;

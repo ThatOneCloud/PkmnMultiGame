@@ -26,7 +26,14 @@ public class XStreamHandler {
 	 */
 	private void processAnnotations()
 	{
+		xStream.processAnnotations(net.cloud.client.nio.bufferable.BufferableInteger.class);
+		xStream.processAnnotations(net.cloud.client.nio.bufferable.BufferableString.class);
+		xStream.processAnnotations(net.cloud.client.util.ConnectionInfo.class);
+		xStream.processAnnotations(net.cloud.client.util.HashObj.class);
 		xStream.processAnnotations(net.cloud.client.entity.player.Player.class);
+		xStream.processAnnotations(net.cloud.client.util.SimpleDate.class);
+		xStream.processAnnotations(net.cloud.client.util.SimpleDateTime.class);
+		xStream.processAnnotations(net.cloud.client.util.SimpleTime.class);
 	}
 	
 	/** Singleton constructor. */

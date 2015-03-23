@@ -109,9 +109,9 @@ public class SaveRequestHandler {
 		// Again up front make sure the directory exists. Before trying to open the file.
 		try {
 			Files.createDirectories(path.getParent());
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		} catch (IOException e) {
+			req.notifyHandleException(new FileRequestException("Could not create directories necessary for file", e));
+			return;
 		}
 		
 		// Try-with-resources. Just a quick one-off usage of an output stream

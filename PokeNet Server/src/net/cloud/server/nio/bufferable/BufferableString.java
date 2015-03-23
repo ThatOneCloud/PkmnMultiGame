@@ -1,5 +1,7 @@
 package net.cloud.server.nio.bufferable;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+
 import net.cloud.server.util.StringUtil;
 import io.netty.buffer.ByteBuf;
 
@@ -9,6 +11,7 @@ import io.netty.buffer.ByteBuf;
  * Either way, it's just going to rely on the methods in {@link StringUtil}. 
  * Null is allowed, and do be wary that while String is immutable, this wrapper is not.
  */
+@XStreamAlias("BufferableString")
 public class BufferableString implements Bufferable {
 	
 	/** The wrapped string */

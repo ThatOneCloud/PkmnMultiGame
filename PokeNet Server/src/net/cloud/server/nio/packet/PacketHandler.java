@@ -44,8 +44,7 @@ public class PacketHandler extends ChannelInboundHandlerAdapter {
 	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause)
 	{
 		// Exception occurred, close the connection
-		Logger.writer().println("[ERR] " + cause.getClass().getName() + " :\n   " + cause.getMessage() + "\n   Closing connection.");
-		Logger.writer().flush();
+		Logger.instance().logException("Exception caught handling packet. Closing connection.", cause);
 		ctx.close();
 	}
 

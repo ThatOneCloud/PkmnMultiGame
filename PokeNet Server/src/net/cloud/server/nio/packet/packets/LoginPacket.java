@@ -168,8 +168,12 @@ public class LoginPacket extends ReceiveOnlyPacket {
 			
 			// Reply back with the data
 			// TODO: combine into composite packet
+			String loginMsg = player.getLastLogin() == null ? "login success" : "login success."+System.lineSeparator()+"last login: "+player.getLastLogin().toString();
 			player.getPacketSender().sendLoginDataResponse(player);
-			player.getPacketSender().sendShowMessageDialog("login", "login success");
+			player.getPacketSender().sendShowMessageDialog("login", loginMsg);
+			
+			// Update tracking field after we've formed the message
+			player.updateLastLogin();
 		}
 		
 	}

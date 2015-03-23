@@ -2,8 +2,6 @@ package net.cloud.server.entity.player.save;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel.MapMode;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -78,11 +76,11 @@ public class PlayerLoadHandler {
 	 */
 	public void loadFromFile(RandomAccessFile dataFile) throws PlayerLoadException
 	{
-		// Memory map the data, I think it's a feasible choice here
-		ByteBuffer nioBuffer = getMappedBuffer(dataFile);
-
-		// Then wrap it in a Netty ByteBuf since that's what Bufferable objects expect
-		ByteBuf nettyBuffer = getNettyBuffer(nioBuffer);
+		// Read in the data
+		byte[] data = getFileBytes(player, dataFile);
+		
+		// Wrap the array into a ByteBuf
+		ByteBuf nettyBuffer = Unpooled.wrappedBuffer(data);
 
 		// Have the player object go through deserialization - not on a different thread
 		restorePlayerData(nettyBuffer);
@@ -157,31 +155,24 @@ public class PlayerLoadHandler {
 	}
 	
 	/**
-	 * Obtain a memory mapped byte buffer from the random access file. 
+	 * Obtain a byte array with the contents of the file
+	 * @param player The player whose file we're looking into
 	 * @param dataFile The file to read the player data from
-	 * @return A ByteBuffer to read the file data from
-	 * @throws PlayerLoadException If the file could not be memory mapped
+	 * @return A byte array containing the data from the file
+	 * @throws PlayerLoadException If the file could not be read
 	 */
-	private ByteBuffer getMappedBuffer(RandomAccessFile dataFile) throws PlayerLoadException
+	private byte[] getFileBytes(Player player, RandomAccessFile dataFile) throws PlayerLoadException
 	{
-		// Map the entire file
+		// Read all of the bytes into an array
 		try {
-			return dataFile.getChannel().map(MapMode.READ_ONLY, 0, dataFile.length());
-		} catch (IOException e) {
-			// Re-throw. Code below this should be able to safely assume buffer is not null
-			throw new PlayerLoadException(player, "Could not memory map player's save data", e);
+			byte[] data = new byte[(int) dataFile.length()];
+			
+			dataFile.read(data);
+			
+			return data;
+		} catch(IOException e) {
+			throw new PlayerLoadException(player, "Could not read data file", e);
 		}
-	}
-	
-	/**
-	 * Get a ByteBuf view of the given buffer. Reads will read-through
-	 * @param nioBuffer The ByteBuffer to obtain a ByteBuf view of
-	 * @return A ByteBuf view of the given buffer. 
-	 */
-	private ByteBuf getNettyBuffer(ByteBuffer nioBuffer)
-	{
-		// Thanks, Netty!
-		return Unpooled.wrappedBuffer(nioBuffer);
 	}
 	
 	/**

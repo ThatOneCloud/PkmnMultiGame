@@ -1,5 +1,8 @@
 package net.cloud.server;
 
+import java.time.Clock;
+import java.time.ZoneId;
+
 import net.cloud.server.event.command.CommandService;
 import net.cloud.server.event.shutdown.ShutdownHandler;
 import net.cloud.server.event.task.TaskEngine;
@@ -17,9 +20,12 @@ public class Server {
 	
 	// TODO: Known bugs before framework release:
 	// gracefully handle abrupt disconnect (tasks may need to gracefully skirt around this, too)
-	// player save task seems broken
-	// don't get bad data message with alice_5 (ofc, with a bad password, that comes first)
-	// update players online in StatTracker
+	// DONE player save task seems broken
+	// DONE don't get bad data message with alice_5 (ofc, with a bad password, that comes first)
+	// text area line wrap
+	
+	/** A Clock for the server to standardize on. All timing operations can then rely on this clock */
+	public static final Clock CLOCK = Clock.system(ZoneId.of("UTC-5"));
 	
 	/** The single instance of the Server class */
 	private static Server instance;

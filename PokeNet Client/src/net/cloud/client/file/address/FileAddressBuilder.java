@@ -2,6 +2,7 @@ package net.cloud.client.file.address;
 
 import java.time.LocalDateTime;
 
+import net.cloud.client.Client;
 import net.cloud.client.file.address.AddressConstants;
 import net.cloud.client.file.address.FileAddress;
 import net.cloud.client.file.address.FileAddressBuilder;
@@ -101,7 +102,7 @@ public class FileAddressBuilder {
 		
 		// Name is the current time. The day is a folder, the file is the time
 		b.space = AddressConstants.SPACE_LOG_FILES;
-		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime now = LocalDateTime.now(Client.CLOCK);
 		StringBuilder name = new StringBuilder();
 		name.append(now.getMonthValue()).append('-')
 			.append(now.getDayOfMonth()).append('-')

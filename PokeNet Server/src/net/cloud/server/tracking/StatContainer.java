@@ -2,6 +2,8 @@ package net.cloud.server.tracking;
 
 import java.time.LocalTime;
 
+import net.cloud.server.Server;
+
 /**
  * For lack of a better name, this object contains all of the various statistics that the 
  * StatTracker has been collecting. 
@@ -20,7 +22,7 @@ public class StatContainer implements Cloneable {
 	 */
 	public StatContainer()
 	{
-		creationTime = LocalTime.now();
+		creationTime = LocalTime.now(Server.CLOCK);
 		
 		playersOnline = 0;
 	}
@@ -35,7 +37,7 @@ public class StatContainer implements Cloneable {
 		StatContainer c = (StatContainer) super.clone();
 		
 		// Update the creation time to whatever it now is
-		c.creationTime = LocalTime.now();
+		c.creationTime = LocalTime.now(Server.CLOCK);
 		
 		// Now deep copy each needed field to make it an independent copy
 		c.playersOnline = playersOnline;
@@ -57,11 +59,11 @@ public class StatContainer implements Cloneable {
 	
 	/**
 	 * Set a new figure for how many players are currently online
-	 * @param currentlyOnline The number of players currently online
+	 * @param currentlyOnline Typically +1 or -1, the change since the last update
 	 */
-	public void updatePlayersOnline(int currentlyOnline)
+	public void updatePlayersOnline(int change)
 	{
-		this.playersOnline = currentlyOnline;
+		this.playersOnline += change;
 	}
 	
 	/**

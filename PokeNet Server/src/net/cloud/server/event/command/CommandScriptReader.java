@@ -1,6 +1,7 @@
 package net.cloud.server.event.command;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.PrintWriter;
 
 import net.cloud.server.file.FileRequestException;
@@ -60,8 +61,16 @@ public class CommandScriptReader {
 		// Then create a CommandReader - which we'll delegate actual reading work to
 		initCmdReader();
 		
-		// And now we can delegate off. We've done all we needed to
+		// And now we can delegate off.
 		cmdReader.readCommands();
+		
+		// Commands are done being read, close the file we opened
+		try {
+			closeBR();
+		} catch (IOException e) {
+			messageOut("Command script could not be closed");
+			return;
+		}
 	}
 	
 	/**
@@ -72,6 +81,18 @@ public class CommandScriptReader {
 	{
 		BufferedReaderRequest req = new BufferedReaderRequest(FileAddressBuilder.createCommandScriptAddress(scriptName));
 		in = FileServer.instance().submitAndWaitForDescriptor(req);
+	}
+	
+	/**
+	 * Attempt to close the current input file
+	 * @throws IOException If the file could not be closed
+	 */
+	private void closeBR() throws IOException
+	{
+		if(in != null)
+		{
+			in.close();
+		}
 	}
 	
 	/** Initialize the CommandReader which will be used to read from the input */

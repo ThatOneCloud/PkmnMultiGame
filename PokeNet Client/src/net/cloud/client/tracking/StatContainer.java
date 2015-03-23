@@ -2,6 +2,7 @@ package net.cloud.client.tracking;
 
 import java.time.LocalTime;
 
+import net.cloud.client.Client;
 import net.cloud.client.ConfigConstants;
 import net.cloud.client.util.BoundedCircularIntArray;
 
@@ -26,7 +27,7 @@ public class StatContainer implements Cloneable {
 	 */
 	public StatContainer()
 	{
-		creationTime = LocalTime.now();
+		creationTime = LocalTime.now(Client.CLOCK);
 		
 		fps = new BoundedCircularIntArray(FPS_ARRAY_SIZE, ConfigConstants.FRAME_RATE);
 	}
@@ -41,7 +42,7 @@ public class StatContainer implements Cloneable {
 		StatContainer c = (StatContainer) super.clone();
 		
 		// Update the creation time to whatever it now is
-		c.creationTime = LocalTime.now();
+		c.creationTime = LocalTime.now(Client.CLOCK);
 		
 		// Now deep copy each needed field to make it an independent copy
 		c.fps = fps.clone();

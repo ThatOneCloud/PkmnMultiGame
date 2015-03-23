@@ -63,12 +63,10 @@ public class CacheTable {
 		long filePos = getFilePosition(index);
 		int fileSize = getFileSize(index, filePos);
 		
-		// Now we'll go ahead and memory map the file. (Arguable for a single file - region is more likely worth mapping)
-		ByteBuffer fileBuffer = getMemoryMappedBuffer(filePos, fileSize);
-		
-		// The buffer contains only the bytes we want. Extract them to an array
+		// We'll read directly from the file, a single file is likely small enough to make this faster than mapping
 		byte[] fileData = new byte[fileSize];
-		fileBuffer.get(fileData);
+		cache.seek(filePos);
+		cache.read(fileData);
 		
 		// Finally wrap it in a CachedFile object and we're good to go
 		return new CachedFile(fileData);

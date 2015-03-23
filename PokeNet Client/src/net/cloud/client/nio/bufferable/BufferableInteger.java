@@ -1,11 +1,14 @@
 package net.cloud.client.nio.bufferable;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+
 import io.netty.buffer.ByteBuf;
 
 /**
  * A wrapper around a primitive integer, that implements Bufferable. Useful for when a Bufferable is expected but the calling 
  * code has an int to provide. You could also store this in place of an int, but why when a primitive is less work? 
  */
+@XStreamAlias("BufferableInteger")
 public class BufferableInteger implements Bufferable {
 	
 	/** The wrapped integer */

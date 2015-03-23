@@ -2,6 +2,7 @@ package net.cloud.server.entity.player;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.net.InetSocketAddress;
 import java.util.Optional;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -12,6 +13,7 @@ import net.cloud.server.entity.player.save.PlayerSaveException;
 import net.cloud.server.entity.player.save.PlayerSaveHandler;
 import net.cloud.server.nio.bufferable.Bufferable;
 import net.cloud.server.nio.packet.PacketSender;
+import net.cloud.server.util.ConnectionInfo;
 import net.cloud.server.util.HashObj;
 import net.cloud.server.util.StringUtil;
 
@@ -38,6 +40,9 @@ public class Player extends Entity implements Bufferable {
 	/** The player's password. */
 	private HashObj password;
 	
+	/** When the player most recently logged into the game */
+	private ConnectionInfo lastLogin;
+	
 	/**
 	 * Constructor that accepts the PacketSender
 	 * @param packetSender PacketSender that will be used throughout lifetime of player
@@ -50,7 +55,10 @@ public class Player extends Entity implements Bufferable {
 		setLoginState(LoginState.CONNECTED);
 		
 		// Don't start with save handler. Only have that once the player has been loaded
-		saveHandler = Optional.empty();
+		this.saveHandler = Optional.empty();
+		
+		// Null here indicates the account has yet to be logged in
+		this.lastLogin = null;
 	}
 	
 	/** @return The player's username */
@@ -116,6 +124,24 @@ public class Player extends Entity implements Bufferable {
 	}
 	
 	/**
+	 * @return When the player was last logged in. null if they never have been.
+	 */
+	public ConnectionInfo getLastLogin()
+	{
+		return lastLogin;
+	}
+	
+	/**
+	 * Sets this player's last login information to their status here and now. 
+	 * Does require that they be logged into the game.
+	 */
+	public void updateLastLogin()
+	{
+		// We pull the address from the channel we're connected with - known to have an InetSocketAddress
+		this.lastLogin = new ConnectionInfo(((InetSocketAddress) getPacketSender().channel().remoteAddress()).getAddress().getHostAddress());
+	}
+	
+	/**
 	 * Save this player's data to file. Serializing data is done on the calling thread, writing to the file 
 	 * is done on the File Server. 
 	 * @throws PlayerSaveException If the data could not be saved. Not thrown if file could not be written. 
@@ -135,10 +161,20 @@ public class Player extends Entity implements Bufferable {
 	@Override
 	public void save(ByteBuf buffer)
 	{
-		// Well for now all we have is the username & password
+		// Username and password
 		StringUtil.writeStringToBuffer(getUsername(), buffer);
-		
 		password.save(buffer);
+		
+		// We have more than just username and password now!
+		// Last login info may be null, so we're going to flag that
+		if(lastLogin == null)
+		{
+			buffer.writeBoolean(false);
+		}
+		else {
+			buffer.writeBoolean(true);
+			lastLogin.save(buffer);
+		}
 	}
 
 	/**
@@ -147,10 +183,19 @@ public class Player extends Entity implements Bufferable {
 	@Override
 	public void restore(ByteBuf buffer)
 	{
-		// And for now, restore the user & pass just to verify it
+		// Username and password
 		username = StringUtil.getFromBuffer(buffer);
-		
 		password = HashObj.createFrom(buffer);
+		
+		// Read last login flag to check if null, restore it if we have it
+		boolean lastLoginExists = buffer.readBoolean();
+		if(lastLoginExists)
+		{
+			lastLogin = ConnectionInfo.createFrom(buffer);
+		}
+		else {
+			lastLogin = null;
+		}
 	}
 	
 	/**

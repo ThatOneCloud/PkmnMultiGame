@@ -156,6 +156,13 @@ public class PlayerSaveHandler {
 			catch (IOException e) {
 				// Reading exception or close exception. If both, close exception is suppressed. That's preferable, here.
 				Logger.instance().logException("Could not write data for player " + player.getUsername(), e);
+			} finally {
+				// We need to close the file once we've got it saved
+				try {
+					file.close();
+				} catch (IOException e) {
+					Logger.instance().logException("Could not close player data file for " + player.getUsername(), e);
+				}
 			}
 		}
 		

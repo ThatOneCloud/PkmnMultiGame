@@ -109,8 +109,8 @@ public class SaveRequestHandler {
 		// Again up front make sure the directory exists. Before trying to open the file.
 		try {
 			Files.createDirectories(path.getParent());
-		} catch (IOException e1) {
-			req.notifyHandleException(new FileRequestException("Could not open or create XML file", e1));
+		} catch (IOException e) {
+			req.notifyHandleException(new FileRequestException("Could not create directories necessary for file", e));
 		}
 		
 		// Try-with-resources. Just a quick one-off usage of an output stream

@@ -1,5 +1,6 @@
 package net.cloud.server.entity.player.save;
 
+import net.cloud.server.entity.player.LoginState;
 import net.cloud.server.entity.player.Player;
 import net.cloud.server.event.task.voidtasks.VoidTask;
 import net.cloud.server.game.World;
@@ -31,6 +32,12 @@ public class PlayerSaveTask implements VoidTask {
 	private void attemptSave(Player p)
 	{
 		try {
+			// Only save for logged in players
+			if(p.getLoginState() != LoginState.LOGGED_IN)
+			{
+				return;
+			}
+			
 			p.saveToFile();
 		} catch (PlayerSaveException e) {
 			// Didn't work so report the issue. End of the exception chain

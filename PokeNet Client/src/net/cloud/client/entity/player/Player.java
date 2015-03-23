@@ -11,6 +11,7 @@ import net.cloud.client.nio.bufferable.Bufferable;
 import net.cloud.client.nio.bufferable.BufferableException;
 import net.cloud.client.util.HashObj;
 import net.cloud.client.util.StringUtil;
+import net.cloud.client.util.ConnectionInfo;
 
 /**
  * The Player object. Home of the player. Holds the player's data. 
@@ -35,6 +36,9 @@ public class Player extends Entity implements Bufferable {
 	/** The player's password, as a SHA-1 hash. */
 	private HashObj password;
 	
+	/** When the player most recently logged into the game */
+	private ConnectionInfo lastLogin;
+	
 	/**
 	 * Constructor that accepts the PacketSender, for the World Player. 
 	 * @param packetSender PacketSender that will be used throughout lifetime of player
@@ -42,6 +46,9 @@ public class Player extends Entity implements Bufferable {
 	public Player(PacketSender packetSender)
 	{
 		this.packetSender = packetSender;
+		
+		// Null here indicates the account has yet to be logged in
+		this.lastLogin = null;
 	}
 	
 	/** @return The player's username */
@@ -91,15 +98,33 @@ public class Player extends Entity implements Bufferable {
 	}
 	
 	/**
+	 * @return When the player was last logged in. null if they never have been.
+	 */
+	public ConnectionInfo getLastLogin()
+	{
+		return lastLogin;
+	}
+	
+	/**
 	 * Save all of the non-transient player data to the buffer
 	 */
 	@Override
 	public void save(ByteBuf buffer) throws BufferableException
 	{
-		// Well for now all we have is the username & password
+		// Username and password
 		StringUtil.writeStringToBuffer(getUsername(), buffer);
-		
 		password.save(buffer);
+		
+		// We have more than just username and password now!
+		// Last login info may be null, so we're going to flag that
+		if(lastLogin == null)
+		{
+			buffer.writeBoolean(false);
+		}
+		else {
+			buffer.writeBoolean(true);
+			lastLogin.save(buffer);
+		}
 	}
 
 	/**
@@ -108,10 +133,19 @@ public class Player extends Entity implements Bufferable {
 	@Override
 	public void restore(ByteBuf buffer) throws BufferableException
 	{
-		// And for now, restore the user & pass just to verify it
+		// Username and password
 		username = StringUtil.getFromBuffer(buffer);
-		
 		password = HashObj.createFrom(buffer);
+		
+		// Read last login flag to check if null, restore it if we have it
+		boolean lastLoginExists = buffer.readBoolean();
+		if(lastLoginExists)
+		{
+			lastLogin = ConnectionInfo.createFrom(buffer);
+		}
+		else {
+			lastLogin = null;
+		}
 	}
 
 }

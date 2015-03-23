@@ -116,7 +116,7 @@ public class SpriteTestInterface extends Interface {
 		VerticalView longView = new VerticalView(0, 0, 250);
 		longView.setPadding(10);
 		longView.setOptimizedDrawing(true);
-		for(int i = 0; i < 50000; ++i)
+		for(int i = 0; i < 100; ++i)
 		{
 			longView.add(new TextArea("Block " + i + " of text used for a rather long vertical view meant to be placed in a scroll view",
 					0, 0, 250));
