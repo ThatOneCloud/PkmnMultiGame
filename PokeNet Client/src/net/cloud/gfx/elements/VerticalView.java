@@ -289,7 +289,6 @@ public class VerticalView extends AbstractElement implements Container<Element> 
 	 * Only useful during optimized drawing.
 	 * @param topViewableY The top Y coordinate, relative to us, drawing will happen at
 	 * @return The index of the first child to draw
-	 * @throws IteratorException In case of co-modification
 	 */
 	private int findFirstDrawIndex(int topViewableY)
 	{
@@ -952,7 +951,7 @@ public class VerticalView extends AbstractElement implements Container<Element> 
 	 * Link a recently added child into this view. The assumption is that the child was added 
 	 * to the end of the view. The links will be created between this child and either the previous 
 	 * child or the view itself, and the child and the focusable after this view if there is one
-	 * @param child
+	 * @param child The recently added child
 	 */
 	private void linkAddedChild(VerticalViewElement child)
 	{

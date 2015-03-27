@@ -23,7 +23,10 @@ public class SimpleTime implements Bufferable {
 	/** Seconds, 0 to 59 */
 	private byte seconds;
 	
-	/** Dummy constructor for createFrom() */
+	/** 
+	 * Dummy constructor for createFrom
+	 * @param dummy Does not matter
+	 */
 	private SimpleTime(boolean dummy) {}
 	
 	/**

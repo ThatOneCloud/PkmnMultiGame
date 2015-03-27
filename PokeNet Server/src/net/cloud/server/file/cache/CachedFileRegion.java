@@ -23,10 +23,10 @@ public class CachedFileRegion {
 	/**
 	 * Created a new CachedFileRegion which will contain the CachedFiles in the 
 	 * designated block of the cache file. The block must be at least one CachedFile 
-	 * (endIndex >= startIndex) and the cached files will need to be set into this region 
+	 * (endIndex greater than equal to startIndex) and the cached files will need to be set into this region 
 	 * as they are loaded. Until then they will be null. 
-	 * @param startIndex First file in the region. 0 <= startIndex <= endIndex
-	 * @param endIndex Last file in the region. startIndex <= endIndex < # files in region
+	 * @param startIndex First file in the region. 0 {@literal <=} startIndex {@literal <=} endIndex
+	 * @param endIndex Last file in the region. startIndex {@literal <=} endIndex {@literal <} # files in region
 	 * @throws IllegalArgumentException If the indices are invalid
 	 */
 	public CachedFileRegion(int startIndex, int endIndex)

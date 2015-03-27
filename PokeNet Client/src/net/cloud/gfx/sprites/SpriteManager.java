@@ -53,7 +53,7 @@ public class SpriteManager {
 	/**
 	 * Obtain the singleton instance of the sprite manager. If this is the first call to this method, 
 	 * expect some delays as the SpriteManager loads the sprites that are set to be loaded on startup. 
-	 * @return
+	 * @return The SpriteManager
 	 */
 	public static SpriteManager instance()
 	{

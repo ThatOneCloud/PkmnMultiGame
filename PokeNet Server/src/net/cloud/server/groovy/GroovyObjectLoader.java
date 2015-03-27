@@ -42,6 +42,7 @@ public class GroovyObjectLoader implements Closeable, AutoCloseable {
 	 * so that recurring instances can be created quickly. 
 	 * @param fileName The groovy class file
 	 * @param args Arguments to the constructor
+	 * @param <T> Type of the object being created
 	 * @return An object instance created from the class file
 	 * @throws Exception If one of so many things goes wrong
 	 */

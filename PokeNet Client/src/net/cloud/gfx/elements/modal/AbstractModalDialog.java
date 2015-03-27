@@ -35,10 +35,7 @@ public abstract class AbstractModalDialog extends Interface {
 	private Color currentHighlightColor;
 	
 	/**
-	 * Constructor for a modal dialog. Unlike some elements, this must have a parent - it must have something 
-	 * that contains it so that it may be removed. If it is not properly removed, it will be stuck and you oops'd. 
 	 * This constructor will use the default background - a background is also enforced just because.
-	 * @param parent The Container the dialog will be placed in
 	 * @param x X location
 	 * @param y Y location
 	 * @param width Width of the dialog
@@ -51,10 +48,7 @@ public abstract class AbstractModalDialog extends Interface {
 	}
 	
 	/**
-	 * Constructor for a modal dialog. Unlike some elements, this must have a parent - it must have something 
-	 * that contains it so that it may be removed. If it is not properly removed, it will be stuck and you oops'd. 
 	 * This constructor will use the given background - a background is also enforced just because.
-	 * @param parent The Container the dialog will be placed in
 	 * @param x X location
 	 * @param y Y location
 	 * @param width Width of the dialog

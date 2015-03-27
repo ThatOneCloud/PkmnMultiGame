@@ -41,8 +41,8 @@ public class XmlRequestTest {
 
 	/** 
 	 * Test saving then loading an object 
-	 * @throws IOException 
-	 * @throws FileRequestException 
+	 * @throws IOException err
+	 * @throws FileRequestException err
 	 */
 	@Test
 	public void testSerialDeserial() throws IOException, FileRequestException 
@@ -72,8 +72,8 @@ public class XmlRequestTest {
 	
 	/**
 	 * Test that we do indeed get an exception when we request the wrong class type
-	 * @throws IOException 
-	 * @throws FileRequestException 
+	 * @throws IOException err
+	 * @throws FileRequestException err
 	 */
 	@Test
 	public void testClassCast() throws IOException, FileRequestException

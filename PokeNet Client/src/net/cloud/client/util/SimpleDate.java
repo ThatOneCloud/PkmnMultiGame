@@ -7,7 +7,6 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import io.netty.buffer.ByteBuf;
 import net.cloud.client.Client;
 import net.cloud.client.nio.bufferable.Bufferable;
-import net.cloud.client.nio.bufferable.BufferableException;
 
 /**
  * Simple Date object useful to me. 
@@ -25,7 +24,10 @@ public class SimpleDate implements Bufferable {
 	/** The year. Range 0 - whatever, I guess */
 	private short year;
 	
-	/** Dummy constructor for createFrom to use */
+	/** 
+	 * Dummy constructor for createFrom
+	 * @param dummy Does not matter
+	 */
 	private SimpleDate(boolean dummy) {}
 	
 	/**
@@ -58,7 +60,6 @@ public class SimpleDate implements Bufferable {
 	 * Create a new SimpleDate object from data in the buffer
 	 * @param buffer The buffer, currently positioned for simple date data
 	 * @return A new SimpleDate reflecting the data in the buffer
-	 * @throws BufferableException If the data could not be restored
 	 */
 	public static SimpleDate createFrom(ByteBuf buffer)
 	{

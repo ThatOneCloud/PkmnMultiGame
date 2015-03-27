@@ -19,7 +19,10 @@ public class ConnectionInfo implements Bufferable {
 	/** The IP address the connection is from */
 	private String address;
 	
-	/** Dummy constructor for createFrom */
+	/** 
+	 * Dummy constructor for createFrom
+	 * @param dummy Does not matter
+	 */
 	private ConnectionInfo(boolean dummy) {}
 	
 	/**

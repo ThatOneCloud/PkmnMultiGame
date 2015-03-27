@@ -23,7 +23,7 @@ public class CachedFileRequest extends LoadRequest<CachedFile> {
 	 * Create a request for a single cached file. This constructor only requires the address of the cache 
 	 * file, and will create the address to the table on its own based on the cache address. The table's address 
 	 * will be set to the same location, with "Table" added into the filename. 
-	 * <br>Ex: ./cache.dat => ./cacheTable.dat<br>
+	 * <br>Ex: ./cache.dat implies ./cacheTable.dat<br>
 	 * The provided index must be within bounds, or the request will encounter an exception. 
 	 * @param indexInCache The index of the file within the cache
 	 * @param cacheAddress The location of the cache file itself

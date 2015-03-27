@@ -56,6 +56,7 @@ public class DrawLogic implements Runnable {
 	 * Create a new DrawThread which will repaint the given JPanel. 
 	 * This will not start itself. It must be wrapped in a thread and started. 
 	 * @param drawPanel the JPanel that will draw the graphic hierarchy
+	 * @param elementRoot The element serving as the root to the graphic hierarchy
 	 */
 	public DrawLogic(JPanel drawPanel, Supplier<Element> elementRoot)
 	{

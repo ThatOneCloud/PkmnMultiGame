@@ -18,6 +18,8 @@ public class PacketFactory {
 	
 	/**
 	 * Creates a TestPacket, which is just an integer of the given value
+	 * @param value Test value
+	 * @return A test packet
 	 */
 	public TestPacket createTestPacket(int value)
 	{

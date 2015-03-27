@@ -29,6 +29,7 @@ public class Server {
 	
 	/**
 	 * Entry point! Start the server and all of its sub-services
+	 * @param args None taken
 	 */
 	public static void main(String[] args)
 	{

@@ -151,6 +151,7 @@ public abstract class AbstractCommand implements Command {
 	 * @param longForm True if the name is the long name
 	 * @param paramName The name of the optional parameter
 	 * @throws CommandException If the parameter could not be found
+	 * @return The prototype parameter. Will never be null
 	 */
 	private OptionalParameter<?> findProtoOptParam(boolean longForm, String paramName) throws CommandException {
 		// Some variables we'll need now

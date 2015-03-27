@@ -137,6 +137,7 @@ public class TaskEngine implements ShutdownService {
 	/**
 	 * Submit a Task to run as soon as possible.
 	 * @param task The task containing the code to run on the TaskEngine
+	 * @param <V> Type of the result from the task
 	 * @return A Future to determine when the task completes. Contains a value returned from the task
 	 */
 	@SuppressWarnings("unchecked")
@@ -154,6 +155,7 @@ public class TaskEngine implements ShutdownService {
 	 * Submit a Task to run after waiting some amount of time
 	 * @param delay The amount of time to wait before executing the task
 	 * @param task The task containing the code to run on the TaskEngine
+	 * @param <V> Type of the result from the task
 	 * @return A Future to determine when the task completes. Contains a value returned from the task
 	 */
 	@SuppressWarnings("unchecked")

@@ -79,7 +79,7 @@ public abstract class DialogListener<T> {
 		return value;
 	}
 
-	/** @param The value given back from dialog */
+	/** @param value The value given back from dialog */
 	public void setValue(T value)
 	{
 		this.value = value;

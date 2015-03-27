@@ -33,7 +33,11 @@ public class LoginPacket extends ReceiveOnlyPacket {
 	/** Default constructor leaves all data fields default or null */
 	public LoginPacket() {}
 	
-	/** Create a LoginPacket which contains the given login credentials */
+	/** 
+	 * Create a LoginPacket which contains the given login credentials
+	 * @param username Username of the player
+	 * @param password The player's password
+	 */
 	public LoginPacket(String username, HashObj password)
 	{
 		this.username = username;
@@ -86,7 +90,6 @@ public class LoginPacket extends ReceiveOnlyPacket {
 	/**
 	 * Tell the player they can login, timing out on their movement forward in the login process
 	 * @param player The player trying to login
-	 * @param response The response to send to the player
 	 */
 	private void normalLogin(Player player)
 	{
@@ -114,7 +117,6 @@ public class LoginPacket extends ReceiveOnlyPacket {
 	/**
 	 * Tell the player they can reconnect, timing out on their movement forward in the reconnecting process
 	 * @param player The player trying to reconnect
-	 * @param response The response to send to the player
 	 */
 	private void reconnectLogin(Player player)
 	{

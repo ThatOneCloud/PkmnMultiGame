@@ -41,7 +41,7 @@ public class ButtonActionHandler implements ActionHandler<ButtonActionID> {
 	 * Load all actions, one by one. This loads an action for each value in ButtonActionID. 
 	 * Continues even if one or more actions fail to load, instead concatenating all of the messages 
 	 * into the thrown exception.
-	 * @throws An exception if one or more button actions could not be loaded
+	 * @throws Exception An exception if one or more button actions could not be loaded
 	 */
 	@Override
 	public void loadAllActions(PrintWriter out, GroovyObjectLoader loader) throws Exception

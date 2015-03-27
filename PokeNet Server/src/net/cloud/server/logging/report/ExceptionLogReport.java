@@ -31,8 +31,8 @@ public class ExceptionLogReport extends LogReport {
 	 * Create a LogReport which will detail an exception that occurred 
 	 * alongside a message describing what happened. The message may be redundant 
 	 * but that's okay.
-	 * @param message A brief message about the problem
-	 * @param exception The exception this report is all about
+	 * @param msg A brief message about the problem
+	 * @param ex The exception this report is all about
 	 * @param section Where to file this report
 	 */
 	public ExceptionLogReport(String msg, Throwable ex, LogSection section)

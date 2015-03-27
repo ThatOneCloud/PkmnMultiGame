@@ -91,7 +91,8 @@ public class FramedElement extends AbstractDecoratorElement {
 	
 	/**
 	 * Initialize the background sprite using the given sprite
-	 * @param firstID The ID of the first sprite in the border set, the top border
+	 * @param set The set to load sprites from
+	 * @param ID The ID of the first sprite in the border set, the top border
 	 */
 	private void bgSpriteInit(SpriteSet set, int ID)
 	{

@@ -101,7 +101,11 @@ public class RequestHandlerTest {
 		assertTrue(Files.exists(Paths.get(tempFile.getAbsolutePath())));
 	}
 	
-	/** See if a test CachedFileRequest will work */
+	/** 
+	 * See if a test CachedFileRequest will work 
+	 * @throws IOException error
+	 * @throws FileRequestException error
+	 */
 	@Test
 	public void testCachedFileRequest() throws IOException, FileRequestException {
 		// What we know the file should contain
@@ -119,7 +123,11 @@ public class RequestHandlerTest {
 		assertTrue(Arrays.equals(readData, TEST_DATA));
 	}
 	
-	/** See if a test CachedFileRegionRequest will work */
+	/** 
+	 * See if a test CachedFileRegionRequest will work 
+	 * @throws IOException error
+	 * @throws FileRequestException error
+	 */
 	@Test
 	public void testCachedFileRegionRequest() throws IOException, FileRequestException {
 		// What we know the file should contain

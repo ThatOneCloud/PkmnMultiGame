@@ -54,6 +54,7 @@ public class ReferenceText extends Text {
 	 * and use the given Supplier to obtain updated text strings. The color and font are also specified. 
 	 * The position will be the top left edge of the text. 
 	 * @param text Initial text
+	 * @param priority The z-priority
 	 * @param x The x-position. The left edge of the text
 	 * @param y The y-position. The top edge of the text
 	 * @param font Initial font

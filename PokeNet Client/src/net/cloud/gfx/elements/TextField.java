@@ -518,7 +518,7 @@ public class TextField extends AbstractElement {
 	 * in their own folder. Sprite 0 is the cursor. After that, the sprites will repeat background, top, right, bottom, left border. 
 	 * The provided ID should correspond to the background image. 
 	 * @param firstId The ID of the background image in the text field set
-	 * @param bgID The ID of the background, from the BACKGROUND set
+	 * @param bgId The ID of the background, from the BACKGROUND set
 	 */
 	public void setSpriteGroup(int firstId, int bgId)
 	{
@@ -600,6 +600,7 @@ public class TextField extends AbstractElement {
 	/**
 	 * Move the cursor so it reflects the location of a click request. 
 	 * Should only be called when their is a click coordinate and the glyph vector is valid
+	 * @param g2d The graphics that drawing is happening on
 	 */
 	private void moveCursorForClick(Graphics2D g2d)
 	{
@@ -836,6 +837,7 @@ public class TextField extends AbstractElement {
 		 * Move the cursor to the left, if possible. If the movement means the text in view 
 		 * needs to be adjusted then this method will re-figure the text in view and invalidate the 
 		 * field's glyph vector. 
+		 * @return True if the cursor moved left, false otherwise
 		 */
 		public boolean moveLeft()
 		{
@@ -855,6 +857,7 @@ public class TextField extends AbstractElement {
 		 * Move the cursor to the right, if possible. If the movement means the text in view 
 		 * needs to be adjusted then this method will re-figure the text in view and invalidate the 
 		 * field's glyph vector. 
+		 * @return True if the cursor moved right, false otherwise
 		 */
 		public boolean moveRight()
 		{

@@ -33,7 +33,11 @@ public class LoginPacket extends SendOnlyPacket {
 	/** Default constructor leaves all data fields default or null */
 	public LoginPacket() {}
 	
-	/** Create a LoginPacket which contains the given login credentials */
+	/** 
+	 * Create a LoginPacket which contains the given login credentials
+	 * @param username Username of the player
+	 * @param password The player's password
+	 */
 	public LoginPacket(String username, HashObj password)
 	{
 		this.username = username;
@@ -159,6 +163,7 @@ public class LoginPacket extends SendOnlyPacket {
 		/**
 		 * The response is that we're good to go and should request login data
 		 * @param player The player
+		 * @param message The message
 		 */
 		private void succeed(Player player, String message)
 		{

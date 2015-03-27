@@ -44,7 +44,13 @@ public enum SpriteSet {
 	/** An array of parameters to pass to the collection constructor. May be null if there are none. */
 	private Object[] collectionParams;
 	
-	/** Create a new enum value */
+	/**
+	 * Create a new enum value 
+	 * @param canonName Canonical name, i.e. the file path
+	 * @param loadOnStartup Whether or not this sprite set should load when the sprite manager is initialized
+	 * @param collectionType The nature of the set
+	 * @param collectionParams An array of arguments to the constructor of the set
+	 */
 	private SpriteSet(String canonName, boolean loadOnStartup, SpriteCollectionType collectionType, Object[] collectionParams)
 	{
 		this.canonName = canonName;

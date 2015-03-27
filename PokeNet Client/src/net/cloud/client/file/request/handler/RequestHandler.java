@@ -35,6 +35,7 @@ public class RequestHandler {
 
 	/**
 	 * See {@link LoadRequestHandler#handleRequest(BufferedReaderRequest)}
+	 * @param req The request
 	 */
 	public void handleRequest(BufferedReaderRequest req)
 	{
@@ -44,6 +45,7 @@ public class RequestHandler {
 	
 	/**
 	 * See {@link LoadRequestHandler#handleRequest(RandomAccessFileLoadRequest)}
+	 * @param req The request
 	 */
 	public void handleRequest(RandomAccessFileLoadRequest req)
 	{
@@ -53,6 +55,7 @@ public class RequestHandler {
 	
 	/**
 	 * See {@link LoadRequestHandler#handleRequest(CachedFileRequest)}
+	 * @param req The request
 	 */
 	public void handleRequest(CachedFileRequest req)
 	{
@@ -62,6 +65,7 @@ public class RequestHandler {
 	
 	/**
 	 * See {@link LoadRequestHandler#handleRequest(CachedFileRegionRequest)}
+	 * @param req The request
 	 */
 	public void handleRequest(CachedFileRegionRequest req)
 	{
@@ -71,6 +75,8 @@ public class RequestHandler {
 	
 	/**
 	 * See {@link LoadRequestHandler#handleRequest(XmlLoadRequest)}
+	 * @param req The request
+	 * @param <T> The type of the object to load from XML
 	 */
 	public <T> void handleRequest(XmlLoadRequest<T> req)
 	{
@@ -80,6 +86,7 @@ public class RequestHandler {
 	
 	/**
 	 * See {@link SaveRequestHandler#handleRequest(PrintWriterRequest)}
+	 * @param req The request
 	 */
 	public void handleRequest(PrintWriterRequest req)
 	{
@@ -89,6 +96,7 @@ public class RequestHandler {
 	
 	/**
 	 * See {@link SaveRequestHandler#handleRequest(FileOutputStreamRequest)}
+	 * @param req The request
 	 */
 	public void handleRequest(FileOutputStreamRequest req)
 	{
@@ -98,6 +106,7 @@ public class RequestHandler {
 	
 	/**
 	 * See {@link SaveRequestHandler#handleRequest(XmlSaveRequest)}
+	 * @param req The request
 	 */
 	public void handleRequest(XmlSaveRequest req)
 	{

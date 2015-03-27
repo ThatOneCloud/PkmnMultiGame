@@ -18,7 +18,10 @@ public class TestPacket implements Packet {
 		this(-1);
 	}
 
-	/** Create a packet with the given test value in it */
+	/** 
+	 * Create a packet with the given test value in it
+	 * @param testValue test value
+	 */
 	public TestPacket(int testValue)
 	{
 		// Would normally initialize some values here

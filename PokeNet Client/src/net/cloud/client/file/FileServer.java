@@ -9,6 +9,7 @@ import net.cloud.client.file.request.FileRequest;
 import net.cloud.client.file.request.handler.RequestHandler;
 import net.cloud.client.logging.Logger;
 import net.cloud.client.file.address.FileAddress;
+import net.cloud.client.file.address.FileAddressBuilder;
 
 /**
  * The front of the file server module.  Deals with FileRequests. 

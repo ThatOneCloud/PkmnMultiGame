@@ -96,6 +96,7 @@ public class Button extends AbstractButton {
 	
 	/**
 	 * Initialize the background sprites using the given set of button sprite assets
+	 * @param firstID The ID of the first sprite to use
 	 */
 	private void spriteInit(int firstID)
 	{
@@ -212,7 +213,7 @@ public class Button extends AbstractButton {
 		return labelText.getColor();
 	}
 	
-	/** @param The new color to use for the label text */
+	/** @param color The new color to use for the label text */
 	public void setLabelColor(Color color)
 	{
 		labelText.setColor(color);

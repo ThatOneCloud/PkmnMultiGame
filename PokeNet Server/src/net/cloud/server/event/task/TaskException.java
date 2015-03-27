@@ -18,7 +18,7 @@ public class TaskException extends RuntimeException {
 	/**
 	 * The only constructor. This exception will not have its own message, rather 
 	 * it simply wraps a cause caught from the execution of a task.
-	 * @param cause
+	 * @param cause Cause of the exception
 	 */
 	public TaskException(Throwable cause)
 	{

@@ -25,7 +25,11 @@ public class CompositePacket implements Packet {
 	/** Default constructor leaves all data fields default or null */
 	public CompositePacket() {}
 	
-	/** A CompositePacket created from one or more other packets */
+	/** 
+	 * A CompositePacket created from one or more other packets 
+	 * @param first The first packet
+	 * @param others Other packets
+	 */
 	public CompositePacket(Packet first, Packet... others)
 	{
 		packets = new LinkedList<Packet>();

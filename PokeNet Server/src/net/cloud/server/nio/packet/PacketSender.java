@@ -44,14 +44,21 @@ public class PacketSender {
 	{
 		return packetFactory.createTestPacket(value);
 	}
-	/** Writes, but does not send a packet. <br>See {@link PacketFactory#createTestPacket(int)} */
+	/**
+	 * Writes, but does not send, a packet. <br>See {@link PacketFactory#createTestPacket(int)}
+	 * @param value Test value
+	 * @return The packet
+	 */
 	public PacketSender writeTestPacket(int value)
 	{
 		write(createTestPacket(value));
 		
 		return this;
 	}
-	/** Writes and sends a packet.  <br>See {@link PacketFactory#createTestPacket(int)} */
+	/**
+	 * Writes and sends a packet. <br>See {@link PacketFactory#createTestPacket(int)}
+	 * @param value Test value
+	 */
 	public void sendTestPacket(int value)
 	{
 		this.writeTestPacket(value).send();
@@ -68,14 +75,25 @@ public class PacketSender {
 	{
 		return packetFactory.createCompositePacket(first, others);
 	}
-	/** Writes, but does not send a packet. <br>See {@link PacketFactory#createCompositePacket(Packet, Packet...)} */
+	/**
+	 * Writes, but does not send a packet. For a description of the packet, see<br>
+	 * {@link PacketFactory#createCompositePacket(Packet, Packet...)}
+	 * @param first The first packet that the composite will consist of
+	 * @param others Any other packets the new packet will consist of
+	 * @return The packet
+	 */
 	public PacketSender writeCompositePacket(Packet first, Packet... others)
 	{
 		write(createCompositePacket(first, others));
 		
 		return this;
 	}
-	/** Writes and sends a packet.  <br>See {@link PacketFactory#createCompositePacket(Packet, Packet...)} */
+	/**
+	 * Writes and sends a packet. For a description of the packet, see<br>
+	 * {@link PacketFactory#createCompositePacket(Packet, Packet...)}
+	 * @param first The first packet that the composite will consist of
+	 * @param others Any other packets the new packet will consist of
+	 */
 	public void sendCompositePacket(Packet first, Packet... others)
 	{
 		this.writeCompositePacket(first, others).send();
@@ -91,14 +109,23 @@ public class PacketSender {
 	{
 		return packetFactory.createLoginResponsePacket(response);
 	}
-	/** Writes, but does not send a packet. <br>See {@link PacketFactory#createLoginResponse(LoginResponse)} */
+	/**
+	 * Writes, but does not send a packet. For a description of the packet, see <br>
+	 * {@link PacketFactory#createLoginResponsePacket(LoginResponse)}
+	 * @param response The response to encode in the packet
+	 * @return The packet
+	 */
 	public PacketSender writeLoginResponse(LoginResponse response)
 	{
 		write(createLoginResponse(response));
 		
 		return this;
 	}
-	/** Writes and sends a packet.  <br>See {@link PacketFactory#createLoginResponse(LoginResponse)} */
+	/**
+	 * Writes and sends a packet. For a description of the packet, see <br>
+	 * {@link PacketFactory#createLoginResponsePacket(LoginResponse)}
+	 * @param response The response to encode in the packet
+	 */
 	public void sendLoginResponse(LoginResponse response)
 	{
 		this.writeLoginResponse(response).send();
@@ -114,14 +141,23 @@ public class PacketSender {
 	{
 		return packetFactory.createLoginDataResponsePacket(player);
 	}
-	/** Writes, but does not send a packet. <br>See {@link PacketFactory#createLoginDataResponse(Player)} */
+	/**
+	 * Writes, but does not send a packet. For a description of the packet, see <br>
+	 * {@link PacketFactory#createLoginDataResponsePacket(Player)}
+	 * @param player The player that is about to login
+	 * @return The packet
+	 */
 	public PacketSender writeLoginDataResponse(Player player)
 	{
 		write(createLoginDataResponse(player));
 		
 		return this;
 	}
-	/** Writes and sends a packet.  <br>See {@link PacketFactory#createLoginDataResponse(Player)} */
+	/**
+	 * Writes and sends a packet. For a description of the packet, see <br>
+	 * {@link PacketFactory#createLoginDataResponsePacket(Player)}
+	 * @param player The player that is about to login
+	 */
 	public void sendLoginDataResponse(Player player)
 	{
 		this.writeLoginDataResponse(player).send();
@@ -129,7 +165,7 @@ public class PacketSender {
 	
 	/**
 	 * Only creates and returns a packet. For a description of the packet, see <br>
-	 * {@link PacketFactory#createShowMessageDialogPacket(String)}
+	 * {@link PacketFactory#createShowMessageDialogPacket(String, String)}
 	 * @param title The title to put on the dialog's frame
 	 * @param message The message to show
 	 * @return The packet
@@ -138,14 +174,25 @@ public class PacketSender {
 	{
 		return packetFactory.createShowMessageDialogPacket(title, message);
 	}
-	/** Writes, but does not send a packet. <br>See {@link PacketFactory#createShowMessageDialogPacket(String)} */
+	/**
+	 * Writes, but does not send a packet. For a description of the packet, see <br>
+	 * {@link PacketFactory#createShowMessageDialogPacket(String, String)}
+	 * @param title The title to put on the dialog's frame
+	 * @param message The message to show
+	 * @return The packet
+	 */
 	public PacketSender writeShowMessageDialog(String title, String message)
 	{
 		write(createShowMessageDialog(title, message));
 		
 		return this;
 	}
-	/** Writes and sends a packet.  <br>See {@link PacketFactory#createShowMessageDialogPacket(String)} */
+	/**
+	 * Writes and sends a packet. For a description of the packet, see <br>
+	 * {@link PacketFactory#createShowMessageDialogPacket(String, String)}
+	 * @param title The title to put on the dialog's frame
+	 * @param message The message to show
+	 */
 	public void sendShowMessageDialog(String title, String message)
 	{
 		this.writeShowMessageDialog(title, message).send();
@@ -153,6 +200,8 @@ public class PacketSender {
 	
 	/**
 	 * Writes and sends a logout packet. When this operation completes, the onSend function will be called
+	 * @param player The player to make log out
+	 * @param onSend A method to call when the packet is written
 	 */
 	public void sendLogout(Player player, Consumer<Player> onSend)
 	{
@@ -203,6 +252,7 @@ public class PacketSender {
 	
 	/**
 	 * Writes a packet but does not flush the channel. Uses a VoidPromise to reduce object creation
+	 * @param packet The packet to write
 	 */
 	private void write(Packet packet)
 	{

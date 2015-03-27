@@ -67,6 +67,7 @@ public final class HashObj implements Bufferable {
 	 * Create a new HashObj by deserializing it from the given file directly
 	 * @param raf The file the data is in
 	 * @return A new HashObj
+	 * @throws IOException Error reading from file
 	 */
 	public static HashObj createFrom(RandomAccessFile raf) throws IOException
 	{

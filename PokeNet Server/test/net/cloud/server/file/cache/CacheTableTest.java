@@ -11,7 +11,10 @@ import org.junit.Test;
 /** Test the ability of the class to obtain file(s) */
 public class CacheTableTest {
 
-	/** Test grabbing a single file. Includes boundaries. */
+	/** 
+	 * Test grabbing a single file. Includes boundaries.
+	 * @throws IOException err
+	 */
 	@Test
 	public void testGetFile() throws IOException {
 		// Try-with-resources. Open the files. 
@@ -34,7 +37,10 @@ public class CacheTableTest {
 		}
 	}
 	
-	/** Test grabbing a block of files. */
+	/** 
+	 * Test grabbing a block of files. Includes boundaries.
+	 * @throws IOException err
+	 */
 	@Test
 	public void testGetRegion() throws IOException {
 		// Try-with-resources. Open the files. 

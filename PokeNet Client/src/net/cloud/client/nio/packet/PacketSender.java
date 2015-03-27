@@ -2,6 +2,8 @@ package net.cloud.client.nio.packet;
 
 import net.cloud.client.game.action.ButtonActionID;
 import net.cloud.client.nio.bufferable.Bufferable;
+import net.cloud.client.nio.packet.Packet;
+import net.cloud.client.nio.packet.PacketFactory;
 import io.netty.channel.Channel;
 
 /**
@@ -35,19 +37,28 @@ public class PacketSender {
 	/**
 	 * Only creates and returns a Packet. For a description of the packet, see<br>
 	 * {@link PacketFactory#createTestPacket(int)}
+	 * @param value The test value
+	 * @return The packet
 	 */
 	public Packet createTestPacket(int value)
 	{
 		return packetFactory.createTestPacket(value);
 	}
-	/** Writes, but does not send a packet. <br>See {@link PacketFactory#createTestPacket(int)} */
+	/**
+	 * Writes, but does not send, a packet. <br>See {@link PacketFactory#createTestPacket(int)}
+	 * @param value Test value
+	 * @return The packet
+	 */
 	public PacketSender writeTestPacket(int value)
 	{
 		write(createTestPacket(value));
 		
 		return this;
 	}
-	/** Writes and sends a packet.  <br>See {@link PacketFactory#createTestPacket(int)} */
+	/**
+	 * Writes and sends a packet. <br>See {@link PacketFactory#createTestPacket(int)}
+	 * @param value Test value
+	 */
 	public void sendTestPacket(int value)
 	{
 		this.writeTestPacket(value).send();
@@ -58,19 +69,31 @@ public class PacketSender {
 	 * {@link PacketFactory#createCompositePacket(Packet, Packet...)}
 	 * @param first The first packet that the composite will consist of
 	 * @param others Any other packets the new packet will consist of
+	 * @return The packet
 	 */
 	public Packet createCompositePacket(Packet first, Packet... others)
 	{
 		return packetFactory.createCompositePacket(first, others);
 	}
-	/** Writes, but does not send a packet. <br>See {@link PacketFactory#createCompositePacket(Packet, Packet...)} */
+	/**
+	 * Writes, but does not send a packet. For a description of the packet, see<br>
+	 * {@link PacketFactory#createCompositePacket(Packet, Packet...)}
+	 * @param first The first packet that the composite will consist of
+	 * @param others Any other packets the new packet will consist of
+	 * @return The packet
+	 */
 	public PacketSender writeCompositePacket(Packet first, Packet... others)
 	{
 		write(createCompositePacket(first, others));
 		
 		return this;
 	}
-	/** Writes and sends a packet.  <br>See {@link PacketFactory#createCompositePacket(Packet, Packet...)} */
+	/**
+	 * Writes and sends a packet. For a description of the packet, see<br>
+	 * {@link PacketFactory#createCompositePacket(Packet, Packet...)}
+	 * @param first The first packet that the composite will consist of
+	 * @param others Any other packets the new packet will consist of
+	 */
 	public void sendCompositePacket(Packet first, Packet... others)
 	{
 		this.writeCompositePacket(first, others).send();
@@ -79,19 +102,27 @@ public class PacketSender {
 	/**
 	 * Only creates and returns a Packet. For a description of the packet, see<br>
 	 * {@link PacketFactory#createLogin()}
+	 * @return The packet
 	 */
 	public Packet createLogin()
 	{
 		return packetFactory.createLogin();
 	}
-	/** Writes, but does not send a packet. <br>See {@link PacketFactory#createLogin()} */
+	/**
+	 * Writes, but does not send a packet. For a description of the packet, see<br>
+	 * {@link PacketFactory#createLogin()}
+	 * @return The packet
+	 */
 	public PacketSender writeLogin()
 	{
 		write(createLogin());
 		
 		return this;
 	}
-	/** Writes and sends a packet.  <br>See {@link PacketFactory#createLogin()} */
+	/**
+	 * Writes and sends a packet. For a description of the packet, see<br>
+	 * {@link PacketFactory#createLogin()}
+	 */
 	public void sendLogin()
 	{
 		this.writeLogin().send();
@@ -100,19 +131,27 @@ public class PacketSender {
 	/**
 	 * Only creates and returns a Packet. For a description of the packet, see<br>
 	 * {@link PacketFactory#createLoginDataRequest()}
+	 * @return The packet
 	 */
 	public Packet createLoginDataRequest()
 	{
 		return packetFactory.createLoginDataRequest();
 	}
-	/** Writes, but does not send a packet. <br>See {@link PacketFactory#createLoginDataRequest()} */
+	/**
+	 * Writes, but does not send a packet. For a description of the packet, see<br>
+	 * {@link PacketFactory#createLoginDataRequest()}
+	 * @return The packet
+	 */
 	public PacketSender writeLoginDataRequest()
 	{
 		write(createLoginDataRequest());
 		
 		return this;
 	}
-	/** Writes and sends a packet.  <br>See {@link PacketFactory#createLoginDataRequest()} */
+	/**
+	 * Writes and sends a packet. For a description of the packet, see<br>
+	 * {@link PacketFactory#createLoginDataRequest()}
+	 */
 	public void sendLoginDataRequest()
 	{
 		this.writeLoginDataRequest().send();
@@ -120,20 +159,34 @@ public class PacketSender {
 	
 	/**
 	 * Only creates and returns a Packet. For a description of the packet, see<br>
-	 * {@link PacketFactory#createButtonActionPacket()}
+	 * {@link PacketFactory#createButtonActionPacket(ButtonActionID, Bufferable...)}
+	 * @param buttonID The button that was pressed
+	 * @param args Optional arguments
+	 * @return The packet
 	 */
 	public Packet createButtonActionPacket(ButtonActionID buttonID, Bufferable... args)
 	{
 		return packetFactory.createButtonActionPacket(buttonID, args);
 	}
-	/** Writes, but does not send a packet. <br>See {@link PacketFactory#createButtonActionPacket()} */
+	/**
+	 * Writes, but does not send a packet. For a description of the packet, see<br>
+	 * {@link PacketFactory#createButtonActionPacket(ButtonActionID, Bufferable...)}
+	 * @param buttonID The button that was pressed
+	 * @param args Optional arguments
+	 * @return The packet
+	 */
 	public PacketSender writeButtonActionPacket(ButtonActionID buttonID, Bufferable... args)
 	{
 		write(createButtonActionPacket(buttonID, args));
 		
 		return this;
 	}
-	/** Writes and sends a packet.  <br>See {@link PacketFactory#createButtonActionPacket()} */
+	/**
+	 * Writes and sends a packet. For a description of the packet, see<br>
+	 * {@link PacketFactory#createButtonActionPacket(ButtonActionID, Bufferable...)}
+	 * @param buttonID The button that was pressed
+	 * @param args Optional arguments
+	 */
 	public void sendButtonActionPacket(ButtonActionID buttonID, Bufferable... args)
 	{
 		this.writeButtonActionPacket(buttonID, args).send();
@@ -183,6 +236,7 @@ public class PacketSender {
 	
 	/**
 	 * Writes a packet but does not flush the channel. Uses a VoidPromise to reduce object creation 
+	 * @param packet The packet to write out
 	 */
 	private void write(Packet packet)
 	{

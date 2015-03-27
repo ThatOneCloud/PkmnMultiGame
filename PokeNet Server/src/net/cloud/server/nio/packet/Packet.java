@@ -38,6 +38,7 @@ public interface Packet {
 	 * Executes whatever action the Packet needs to take, to take action on the information 
 	 * stored in it.  Split from the decoding process, but assumes the Packet has been 
 	 * created and initialized. 
+	 * @param player The player receiving the packet
 	 */
 	public void handlePacket(Player player);
 

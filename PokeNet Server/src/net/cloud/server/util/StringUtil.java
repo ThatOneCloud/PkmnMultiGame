@@ -83,7 +83,11 @@ public class StringUtil {
 		return builder.toString();
 	}
 	
-	/** A variant that uses the Netty ByteBuf rather than the NIO ByteBuffer */
+	/** 
+	 * A variant that uses the Netty ByteBuf rather than the NIO ByteBuffer
+	 * @param buffer The buffer to read the string from
+	 * @return A string from the data in the buffer
+	 */
 	public static String getFromBuffer(ByteBuf buffer)
 	{
 		StringBuilder builder = new StringBuilder();
@@ -99,6 +103,8 @@ public class StringUtil {
 	
 	/** 
 	 * A variant that uses a RandomAccessFile directly rather than a memory mapped buffer 
+	 * @param raf The file to get the string from
+	 * @return The string read from the file
 	 * @throws IOException If could not read from file
 	 */
 	public static String getFromRAF(RandomAccessFile raf) throws IOException
@@ -129,7 +135,12 @@ public class StringUtil {
 		buffer.put((byte) TERMINATOR);
 	}
 	
-	/** Uses a Netty ByteBuf rather than NIO's ByteBuffer */
+	/**
+	 * Write a String to a ByteBuf, terminating it with TERMINATOR.  
+	 * This can be in turn read back with <code>StringUtil.getFromBuffer(ByteBuffer)</code>
+	 * @param string The text to write
+	 * @param buffer The buffer to write to.
+	 */
 	public static void writeStringToBuffer(String string, ByteBuf buffer)
 	{
 		for(int i = 0; i < string.length(); ++i) {
@@ -140,6 +151,7 @@ public class StringUtil {
 	}
 	
 	/**
+	 * @param string The string
 	 * @return The number of bytes this string will occupy when written out
 	 */
 	public static int getNumBytesInString(String string)

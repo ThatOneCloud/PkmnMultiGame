@@ -238,7 +238,7 @@ public class DraggableElement extends AbstractDecoratorElement {
 	/**
 	 * Get an x coordinate which is within bounds. If the coordinate would otherwise be out 
 	 * of bounds, an edge is returned. Otherwise, the same coordinate is given back.
-	 * @param destX The unbounded destination coordinate
+	 * @param destY The unbounded destination coordinate
 	 * @return A bounded and valid destination coordinate
 	 */
 	private int getBoundedY(int destY)

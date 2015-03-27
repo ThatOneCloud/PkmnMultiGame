@@ -19,7 +19,7 @@ public class ModalFactory {
 	
 	/**
 	 * Create a ModalFactory for usage. Sure, you could just use the constructor. 
-	 * But this <i>is</is> a factory after all.
+	 * But this <i>is</i> a factory after all.
 	 * @return A ModalFactory to create dialogs
 	 */
 	public static ModalFactory newFactory()

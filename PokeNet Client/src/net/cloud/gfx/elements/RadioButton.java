@@ -128,7 +128,7 @@ public class RadioButton extends SelectableButton {
 		 * Create a new RadioButtonGroup with no buttons in it, no currently selected button, and no action handler. <br>
 		 * Use <code>add(RadioButton)</code> to add buttons - in the order you want them. <br>
 		 * Use <code>setSelected(int)</code> to set which button is selected. Doing this after adding buttons is like setting a default. <br>
-		 * Use <code>setActionHandler(Consumer<RadioButtonEvent>)</code> to set an action handler over the entire group. <br>
+		 * Use <code>setActionHandler(Consumer)</code> to set an action handler over the entire group. <br>
 		 */
 		public RadioButtonGroup()
 		{

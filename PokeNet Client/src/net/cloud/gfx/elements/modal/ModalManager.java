@@ -169,7 +169,7 @@ public class ModalManager {
 	 * This variant will provide an input validator to check input before it is returned
 	 * @param title The title to show on the frame
 	 * @param prompt The message to display
-	 * @param inputValidator
+	 * @param inputValidator Dependency-injected object to ensure input into the dialog is valid
 	 * @return Validated user input, or null (InputDialog.CANCELED) if they canceled
 	 * @throws ModalException If the dialog could not be shown. Results will not be available in this situation.
 	 */
@@ -278,6 +278,7 @@ public class ModalManager {
 	 * @param parent The container that the dialog will be placed in
 	 * @param dialog The dialog itself
 	 * @param listener A listener that provides blocking and result obtaining functionality
+	 * @param <T> The type of the result from the dialog
 	 * @return The coalesced result from the dialog, obtained via the listener
 	 * @throws ModalException If results could not be reliably obtained
 	 */

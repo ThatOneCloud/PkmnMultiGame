@@ -21,7 +21,7 @@ public interface ActionHandler<A extends ActionEnum> {
 	 * and throwing one at the end of loading.
 	 * @param out A PrintWriter to write output progress messages to
 	 * @param loader Used to obtain instances of the actions
-	 * @throws If one or more of the actions could not be loaded
+	 * @throws Exception If one or more of the actions could not be loaded
 	 */
 	public void loadAllActions(PrintWriter out, GroovyObjectLoader loader) throws Exception;
 	
@@ -31,7 +31,7 @@ public interface ActionHandler<A extends ActionEnum> {
 	 * @param out A PrintWriter to write output progress messages to
 	 * @param loader Used to obtain instances of the actions
 	 * @param id The ID of the action to load
-	 * @throws If the action could not be loaded for some reason
+	 * @throws Exception If the action could not be loaded for some reason
 	 */
 	public void loadAction(PrintWriter out, GroovyObjectLoader loader, A id) throws Exception;
 

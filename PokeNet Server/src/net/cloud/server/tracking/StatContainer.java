@@ -59,7 +59,7 @@ public class StatContainer implements Cloneable {
 	
 	/**
 	 * Set a new figure for how many players are currently online
-	 * @param currentlyOnline Typically +1 or -1, the change since the last update
+	 * @param change Typically +1 or -1, the change since the last update
 	 */
 	public void updatePlayersOnline(int change)
 	{

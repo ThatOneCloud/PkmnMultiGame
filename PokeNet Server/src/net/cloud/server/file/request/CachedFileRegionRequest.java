@@ -26,7 +26,7 @@ public class CachedFileRegionRequest extends LoadRequest<CachedFileRegion> {
 	 * Create a request for a block of cached files. This constructor only requires the address of the cache 
 	 * file, and will create the address to the table on its own based on the cache address. The table's address 
 	 * will be set to the same location, with "Table" added into the filename. 
-	 * <br>Ex: ./cache.dat => ./cacheTable.dat<br>
+	 * <br>Ex: ./cache.dat implies ./cacheTable.dat<br>
 	 * The provided indices must be within bounds, or the request will encounter an exception. 
 	 * @param startIndex The index of the first file in the region we want 
 	 * @param endIndex The index of the last file we want

@@ -135,6 +135,7 @@ public class LoadRequestHandler {
 	 * The file storing the XML information will be opened, and then be parsed to create an object. 
 	 * That object will be set as the file descriptor, and the XML file will be closed. 
 	 * @param req The request to fulfill
+	 * @param <T> The type of the object to be loaded
 	 */
 	public <T> void handleRequest(XmlLoadRequest<T> req)
 	{

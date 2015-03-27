@@ -29,7 +29,7 @@ public class XmlLoadRequest<T> extends LoadRequest<T> {
 	}
 	
 	/**
-	 * Obtain the deserialized object. Equivalent to {@link this#getFileDescriptor()} but renamed 
+	 * Obtain the deserialized object. Equivalent to {@link LoadRequest#getFileDescriptor()} but renamed 
 	 * for more clarity. Same caveats. 
 	 * @return The object that was deserialized from XML
 	 * @throws FileRequestException If the object has not been created yet

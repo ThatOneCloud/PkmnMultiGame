@@ -166,6 +166,7 @@ public class LoadActionCommand extends AbstractCommand {
 	 * will do the loading for that specific action. Does all of the template work to get us a result string from doing the loading.
 	 * @param id ID of the action to load
 	 * @param loadFunc The function that's going to do the loading
+	 * @param <T> Type of the action ID
 	 * @return Results of the load
 	 */
 	private <T> String singleActionOfAKind(T id, ExceptionTriConsumer<PrintWriter, GroovyObjectLoader, T, Exception> loadFunc)

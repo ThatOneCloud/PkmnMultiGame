@@ -17,7 +17,10 @@ public class SimpleDateTime implements Bufferable {
 	/** The time */
 	private SimpleTime time;
 	
-	/** Dummy constructor for createFrom() */
+	/** 
+	 * Dummy constructor for createFrom
+	 * @param dummy Does not matter
+	 */
 	private SimpleDateTime(boolean dummy) {}
 	
 	/**

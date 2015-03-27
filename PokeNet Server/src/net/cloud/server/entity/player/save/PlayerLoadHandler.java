@@ -35,6 +35,7 @@ public class PlayerLoadHandler {
 	 * Restore a player's data. This is not for loading from a file. Instead, it's an optional route to 
 	 * <code>player.restore(buffer)</code>. Of course, rather than create this just for that, just call the 
 	 * method in player. 
+	 * @param buffer The buffer the data is in
 	 * @throws BufferableException If the player's data could not be restored
 	 */
 	public void deserialize(ByteBuf buffer) throws BufferableException
@@ -96,6 +97,7 @@ public class PlayerLoadHandler {
 	 * no file is opened and nothing is read.
 	 * Regardless of the exception, assume it is unsafe to proceed. It is unknown whether the username and/or/neither 
 	 * password have actually been set.
+	 * @param username Username of the player
 	 * @throws PlayerLoadException Save file could not be found
 	 * @throws IOException Save file did not exist, could not be read from, or could not be closed
 	 */
@@ -139,6 +141,7 @@ public class PlayerLoadHandler {
 	
 	/**
 	 * Obtain a RAF from the File Server for the player's save data. Waits until the request has been served. 
+	 * @param username Username of the player
 	 * @return A RAF from the File Server for the player's save data
 	 * @throws PlayerLoadException If the request could not be served
 	 */

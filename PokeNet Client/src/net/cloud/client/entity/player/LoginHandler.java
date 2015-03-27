@@ -80,6 +80,7 @@ public class LoginHandler {
 	
 	/**
 	 * Attempt to logout from the game (SAO fans, anyone?)
+	 * @param messageCallback Function to display messages
 	 */
 	public static void startLogout(Consumer<String> messageCallback)
 	{

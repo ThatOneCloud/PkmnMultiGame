@@ -1117,7 +1117,7 @@ public class ScrollView extends AbstractElement {
 	/**
 	 * Adjust the height of the scroll view and update the components 
 	 * so that everything still appears correctly. 
-	 * @param width The new height
+	 * @param height The new height
 	 */
 	@Override
 	public void setHeight(int height)
@@ -1611,6 +1611,7 @@ public class ScrollView extends AbstractElement {
 		
 		/**
 		 * Sets both integer and double x location
+		 * @param x The new location
 		 */
 		public void setLocX(double x)
 		{
@@ -1638,6 +1639,7 @@ public class ScrollView extends AbstractElement {
 		
 		/**
 		 * Sets both integer and double y location
+		 * @param y The new location
 		 */
 		public void setLocY(double y)
 		{

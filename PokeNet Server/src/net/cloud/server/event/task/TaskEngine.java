@@ -113,6 +113,7 @@ public class TaskEngine implements ShutdownService {
 	/**
 	 * Submit a Task to run as soon as possible.
 	 * @param task The task containing the code to run on the TaskEngine
+	 * @param <V> The type returned by the future
 	 * @return A Future to determine when the task completes. Contains a value returned from the task
 	 */
 	public <V> Future<V> submitImmediate(Task<V> task)
@@ -124,6 +125,7 @@ public class TaskEngine implements ShutdownService {
 	 * Submit a Task to run after waiting some amount of time
 	 * @param delay The amount of time to wait before executing the task
 	 * @param task The task containing the code to run on the TaskEngine
+	 * @param <V> The type returned by the future
 	 * @return A Future to determine when the task completes. Contains a value returned from the task
 	 */
 	public <V> Future<V> submitDelayed(long delay, Task<V> task)

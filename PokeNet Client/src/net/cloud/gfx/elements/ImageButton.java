@@ -104,6 +104,7 @@ public class ImageButton extends AbstractButton {
 	/**
 	 * Initialize the background sprites using the given set of button sprite assets. 
 	 * The size will be left as the original
+	 * @param firstID The ID of the first sprite to use
 	 */
 	private void spriteInit(int firstID)
 	{

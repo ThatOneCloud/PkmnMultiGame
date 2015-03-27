@@ -93,7 +93,7 @@ public class PlayerSaveHandler {
 	 * Save the player data to its own file. This will perform the action regardless of whether or not the player 
 	 * data is completely restored. This variant shorts the file server and does the write on the calling 
 	 * thread as well.
-	 * @param An open stream to write to the save data file
+	 * @param saveData An open stream to write to the save data file
 	 * @throws PlayerSaveException If the save could not be started. Not thrown if the file write fails. 
 	 */
 	public void saveToFile(FileOutputStream saveData) throws PlayerSaveException
@@ -132,6 +132,7 @@ public class PlayerSaveHandler {
 		/**
 		 * Create a new handler for when the player's data file is ready to be written to. 
 		 * @param player The player whose data needs to be written to file
+		 * @param buffer The buffer containing the data to write
 		 */
 		public PlayerSaveRequestHandler(Player player, ByteBuf buffer)
 		{
