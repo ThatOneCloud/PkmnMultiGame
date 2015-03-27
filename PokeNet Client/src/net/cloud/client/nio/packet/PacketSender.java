@@ -166,6 +166,14 @@ public class PacketSender {
 	
 	
 	/**
+	 * @return The channel this PacketSender is working on (the one the player is connected with)
+	 */
+	public Channel channel()
+	{
+		return channel;
+	}
+	
+	/**
 	 * Send all packets that have been created but not yet sent 
 	 */
 	public void send()

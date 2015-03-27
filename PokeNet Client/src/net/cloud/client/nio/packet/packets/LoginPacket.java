@@ -98,32 +98,44 @@ public class LoginPacket extends SendOnlyPacket {
 		@Override
 		public void handlePacket(Player player)
 		{
-			// We sent a bad username/password combination... most likely
-			if(response == LoginResponse.INVALID_CREDENTIALS)
+			// We expect to be in the CONNECTED state
+			if(player.getLoginState() != LoginState.CONNECTED)
 			{
 				fail(player, "Invalid username and/or password");
+				Logger.instance().logMessage("Not in CONNECTED state while receiving login response");
+				return;
 			}
-			// We're trying to login to an account that's already in game
-			else if(response == LoginResponse.ALREADY_LOGGED_IN)
+			
+			switch(response)
 			{
+			
+			case INVALID_CREDENTIALS:
+				fail(player, "Invalid username and/or password");
+				break;
+				
+			case ALREADY_LOGGED_IN:
 				fail(player, "That account is already logged in");
-			}
-			// The player data couldn't be loaded
-			else if(response == LoginResponse.BAD_DATA)
-			{
+				break;
+				
+			case BAD_DATA:
 				fail(player, "Your account data could not be loaded");
-			}
-			// We are cleared to continue with login
-			else if(response == LoginResponse.OKAY)
-			{
-				succeed(player);
-			}
-			// We don't know what to make of the response
-			else {
+				break;
+				
+			case OKAY:
+				succeed(player, "Logging in. Please wait...");
+				break;
+				
+			case RECONNECT:
+				succeed(player, "Reconnecting. Please wait...");
+				break;
+				
+			default:
 				fail(player, "Unknown response from server.");
 				
 				// We're also going to log this, it is unintended that we reach here
 				Logger.instance().logMessage("Login response unknown: " + response.name());
+				break;
+				
 			}
 		}
 		
@@ -135,7 +147,7 @@ public class LoginPacket extends SendOnlyPacket {
 		private void fail(Player player, String message)
 		{
 			// Mark login as a failed attempt
-			player.setLoginState(LoginState.FAILED);
+			player.setLoginState(LoginState.LOGIN_FAILED);
 			
 			// Disconnect (this prepares us for trying again, in a way)
 			Client.instance().nettyClient().disconnect();
@@ -148,13 +160,13 @@ public class LoginPacket extends SendOnlyPacket {
 		 * The response is that we're good to go and should request login data
 		 * @param player The player
 		 */
-		private void succeed(Player player)
+		private void succeed(Player player, String message)
 		{
 			// Mark that we've successfully been verified, our credentials were correct
 			player.setLoginState(LoginState.VERIFIED);
 			
 			// Show the player a message to keep them updated
-			LoginHandler.message("Logging in. Please wait...");
+			LoginHandler.message(message);
 			
 			// Next we need data from the server, lots of it to initialize with
 			player.getPacketSender().sendLoginDataRequest();
@@ -235,6 +247,13 @@ public class LoginPacket extends SendOnlyPacket {
 		@Override
 		public void handlePacket(Player player)
 		{
+			// We expect to be in the VERIFIED state before this
+			if(player.getLoginState() != LoginState.VERIFIED)
+			{
+				Logger.instance().logMessage("Not in VERIFIED state when receiving login data response");
+				return;
+			}
+			
 			// The player was loaded during decode. But this is like saying we're logged in, now
 			player.setLoginState(LoginState.LOGGED_IN);
 			

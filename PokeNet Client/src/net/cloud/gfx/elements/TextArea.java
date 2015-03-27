@@ -248,8 +248,16 @@ public class TextArea extends AbstractElement {
 		// Now we'll grab lines until there are no more left
 		while(lbm.getPosition() < text.length())
 		{
-			// So the next position is the end of the next line, basically
+			// So the next position is the end of the next line or the nearest newline
 			int nextPos = lbm.nextOffset(getWidth());
+			int nextNewlinePos = text.indexOf('\n', lbm.getPosition() + 1);
+			
+			// Which is closer... the line break or newline?
+			if(nextNewlinePos != -1 && nextNewlinePos < nextPos)
+			{
+				// The newline is, so change next position over to it
+				nextPos = nextNewlinePos;
+			}
 			
 			// Now we have some bounds, we'll break off a line of text into a vector
 			vectors.add(font.createGlyphVector(g2d.getFontRenderContext(), text.substring(lbm.getPosition(), nextPos)));

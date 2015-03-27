@@ -2,7 +2,7 @@ package net.cloud.server.entity.player.save;
 
 import net.cloud.server.entity.player.LoginState;
 import net.cloud.server.entity.player.Player;
-import net.cloud.server.event.task.voidtasks.VoidTask;
+import net.cloud.server.event.task.voidtasks.CancellableVoidTask;
 import net.cloud.server.game.World;
 import net.cloud.server.logging.Logger;
 
@@ -12,7 +12,7 @@ import net.cloud.server.logging.Logger;
  * will have their data saved. If any of them cannot be successfully saved, the task 
  * will continue past and report the error. 
  */
-public class PlayerSaveTask implements VoidTask {
+public class PlayerSaveTask extends CancellableVoidTask {
 
 	/**
 	 * Go through all of the players currently logged in and try to save their data. 
@@ -31,6 +31,12 @@ public class PlayerSaveTask implements VoidTask {
 	 */
 	private void attemptSave(Player p)
 	{
+		// Don't bother if as a task we're cancelled
+		if(super.ourFuture.isCancelled())
+		{
+			return;
+		}
+		
 		try {
 			// Only save for logged in players
 			if(p.getLoginState() != LoginState.LOGGED_IN)

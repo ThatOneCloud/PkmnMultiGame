@@ -169,7 +169,7 @@ public class StatTracker {
 		CancellableVoidTask task = new TrackingTask();
 		
 		// Also have this submit the task to the engine. 'cause why not.
-		TaskEngine.getInstance().scheduleImmediate(ConfigConstants.TASK_INTERVAL, task);
+		TaskEngine.instance().scheduleImmediate(ConfigConstants.STAT_TASK_INTERVAL, task);
 		
 		return task;
 	}

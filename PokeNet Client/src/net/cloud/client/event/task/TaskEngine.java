@@ -17,10 +17,14 @@ import net.cloud.client.logging.Logger;
  * Tasks can be run immediately or after a delay. They can also be scheduled 
  * to run at a fixed rate every so often.  All tasks can be cancelled, as well. <br>
  * Submitting a task returns a Future which can be used to cancel the task, and
- * obtain a result. VoidTasks will have a null result. <br>
+ * obtain a result. VoidTasks will have a null result. If the task engine is shutdown when 
+ * the task is submitted, the task will not be run, and TaskEngine.REJECTED will be returned.<br>
  * The TaskEngine is a ShutdownService, and so its hook will stop execution of tasks.
  */
 public class TaskEngine implements ShutdownService {
+	
+	/** The future returned when the task engine is shut down */
+	public static final Future<Object> REJECTED = new RejectedFuture();
 	
 	/** Singleton instance */
 	private static TaskEngine instance;
@@ -72,6 +76,11 @@ public class TaskEngine implements ShutdownService {
 	 */
 	public Future<?> submitImmediate(VoidTask task)
 	{
+		if(taskExecutor.isShutdown())
+		{
+			return REJECTED;
+		}
+		
 		return task.submitImmediate(taskExecutor::schedule);
 	}
 	
@@ -83,6 +92,11 @@ public class TaskEngine implements ShutdownService {
 	 */
 	public Future<?> submitDelayed(long delay, VoidTask task)
 	{
+		if(taskExecutor.isShutdown())
+		{
+			return REJECTED;
+		}
+		
 		return task.submitDelayed(taskExecutor::schedule, delay);
 	}
 	
@@ -94,6 +108,11 @@ public class TaskEngine implements ShutdownService {
 	 */
 	public Future<?> scheduleImmediate(long period, VoidTask task)
 	{
+		if(taskExecutor.isShutdown())
+		{
+			return REJECTED;
+		}
+		
 		return task.scheduleImmediate(taskExecutor::scheduleAtFixedRate, period);
 	}
 	
@@ -106,6 +125,11 @@ public class TaskEngine implements ShutdownService {
 	 */
 	public Future<?> scheduleDelayed(long delay, long period, VoidTask task)
 	{
+		if(taskExecutor.isShutdown())
+		{
+			return REJECTED;
+		}
+		
 		return task.scheduleDelayed(taskExecutor::scheduleAtFixedRate, delay, period);
 	}
 	
@@ -115,8 +139,14 @@ public class TaskEngine implements ShutdownService {
 	 * @param task The task containing the code to run on the TaskEngine
 	 * @return A Future to determine when the task completes. Contains a value returned from the task
 	 */
+	@SuppressWarnings("unchecked")
 	public <V> Future<V> submitImmediate(Task<V> task)
 	{
+		if(taskExecutor.isShutdown())
+		{
+			return (Future<V>) REJECTED;
+		}
+		
 		return task.submitImmediate(taskExecutor::schedule);
 	}
 	
@@ -126,8 +156,14 @@ public class TaskEngine implements ShutdownService {
 	 * @param task The task containing the code to run on the TaskEngine
 	 * @return A Future to determine when the task completes. Contains a value returned from the task
 	 */
+	@SuppressWarnings("unchecked")
 	public <V> Future<V> submitDelayed(long delay, Task<V> task)
 	{
+		if(taskExecutor.isShutdown())
+		{
+			return (Future<V>) REJECTED;
+		}
+		
 		return task.submitDelayed(taskExecutor::schedule, delay);
 	}
 	
@@ -139,6 +175,11 @@ public class TaskEngine implements ShutdownService {
 	 */
 	public Future<?> scheduleImmediate(long period, Task<?> task)
 	{
+		if(taskExecutor.isShutdown())
+		{
+			return REJECTED;
+		}
+		
 		return task.scheduleImmediate(taskExecutor::scheduleAtFixedRate, period);
 	}
 	
@@ -151,6 +192,11 @@ public class TaskEngine implements ShutdownService {
 	 */
 	public Future<?> scheduleDelayed(long delay, long period, Task<?> task)
 	{
+		if(taskExecutor.isShutdown())
+		{
+			return REJECTED;
+		}
+		
 		return task.scheduleDelayed(taskExecutor::scheduleAtFixedRate, delay, period);
 	}
 

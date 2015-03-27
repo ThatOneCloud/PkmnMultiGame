@@ -12,7 +12,7 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 public class PacketHandler extends ChannelInboundHandlerAdapter {
 	
 	/** The player object these packets are coming from */
-	private final Player player;
+	private Player player;
 	
 	/**
 	 * Create a packet handler linked to the given player. This is like a state variable, 
@@ -46,6 +46,22 @@ public class PacketHandler extends ChannelInboundHandlerAdapter {
 		// Exception occurred, close the connection
 		Logger.instance().logException("Exception caught handling packet. Closing connection.", cause);
 		ctx.close();
+	}
+	
+	/**
+	 * @return The player we will route packets to
+	 */
+	public Player getPlayer()
+	{
+		return player;
+	}
+	
+	/**
+	 * @param player The player packets will be routed to from now on
+	 */
+	public void setPlayer(Player player)
+	{
+		this.player = player;
 	}
 
 }

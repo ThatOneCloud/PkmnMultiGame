@@ -4,7 +4,7 @@ import java.util.function.Consumer;
 
 import net.cloud.server.entity.player.LoginResponse;
 import net.cloud.server.entity.player.Player;
-import io.netty.channel.Channel;
+import io.netty.channel.socket.SocketChannel;
 
 /**
  * Each Player will have their own PacketSender.  It holds a reference to the connection 
@@ -19,7 +19,7 @@ import io.netty.channel.Channel;
 public class PacketSender {
 	
 	/** The Channel representing the connection between client and server */
-	private final Channel channel;
+	private final SocketChannel channel;
 	
 	/** The PacketFactory being used to create Packet objects */
 	private PacketFactory packetFactory;
@@ -28,7 +28,7 @@ public class PacketSender {
 	 * Creates a PacketSender, where the connection is given by the Channel
 	 * @param channel The Channel for the connection between client and server
 	 */
-	public PacketSender(Channel channel)
+	public PacketSender(SocketChannel channel)
 	{
 		this.channel = channel;
 		this.packetFactory = new PacketFactory();
@@ -160,10 +160,35 @@ public class PacketSender {
 		channel.writeAndFlush(packetFactory.createLogoutPacket()).addListener((f) -> onSend.accept(player));
 	}
 	
+	
+//	TEMPLATE FOR NEW PACKETS
+//	/**
+//	 * Only creates and returns a Packet. For a description of the packet, see<br>
+//	 * {@link PacketFactory#create()}
+//	 */
+//	public Packet create()
+//	{
+//		return packetFactory.create();
+//	}
+//	/** Writes, but does not send a packet. <br>See {@link PacketFactory#create()} */
+//	public PacketSender write()
+//	{
+//		write(create());
+//		
+//		return this;
+//	}
+//	/** Writes and sends a packet.  <br>See {@link PacketFactory#create()} */
+//	public void send()
+//	{
+//		this.write().send();
+//	}
+//	TEMPLATE FOR NEW PACKETS
+	
+	
 	/**
 	 * @return The channel this PacketSender is working on (the one the player is connected with)
 	 */
-	public Channel channel()
+	public SocketChannel channel()
 	{
 		return channel;
 	}

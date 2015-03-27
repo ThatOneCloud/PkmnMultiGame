@@ -2,6 +2,7 @@ package net.cloud.client.event.shutdown.hooks;
 
 import java.io.PrintWriter;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import net.cloud.client.event.shutdown.ShutdownException;
 import net.cloud.client.event.shutdown.ShutdownHook;
@@ -13,8 +14,11 @@ import net.cloud.client.event.shutdown.ShutdownHook;
  */
 public class TaskEngineShutdownHook implements ShutdownHook {
 	
+	/** How long to wait for tasks to finish before calling it quits */
+	public static final long TERMINATION_TIMEOUT = 1000;
+	
 	/** The ExecutorService the tasks are being run on */
-	ScheduledExecutorService taskExecutor;
+	private ScheduledExecutorService taskExecutor;
 	
 	/**
 	 * Create a shutdown hook for a TaskEngine
@@ -38,7 +42,13 @@ public class TaskEngineShutdownHook implements ShutdownHook {
 		out.flush();
 		
 		// Tell the ExecutorService to stop
-		taskExecutor.shutdown();
+		try {
+			taskExecutor.awaitTermination(TERMINATION_TIMEOUT, TimeUnit.MILLISECONDS);
+			taskExecutor.shutdown();
+		} catch (InterruptedException e) {
+			out.println("Task Engine interrupted during shutdown");
+			out.flush();
+		}
 		
 		out.println("Task Engine shut down");
 		out.flush();

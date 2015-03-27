@@ -66,7 +66,7 @@ public class CommandHandler {
 		command.parseArguments(commandParams);
 
 		// Finally, we have a command. Hand it off to the TaskEngine
-		Future<String> result = TaskEngine.getInstance().submitImmediate(command::doCommand);
+		Future<String> result = TaskEngine.instance().submitImmediate(command::doCommand);
 		
 		// Return the result Future so the caller can wait for the command to complete if they'd like
 		return result;

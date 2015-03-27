@@ -18,12 +18,6 @@ import net.cloud.server.util.IOUtil;
  */
 public class Server {
 	
-	// TODO: Known bugs before framework release:
-	// gracefully handle abrupt disconnect (tasks may need to gracefully skirt around this, too)
-	// DONE player save task seems broken
-	// DONE don't get bad data message with alice_5 (ofc, with a bad password, that comes first)
-	// text area line wrap
-	
 	/** A Clock for the server to standardize on. All timing operations can then rely on this clock */
 	public static final Clock CLOCK = Clock.system(ZoneId.of("UTC-5"));
 	
@@ -128,7 +122,7 @@ public class Server {
 		Logger.writer().flush();
 		
 		// Grab the TaskEngine, put its shutdown hook in here
-		shutdownHandler.addHook(TaskEngine.getInstance().getShutdownHook());
+		shutdownHandler.addHook(TaskEngine.instance().getShutdownHook());
 		
 		// The FileServer is another service we'll start here
 		shutdownHandler.addHook(FileServer.instance().getShutdownHook());

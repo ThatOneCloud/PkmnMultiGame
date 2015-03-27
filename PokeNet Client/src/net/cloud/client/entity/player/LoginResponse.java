@@ -16,6 +16,9 @@ public enum LoginResponse {
 	ALREADY_LOGGED_IN,
 	
 	/** So far so good, okay to proceed */
-	OKAY;
+	OKAY,
+	
+	/** Special response for okay while reconnecting */
+	RECONNECT;
 
 }

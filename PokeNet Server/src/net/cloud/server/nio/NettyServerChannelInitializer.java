@@ -1,10 +1,11 @@
 package net.cloud.server.nio;
 
 import net.cloud.server.entity.player.LoginHandler;
-import net.cloud.server.entity.player.LoginState;
 import net.cloud.server.entity.player.Player;
+import net.cloud.server.entity.player.PlayerChannelConfig;
 import net.cloud.server.entity.player.PlayerFactory;
 import net.cloud.server.event.task.TaskEngine;
+import net.cloud.server.event.task.voidtasks.ConnectTimeoutTask;
 import net.cloud.server.nio.packet.PacketConstants;
 import net.cloud.server.nio.packet.PacketDecoder;
 import net.cloud.server.nio.packet.PacketEncoder;
@@ -32,19 +33,20 @@ public class NettyServerChannelInitializer extends ChannelInitializer<SocketChan
 	{
 		// Create a new Player for this new connection
 		PacketSender packetSender = new PacketSender(channel);
-		Player newPlayer = PlayerFactory.createOnNewConnection(packetSender);
+		PlayerChannelConfig config = new PlayerChannelConfig();
+		Player newPlayer = PlayerFactory.createOnNewConnection(packetSender, config);
+		
+		// Add a listener which will call handle disconnect when the channel is closed
+		config.setDcListener((f) -> LoginHandler.handleDisconnect(newPlayer));
+		channel.closeFuture().addListener(config.getDcListener());
 		
 		// At this point, state is CONNECTED. They should be following up to become VERIFIED soon.
 		// so we use a task to time-out and abort the player if they fail to do so
-		TaskEngine.getInstance().submitDelayed(LoginHandler.TIMEOUT, () ->
-		{
-			// Body of the task. Is the player still sitting in the CONNECTED state?
-			if(newPlayer.getLoginState() == LoginState.CONNECTED)
-			{
-				// Since they are, we never got a login request from the client
-				LoginHandler.abortConnection(newPlayer);
-			}
-		});
+		config.setConnectTimeoutTask(new ConnectTimeoutTask(newPlayer));
+		TaskEngine.instance().submitDelayed(LoginHandler.TIMEOUT, config.getConnectTimeoutTask());
+		
+		PacketHandler packetHandler = new PacketHandler(newPlayer);
+		config.setPacketHandler(packetHandler);
 		
 		// Inbound handlers
 		channel.pipeline().addLast(new LengthFieldBasedFrameDecoder(
@@ -54,7 +56,7 @@ public class NettyServerChannelInitializer extends ChannelInitializer<SocketChan
 				PacketConstants.LENGTH_FIELD_ADJUSTMENT, 
 				PacketConstants.BYTES_TO_STRIP),
 				new PacketDecoder(),
-				new PacketHandler(newPlayer));
+				packetHandler);
 
 		// Outbound handlers
 		channel.pipeline().addLast(new LengthFieldPrepender(PacketConstants.LENGTH_FIELD_LENGTH),

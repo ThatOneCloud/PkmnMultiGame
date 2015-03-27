@@ -17,10 +17,22 @@ public enum LoginState {
 	/** They're logged into the game */
 	LOGGED_IN,
 	
-	/** Login has - somewhere along the line - failed */
-	FAILED,
+	/** Login has - somewhere along the line - failed - trap state*/
+	LOGIN_FAILED,
 	
-	/** After a successful login, the player has later disconnected */
-	DISCONNECTED;
+	/** In the process of logging out */
+	LOGGING_OUT,
+	
+	/** After a successful login, the player has later successfully logged out */
+	LOGGED_OUT,
+	
+	/** Disconnected abruptly after being logged in */
+	DISCONNECTED,
+	
+	/** In the process of reconnecting after disconnecting */
+	RECONNECTING,
+	
+	/** Did not reconnect after being disconnected - trap state */
+	RECONNECT_FAILED;
 
 }

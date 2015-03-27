@@ -19,6 +19,9 @@ public class LoginHandler {
 	/** How long will we wait for the server to reply before giving up */
 	public static final long TIMEOUT = 5000;
 	
+	/** Grace period between channel closing and actually checking for disconnect */
+	public static final long DC_GRACE = 2000;
+	
 	/** The most recently passed in callback function for showing a message regarding login */
 	private static Optional<Consumer<String>> currentMessageCallback = Optional.empty();
 	
@@ -117,7 +120,17 @@ public class LoginHandler {
 			return;
 		}
 		
+		// We also need to be logged in
+		if(World.instance().getPlayer() == null || World.instance().getPlayer().getLoginState() != LoginState.LOGGED_IN)
+		{
+			return;
+		}
+		
+		// We're about to move to logged out, then null the player - do this for completeness
+		World.instance().getPlayer().setLoginState(LoginState.LOGGING_OUT);
+		
 		// Close the connection
+		World.instance().getPlayer().setLoginState(LoginState.LOGGED_OUT);
 		Client.instance().nettyClient().disconnect();
 		
 		// Show the login interface, just like when the client starts
@@ -128,6 +141,55 @@ public class LoginHandler {
 		// May as well show a message
 		intf.message("Logout Successful");
 		ModalManager.instance().displayMessage("Logout", "You are now logged out");
+	}
+	
+	/**
+	 * Should be called when the player disconnects from the game. 
+	 * It's okay if they're gracefully logging out, this will do nothing, then.
+	 * Takes care of what should happen if the player abruptly disconnects from the game.
+	 * @param player The player that is no longer connected to the server
+	 */
+	public static void handleDisconnect(Player player)
+	{
+		// We need to be logged in.
+		if(player.getLoginState() != LoginState.LOGGED_IN)
+		{
+			return;
+		}
+		
+		// However, I think it's possible that the channel was closed by the server 
+		// before our login state changes. So allow a grace period for that change to happen
+		TaskEngine.instance().submitDelayed(DC_GRACE, () -> resumeDisconnect(player));
+	}
+	
+	/**
+	 * Pick up where handleDisconnect left off. 
+	 * Assumes our state was LOGGED_IN but may have since changed
+	 * @param player The player that is no longer connected to the server
+	 */
+	private static void resumeDisconnect(Player player)
+	{
+		// Have we since gracefully logged out?  We don't need to do anything more, then
+		if(player.getLoginState() != LoginState.LOGGED_IN)
+		{
+			return;
+		}
+		
+		// Move into the DISCONNECTED state
+		player.setLoginState(LoginState.DISCONNECTED);
+		
+		// Move right into reconnect failed... since we don't actually attempt to reconnect
+		World.instance().getPlayer().setLoginState(LoginState.RECONNECT_FAILED);
+		Client.instance().nettyClient().disconnect();
+		
+		// Show the login interface, just like when the client starts
+		LoginInterface intf = new LoginInterface();
+		Mainframe.root().removeAllChildren();
+		Mainframe.root().add(intf);
+
+		// May as well show a message
+		intf.message("Disconnected from server.");
+		ModalManager.instance().displayMessage("Disconnect", "You disconnected from the server. You may try to reconnect.");
 	}
 	
 	/**

@@ -20,11 +20,12 @@ public class PlayerFactory {
 	 * Create a Player object for usage after a connection has been made. 
 	 * The player can be placed in the world map, and is pretty much a blank slate.
 	 * @param packetSender The PacketSender object the Player will use
+	 * @param config Object holding channel initialization info
 	 * @return A new Player object with minimal details
 	 */
-	public static Player createOnNewConnection(PacketSender packetSender)
+	public static Player createOnNewConnection(PacketSender packetSender, PlayerChannelConfig config)
 	{
-		Player newPlayer = new Player(packetSender);
+		Player newPlayer = new Player(packetSender, config);
 		
 		// It's a new connection, so they start out connected in this situation
 		newPlayer.setLoginState(LoginState.CONNECTED);
@@ -96,7 +97,7 @@ public class PlayerFactory {
 	 */
 	public static Player createNewPlayer(String username, String password)
 	{
-		Player newPlayer = new Player(null);
+		Player newPlayer = new Player(null, null);
 		
 		newPlayer.setLoginState(LoginState.INITIAL);
 		
@@ -114,7 +115,7 @@ public class PlayerFactory {
 	 */
 	public static Player createPlayerForDataUpdate(String username)
 	{
-		Player p = new Player(null);
+		Player p = new Player(null, null);
 		
 		p.setUsername(username);
 		

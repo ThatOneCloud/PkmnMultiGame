@@ -2,6 +2,7 @@ package net.cloud.server.event.command.commands;
 
 import net.cloud.server.Server;
 import net.cloud.server.event.command.Command;
+import net.cloud.server.game.World;
 
 /**
  * A command that will shut down the server when called
@@ -31,6 +32,10 @@ public class ShutdownCommand extends NoParameterCommand {
 	@Override
 	public String doCommand()
 	{
+		// Get all players out of the way, first
+		World.instance().cancelSaveTask();
+		World.instance().kickAllPlayers();
+		
 		// Tell the server it's time to shutdown
 		Server.getInstance().shutdown();
 		

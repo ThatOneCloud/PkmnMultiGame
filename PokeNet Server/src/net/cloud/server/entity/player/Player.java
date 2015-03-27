@@ -2,7 +2,6 @@ package net.cloud.server.entity.player;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.net.InetSocketAddress;
 import java.util.Optional;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -31,6 +30,9 @@ public class Player extends Entity implements Bufferable {
 	/** The PacketSender assigned to this player. Used for communication. */
 	private transient PacketSender packetSender;
 	
+	/** The object holding information on our connection */
+	private transient PlayerChannelConfig channelConfig;
+	
 	/** This player's save handler. They should hold onto it, it may save them one day... */
 	private transient Optional<PlayerSaveHandler> saveHandler;
 	
@@ -46,10 +48,12 @@ public class Player extends Entity implements Bufferable {
 	/**
 	 * Constructor that accepts the PacketSender
 	 * @param packetSender PacketSender that will be used throughout lifetime of player
+	 * @param config Object holding channel initialization info
 	 */
-	public Player(PacketSender packetSender)
+	public Player(PacketSender packetSender, PlayerChannelConfig config)
 	{
 		this.packetSender = packetSender;
+		this.channelConfig = config;
 		
 		// They start off as a new player - only connected
 		setLoginState(LoginState.CONNECTED);
@@ -59,6 +63,41 @@ public class Player extends Entity implements Bufferable {
 		
 		// Null here indicates the account has yet to be logged in
 		this.lastLogin = null;
+	}
+	
+	/**
+	 * Request that this player be logged out from the game
+	 */
+	public void logout()
+	{
+		LoginHandler.doLogout(this);
+	}
+	
+	/**
+	 * Tell the player that it was disconnect abruptly. 
+	 * May take whatever action necessary when a disconnect happens, as is relevant to this player
+	 */
+	public void onDisconnect()
+	{
+		setLoginState(LoginState.DISCONNECTED);
+	}
+	
+	/**
+	 * Tell the player that after disconnecting, they did not reconnect in time. 
+	 * May take whatever action necessary for when this happens, as is relevant to this player
+	 */
+	public void onReconnectFailed()
+	{
+		setLoginState(LoginState.RECONNECT_FAILED);
+	}
+	
+	/**
+	 * Tell this player that its data has been loaded and it's time for it to be able to save data
+	 */
+	public void finishedLoading()
+	{
+		// So this is the time to make a save handler. Since we now have data to save.
+		saveHandler = Optional.of(new PlayerSaveHandler(this));
 	}
 	
 	/** @return The player's username */
@@ -98,6 +137,23 @@ public class Player extends Entity implements Bufferable {
 	}
 	
 	/**
+	 * The object that holds information about our connection
+	 * @return The channelConfig
+	 */
+	public PlayerChannelConfig getChannelConfig()
+	{
+		return channelConfig;
+	}
+	
+	/**
+	 * @param config A new configuration object
+	 */
+	public void setChannelConfig(PlayerChannelConfig config)
+	{
+		this.channelConfig = config;
+	}
+
+	/**
 	 * Get the PacketSender the server uses to communicate with the player
 	 * @return The PacketSender allowing communication to the player
 	 */
@@ -107,20 +163,12 @@ public class Player extends Entity implements Bufferable {
 	}
 	
 	/**
-	 * Request that this player be logged out from the game
+	 * Assign a packet sender to this player. Useful for when their connection changes
+	 * @param packetSender The new packet sender
 	 */
-	public void logout()
+	public void setPacketSender(PacketSender packetSender)
 	{
-		LoginHandler.doLogout(this);
-	}
-	
-	/**
-	 * Tell this player that its data has been loaded and it's time for it to be able to save data
-	 */
-	public void finishedLoading()
-	{
-		// So this is the time to make a save handler. Since we now have data to save.
-		saveHandler = Optional.of(new PlayerSaveHandler(this));
+		this.packetSender = packetSender;
 	}
 	
 	/**
@@ -138,7 +186,7 @@ public class Player extends Entity implements Bufferable {
 	public void updateLastLogin()
 	{
 		// We pull the address from the channel we're connected with - known to have an InetSocketAddress
-		this.lastLogin = new ConnectionInfo(((InetSocketAddress) getPacketSender().channel().remoteAddress()).getAddress().getHostAddress());
+		this.lastLogin = new ConnectionInfo(getPacketSender().channel().remoteAddress().getAddress().getHostAddress());
 	}
 	
 	/**

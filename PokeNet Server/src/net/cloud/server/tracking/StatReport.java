@@ -2,6 +2,7 @@ package net.cloud.server.tracking;
 
 import java.io.PrintWriter;
 
+import net.cloud.server.ConfigConstants;
 import net.cloud.server.logging.report.LogReport;
 import net.cloud.server.logging.report.LogSection;
 
@@ -30,21 +31,34 @@ public class StatReport extends LogReport {
 	@Override
 	public void logReport(PrintWriter out)
 	{
+		StringBuilder report = new StringBuilder();
+		
 		// A "nice" header with some general information. Lots of prints because primitives? I 'unno
-		out.print("Status Report at ");
-		out.print(stats.getCreationTime().getHour());
-		out.print(":");
-		out.print(stats.getCreationTime().getMinute());
-		out.print(":");
-		out.println(stats.getCreationTime().getSecond());
+		report.append("Status Report at ");
+		report.append(stats.getCreationTime().getHour());
+		report.append(":");
+		report.append(stats.getCreationTime().getMinute());
+		report.append(":");
+		report.append(stats.getCreationTime().getSecond());
+		report.append(System.lineSeparator());
 		
 		// Players online
-		out.print("Players Online: ");
-		out.println(stats.getPlayersOnlineStat());
+		report.append("Players Online: ");
+		report.append(stats.getPlayersOnlineStat());
+		report.append(System.lineSeparator());
 		
 		// An extra blank line for some separation
-		out.println("");
+		report.append(System.lineSeparator());
+		
+		// Write it to the report writer for sure
+		out.write(report.toString());
 
+		// Maybe write to the console as well
+		if(ConfigConstants.STATS_TO_CONSOLE)
+		{
+			System.out.print(report);
+			System.out.flush();
+		}
 	}
 
 }
